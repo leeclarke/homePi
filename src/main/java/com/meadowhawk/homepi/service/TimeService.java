@@ -1,4 +1,4 @@
-package com.example.services;
+package com.meadowhawk.homepi.service;
 
 import com.example.models.Time;
 
