@@ -10,15 +10,24 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.model.LogEntries;
 import com.meadowhawk.homepi.model.PiProfile;
+import com.meadowhawk.homepi.service.business.ManagementService;
 
 @Path("/homepi")
+@Component
 @Produces(MediaType.APPLICATION_JSON)
 public class HomePiRestService {
 
+	@Autowired
+	@Qualifier("managementService")
+	ManagementService managementService;
+	
 	@POST
 	@Path("/pi/reg")
 	public PiProfile registerPi() {
@@ -30,7 +39,7 @@ public class HomePiRestService {
 	@Path("/pi/{piSerialId}")
 	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId){
 		
-		return new PiProfile();
+		return managementService.getPiProfile(piSerialId);
 	}
 
 	@POST
