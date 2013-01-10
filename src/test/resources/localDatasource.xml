@@ -1,0 +1,17 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	
+	<!-- Must call using ssl indicator for local tests. -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url"
+			value="jdbc:postgresql://ec2-54-243-182-70.compute-1.amazonaws.com:5432/d37cvnjoirhmpo?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory" />
+		<property name="username" value="oxyghtjfrmqweu" />
+		<property name="password" value="R-Ky7iKIQ1Ug6QUbv5hV4PsuEv" />
+	</bean>
+</beans>

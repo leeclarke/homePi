@@ -1,19 +1,19 @@
 package com.meadowhawk.homepi.service.business;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.meadowhawk.homepi.dao.PiProfileDAO;
 import com.meadowhawk.homepi.model.PiProfile;
 
 @Component
 public class ManagementService {
 
+	@Autowired
+	PiProfileDAO piProfileDao;
+	
 	public PiProfile getPiProfile(String serialId) {
-		
-		PiProfile prof = new PiProfile();
-		prof.setIpAddress("123.1.1.2");
-		prof.setPiSierialId("123ee224");
-		prof.setName("TestP");
-		return prof;
+		return piProfileDao.getPiProfile(serialId);
 	}
 	
 }

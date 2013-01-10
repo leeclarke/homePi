@@ -7,7 +7,7 @@
 
 	<context:component-scan base-package="com.meadowhawk.homepi" />
 
-	<import resource="datasource.xml"/>
+	<import resource="localDatasource.xml"/>
 	<import resource="dao.xml"/>
 	
 </beans>

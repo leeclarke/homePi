@@ -1,27 +1,26 @@
 package com.meadowhawk.homepi.model;
 
+import org.joda.time.DateTime;
+
 /**
  * Pi device data used for identifying the remote PI and how to connect to it if possible.
  * @author lee
  */
 public class PiProfile {
 	private Integer piId;
-	private String piSierialId;
-	private String Name;
+	private String piSerialId;
+	private String name;
 	private String ipAddress;
-	private String sshPort;
+	private Integer sshPortNumber;
+	private DateTime createTime;
+	private DateTime updateTime;
 	
-	public String getPiSierialId() {
-		return piSierialId;
-	}
-	public void setPiSierialId(String piSierialId) {
-		this.piSierialId = piSierialId;
-	}
+
 	public String getName() {
-		return Name;
+		return this.name;
 	}
 	public void setName(String name) {
-		Name = name;
+		this.name = name;
 	}
 	public String getIpAddress() {
 		return ipAddress;
@@ -29,11 +28,35 @@ public class PiProfile {
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
-	public String getSshPort() {
-		return sshPort;
+	public Integer getPiId() {
+		return piId;
 	}
-	public void setSshPort(String sshPort) {
-		this.sshPort = sshPort;
+	public void setPiId(Integer piId) {
+		this.piId = piId;
+	}
+	public Integer getSshPortNumber() {
+		return sshPortNumber;
+	}
+	public void setSshPortNumber(Integer sshPortNumber) {
+		this.sshPortNumber = sshPortNumber;
+	}
+	public DateTime getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(DateTime createTime) {
+		this.createTime = createTime;
+	}
+	public DateTime getUpdateTime() {
+		return updateTime;
+	}
+	public void setUpdateTime(DateTime updateTime) {
+		this.updateTime = updateTime;
+	}
+	public String getPiSerialId() {
+		return piSerialId;
+	}
+	public void setPiSerialId(String piSerialId) {
+		this.piSerialId = piSerialId;
 	}
 	
 	
