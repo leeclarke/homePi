@@ -6,7 +6,7 @@ from Configuration import Configuration
 from subprocess import Popen
 
 def getVersion():
-  return 1
+  return 2
 
 print 'HomePi version: %d' % getVersion()
 
