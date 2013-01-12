@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,13 @@ public class HomePiRestService {
 
 	@Autowired
 	ClassPathResource updateFile;
+	
+	@Value("${update.mainFile}")
+	String mainUpdateFileName;
+	
+	@Value("${update.mainFileVersion}")
+	Integer mainUpdateFileVersion;
+	
 	
 	@Autowired
 	@Qualifier("managementService")
@@ -69,12 +77,13 @@ public class HomePiRestService {
 	@Path("/update")
 	@Produces("text/x-python")
 	public Response getScriptUpdate(){
-		 File file;
+		File file;
 		try {
 			file = updateFile.getFile();
 			ResponseBuilder response = Response.ok((Object) file);
-			response.header("Content-Disposition",
-					"attachment; filename=hello.py");
+			response.header("Content-Disposition", "attachment; filename=homePi.py");
+			response.header("file-version", mainUpdateFileVersion);
+			System.out.println("mainFile name=" + this.mainUpdateFileName);
 			return response.build();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -10,8 +10,13 @@
 	<import resource="localDatasource.xml"/>
 	<import resource="dao.xml"/>
 	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:update.properties</value>
+		</property>
+	</bean>
+	
 	<bean id="updateInputResource" class="org.springframework.core.io.ClassPathResource">
-	    <constructor-arg index="0"
-	        value="hello.py"/>
+	    <constructor-arg index="0" value="homePi.py"/>
 	</bean>
 </beans>
