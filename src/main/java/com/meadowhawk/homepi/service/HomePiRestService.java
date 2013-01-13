@@ -73,6 +73,7 @@ public class HomePiRestService {
 		return new ArrayList<LogEntries>();
 	}
 	
+	//TODO: add string replace on py file to update the version number
 	@GET
 	@Path("/update")
 	@Produces("text/x-python")
