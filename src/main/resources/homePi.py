@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 """
   HomePi -  keeping in touch with Home.
   
@@ -23,7 +22,7 @@ from subprocess import Popen
 config = Configuration('homePi.ini')
 
 def getVersion():
-  return 2
+  return 3
 
 #Currently Downloads updates only for HomePi but as this script evolves updates for supported apps will be included as well.
 def downloadUpdates():
@@ -34,7 +33,7 @@ def downloadUpdates():
     logMessage(config.log.logFile, "Checking for software update")
   
     #Download the code from server
-    response = urllib2.urlopen(config.updates.downloadurl)
+    response = urllib2.urlopen(config.updates.downloadurl+ "?piSerial=" + getPiSerial())
   
     #Check to see if new version
     serverVersion = int(response.info().getheader('file-version'))
