@@ -26,15 +26,18 @@ helpInfo = 'homePi.py -a <appName> -m <logmessage> | -f <logFilePath>  \nOr call
 config = Configuration('homePi.ini')
 
 def getVersion():
-  return 4
+  return 5
+
+def log(msg):
+  logMessage(config.log.logFile, msg)
 
 #Currently Downloads updates only for HomePi but as this script evolves updates for supported apps will be included as well.
 def downloadUpdates():
   #Determine if it's time for an update check  
   updateTime = float(config.main.lastupdate) + (float(config.main.updatefreqhrs) * 3600)
-  print "curTime= %f > lastUpdate: %f" % (time.time(), updateTime)
+  log( "curTime= %f > lastUpdate: %f" % (time.time(), updateTime))
   if time.time() > updateTime:
-    logMessage(config.log.logFile, "Checking for software update")
+    log("Checking for software update")
   
     #Download the code from server
     response = urllib2.urlopen(config.updates.downloadurl+ "?piSerial=" + getPiSerial())
@@ -43,23 +46,23 @@ def downloadUpdates():
     serverVersion = int(response.info().getheader('file-version'))
   
     if serverVersion > getVersion():
-      logMessage(config.log.logFile, "Updating to new version:" + str(serverVersion))
+      log("Updating to new version:" + str(serverVersion))
       ensure_dir(config.log.updateFolder)
       localFile = open(os.path.join(config.log.updateFolder, config.main.appmain), 'w')
       localFile.write(response.read())
       localFile.close()
 
-      logMessage(config.log.logFile, 'New updates downloaded.')    
+      log('New updates downloaded.')    
     
       #open the reloader to replace files, clean up and restart
       reloaderPath = "python " + os.path.join(os.getcwd(),config.main.reloader)
       Popen(reloaderPath, shell=True)
     else:
-      logMessage(config.log.logFile, "No update, version " + str(getVersion()) + " is the current version.")
+      log("No update, version " + str(getVersion()) + " is the current version.")
       
     #Set updateTime
     config.setValue("main","lastUpdate",str(time.time()))
-    print 'HomePi Ready for update.'
+    log( 'HomePi Ready for update.')
 
 # Execute commands requested by args provided.
 def processCommands(argv):
@@ -71,7 +74,8 @@ def processCommands(argv):
       
   appName, logmessage,filePath = parseArgs(opts)
   
-  #DEBUGING print "appName= %s , logmessage= %s filePath= %s"  % (appName,logmessage,filePath)
+  #DEBUGING 
+  print "appName= %s , logmessage= %s filePath= %s"  % (appName,logmessage,filePath)
 
 #TODO: Finish by adding the logging API calls. and HomePi logging
   if appName != None:
@@ -87,7 +91,7 @@ def processCommands(argv):
       print helpInfo
     sys.exit(2)
     
-  print 'No opts'
+  log('No opts')
 
 #parses any provides arguments and returns values if present
 def parseArgs(opts):
@@ -110,7 +114,7 @@ def parseArgs(opts):
     
 ### Main    
 def main(argv):
-  print 'running... HomePi build: %d' % getVersion()
+  log( 'running... ~HomePi~  build: %d' % getVersion())
   #Special processing of command args if present
   processCommands(argv)
   
@@ -118,7 +122,7 @@ def main(argv):
   downloadUpdates()
   
   #Do other tasks.
-  print 'Check PiProfile etc.'
+  log('Check PiProfile etc.')
   
   exit("HomePi done.")
 
