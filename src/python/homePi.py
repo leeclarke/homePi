@@ -29,7 +29,7 @@ runLogger.debug("configFile: %s" % configFile)
 config = Configuration(configFile)
 
 def getVersion():
-  return 7
+  return 8
 
 def log(msg):
   runLogger.debug(msg)
