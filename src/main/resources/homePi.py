@@ -59,7 +59,8 @@ def downloadUpdates():
       log('New updates downloaded.')    
     
       #open the reloader to replace files, clean up and restart
-      reloaderPath = "python " + os.path.join(os.getcwd(),config.main.reloader)
+      reloaderPath = "python " + os.path.join(os.path.dirname(os.path.abspath(__file__)),config.main.reloader)
+      log('reloaderPath: %s' % reloaderPath)
       Popen(reloaderPath, shell=True)
     else:
       log("No update, version " + str(getVersion()) + " is the current version.")

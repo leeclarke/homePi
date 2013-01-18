@@ -20,7 +20,7 @@ config = Configuration(configFile)
 
 # Copy files to replace runtime file
 try:
-  copy2(os.path.join(config.log.updateFolder, config.main.appmain), config.main.appmain) # copy file
+  copy2(os.path.join(config.log.updateFolder, config.main.appmain), os.path.join(os.path.dirname(os.path.abspath(__file__)),config.main.appmain)) # copy file
 except IOError as e:
   runLogger.error(config.log.logFile,  e)
   print e
@@ -28,7 +28,7 @@ except IOError as e:
 rmtree(config.log.updateFolder) # will delete the folder itself
 
 
-mainPath = "python " + os.path.join(os.getcwd(),config.main.appmain)
+mainPath = "python " + os.path.join(os.path.dirname(os.path.abspath(__file__)),config.main.appmain)
 runLogger.debug("mainPath: %s" % mainPath)
 Popen(mainPath, shell=True) # go back to your program
 
