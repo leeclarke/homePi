@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-#TODO: ADD TO CronTab
+#!/usr/bin/python
 
 """
   HomePi -  keeping in touch with Home.
@@ -13,25 +11,31 @@
   Every hour/couple hours/ day it will ask the HomePi "Mothership" if there might be a newer script for 
   it's specific functions.
   
+  To run, add to PIs crontab:  [crontab -e]  -->>   */1 * * * *     pi /home/pi/homepi/homePi.sh
+  
 """
-
 from hpcommon import *
-import getopt,sys,subprocess,urllib2, os, time, json
+import logConfig
+import getopt,sys,subprocess,urllib2, os, time, json, logging
 from Configuration import Configuration
 from subprocess import Popen
 
 helpInfo = 'homePi.py -a <appName> -m <logmessage> | -f <logFilePath>  \nOr call no-op for standard function.'
+runLogger = logging.getLogger("homePi.main")
 
 #Read ini file
-config = Configuration('homePi.ini')
+configFile = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'homePi.ini')
+runLogger.debug("configFile: %s" % configFile)
+config = Configuration(configFile)
 
 def getVersion():
-  return 5
+  return 6
 
 def log(msg):
-  logMessage(config.log.logFile, msg)
+  runLogger.debug(msg)
+  #logMessage(config.log.logFile, msg)
 
-#Currently Downloads updates only for HomePi but as this script evolves updates for supported apps will be included as well.
+#Currently Downloads updates only for HomePi but as this script evolves, updates for supported apps will be included as well.
 def downloadUpdates():
   #Determine if it's time for an update check  
   updateTime = float(config.main.lastupdate) + (float(config.main.updatefreqhrs) * 3600)
@@ -113,10 +117,11 @@ def parseArgs(opts):
   return appName, logmessage,filePath  
     
 ### Main    
-def main(argv):
+def main():
+  #print 'running... ~HomePi~  build: %d' % getVersion() 
   log( 'running... ~HomePi~  build: %d' % getVersion())
   #Special processing of command args if present
-  processCommands(argv)
+  processCommands(sys.argv[1:])
   
   #Check for HomePi updates.
   downloadUpdates()
@@ -126,5 +131,5 @@ def main(argv):
   
   exit("HomePi done.")
 
-if __name__ == '__main__':
-    main(sys.argv[1:])
+if  __name__ =='__main__':
+    main()
