@@ -3,13 +3,14 @@ package com.meadowhawk.homepi.dao;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.DELETE;
+import javax.ws.rs.core.Response.Status;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.stereotype.Component;
 
+import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.PiProfile;
 
 /**
@@ -32,11 +33,27 @@ public class PiProfileDAO extends NamedParameterJdbcDaoSupport{
 	/**
 	 * @param serialId
 	 * @return
+	 * @throws HomePiAppException 
 	 */
-	public PiProfile getPiProfile(String serialId) {
+	public PiProfile getPiProfile(String serialId) throws HomePiAppException {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("piSerialId", serialId);
-		return getNamedParameterJdbcTemplate().queryForObject(SELECT_PI_PROFILE, paramMap, new HomePiBeanPropertyRowMapper<PiProfile>(PiProfile.class));
+		try{
+			
+//			PiProfile pro = new PiProfile();
+//			pro.setCreateTime(new DateTime());
+//			pro.setIpAddress("1.1.1.1");
+//			pro.setName("Test");
+//			pro.setPiId(5544);
+//			pro.setPiSerialId("S2dg5sd4");
+//			return pro ;
+			return getNamedParameterJdbcTemplate().queryForObject(SELECT_PI_PROFILE, paramMap, new HomePiBeanPropertyRowMapper<PiProfile>(PiProfile.class));
+		} catch (EmptyResultDataAccessException e) {
+			throw new HomePiAppException(Status.NOT_FOUND, "Profile with that PI id was not found.");
+		} catch (Exception e) {
+//			throw new HomePiAppException(Status.BAD_REQUEST, e.getMessage(),"",0);
+			throw new HomePiAppException(Status.BAD_REQUEST, e.getMessage());
+		}
 	}
 	
 	

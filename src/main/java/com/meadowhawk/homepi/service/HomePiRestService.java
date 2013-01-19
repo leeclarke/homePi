@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,13 +21,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.LogEntries;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.ManagementService;
 
 @Path("/homepi")
 @Component
-@Produces(MediaType.APPLICATION_JSON)
 public class HomePiRestService {
 
 	@Autowired
@@ -45,6 +46,8 @@ public class HomePiRestService {
 	
 	@POST
 	@Path("/pi/reg")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public PiProfile registerPi() {
 	
 		return new PiProfile();
@@ -52,13 +55,16 @@ public class HomePiRestService {
 	
 	@GET
 	@Path("/pi/{piSerialId}")
-	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId){
+	@Produces(MediaType.APPLICATION_JSON)
+	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId) throws HomePiAppException{
 		
 		return managementService.getPiProfile(piSerialId);
 	}
 
 	@POST
 	@Path("/pi/{piSerialId}/log")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response logStatus(@PathParam("piSerialId") String piSerialId){
 		
 		
@@ -67,6 +73,7 @@ public class HomePiRestService {
 	
 	@GET
 	@Path("/pi/{piSerialId}/log")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<LogEntries> getLlogs(@PathParam("piSerialId") String piSerialId){
 		
 		

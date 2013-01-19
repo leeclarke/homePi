@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.util.RandomString;
 
@@ -19,7 +20,7 @@ public class PiProfileDAOTest {
 	PiProfileDAO piProfileDao;
 	
 	@Test
-	public void testGetPiProfile() {
+	public void testGetPiProfile() throws HomePiAppException {
 		String piSierialId = "2e848bg934";
 		
 		PiProfile respProfile = piProfileDao.getPiProfile(piSierialId);
@@ -29,8 +30,15 @@ public class PiProfileDAOTest {
 		assertEquals("129.168.1.52", respProfile.getIpAddress());
 	}
 
+	@Test(expected=HomePiAppException.class)
+	public void testGetPiProfile_invalid() throws HomePiAppException {
+		String piSierialId = "-1234567";
+		piProfileDao.getPiProfile(piSierialId);
+	}
+	
+	
 	@Test
-	public void testCreateGetPiProfile() {
+	public void testCreateGetPiProfile() throws HomePiAppException {
 		PiProfile profile = new  PiProfile();
 		String ipAddress = "129.168.1.52";
 		String name = "Test Pi";
