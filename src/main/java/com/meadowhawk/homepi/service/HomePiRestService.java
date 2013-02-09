@@ -5,15 +5,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,12 +48,11 @@ public class HomePiRestService {
 	ManagementService managementService;
 	
 	@POST
-	@Path("/pi/reg")
+	@Path("/pi/{piSerialId}/reg")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public PiProfile registerPi() {
-	
-		return new PiProfile();
+	public PiProfile registerPi(@PathParam("piSerialId") String piSerialId, @Context HttpServletRequest request) {
+		return managementService.createPiProfile(piSerialId, request.getRemoteAddr());
 	}
 	
 	@GET
@@ -61,6 +63,19 @@ public class HomePiRestService {
 		return managementService.getPiProfile(piSerialId);
 	}
 
+	@POST
+	@Path("/pi/{piSerialId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updatePiData(@PathParam("piSerialId") String piSerialId, PiProfile piProfile) throws HomePiAppException{
+		if(piProfile == null){
+			throw new HomePiAppException(Status.BAD_REQUEST, "No data provided in request.");
+		}
+//TODO: Make this into a Redirect!!!!!
+		
+		managementService.updatePiProfile(piProfile);
+		return Response.ok(piProfile).build();  
+	}
+	
 	@POST
 	@Path("/pi/{piSerialId}/log")
 	@Consumes(MediaType.APPLICATION_JSON)

@@ -55,6 +55,7 @@ public class HomePiAppException extends RuntimeException {
 	public HomePiAppException(Status status,Throwable msg) {
 		super(msg);
 		this.status = Status.BAD_REQUEST;
+		this.reason = msg.getMessage();
 	}
 
 	public HomePiAppException(String msg, Throwable t) {
@@ -64,6 +65,7 @@ public class HomePiAppException extends RuntimeException {
 	public HomePiAppException(Status status, String msg, Throwable t) {
 		super(msg, t);
 		this.status = status;
+		this.reason = t.getMessage();
 	}
 
 	public Status getStatus() {

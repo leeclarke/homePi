@@ -39,9 +39,15 @@ public class GeneralExceptionMapper implements ExceptionMapper<Exception>{
 		} else if(exception instanceof WebApplicationException){
 			WebApplicationException wae = (WebApplicationException)exception;
 			Status status = Status.fromStatusCode(wae.getResponse().getStatus());
+			String cause = (wae.getCause()!= null)?wae.getCause().toString():"";
+			if(status == null && wae.getResponse().getStatus() == 405){
+				status = Status.NOT_ACCEPTABLE;
+				msg += (" [Unmapped Status:" + wae.getResponse().getStatus()+"]");
+				if(cause == null) cause = "Method Not Allowed";
+			}
 			return Response
 				.status(status)
-                .entity(new HomePiAppException(status, msg, wae.getCause().toString(),0).toResponse())
+                .entity(new HomePiAppException(status, msg, cause,0).toResponse())
                 .type(MediaType.APPLICATION_JSON)
                 .build();
 		}

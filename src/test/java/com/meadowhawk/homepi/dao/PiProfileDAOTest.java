@@ -2,6 +2,8 @@ package com.meadowhawk.homepi.dao;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,14 @@ public class PiProfileDAOTest {
 		piProfileDao.getPiProfile(piSierialId);
 	}
 	
+	@Test
+	public void testGetAllPiProfiles() throws HomePiAppException {
+		
+		List<PiProfile> respProfile = piProfileDao.getAllPiProfiles();
+		assertNotNull(respProfile);
+		assertTrue(respProfile.size() > 0);
+	}
+	
 	
 	@Test
 	public void testCreateGetPiProfile() throws HomePiAppException {
@@ -57,7 +67,30 @@ public class PiProfileDAOTest {
 		assertEquals(piSierialId, respProfile.getPiSerialId());
 		assertEquals(name, respProfile.getName());
 		assertEquals(ipAddress, respProfile.getIpAddress());
+		assertNotNull(respProfile.getCreateTime());
+		assertNotNull(respProfile.getUpdateTime());
 		
+		//Clean up
+		int del =piProfileDao.deletePiProfile(respProfile);
+		assertTrue(del > 0);
 	}
 
+	@Test
+	public void testUpdate(){
+		String piSierialId = "2e848bg934";
+		
+		PiProfile respProfile = piProfileDao.getPiProfile(piSierialId);
+		assertNotNull(respProfile);
+		assertEquals(piSierialId, respProfile.getPiSerialId());
+		
+		respProfile.setSshPortNumber(22);
+		
+		int update = piProfileDao.updatePiProfile(respProfile);
+		assertEquals(1, update);
+		
+		PiProfile updatedProfile = piProfileDao.getPiProfile(piSierialId);
+		assertNotNull(updatedProfile);
+		assertEquals(new Integer(22), updatedProfile.getSshPortNumber());
+		assertFalse(respProfile.getUpdateTime().equals(updatedProfile.getUpdateTime()));
+	}
 }
