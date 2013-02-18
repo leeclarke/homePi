@@ -17,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,6 +34,8 @@ import com.meadowhawk.homepi.service.business.ManagementService;
 @Component
 public class HomePiRestService {
 
+	@Context UriInfo uriInfo;
+	
 	@Autowired
 	ClassPathResource updateFile;
 	

@@ -16,7 +16,8 @@
 """
 from hpcommon import *
 import logConfig
-import getopt,sys,subprocess,urllib2, os, time, json, logging
+import getopt,sys,subprocess,urllib2, os, time, json, logging, requests
+import simplejson as json
 from Configuration import Configuration
 from subprocess import Popen
 
@@ -29,7 +30,7 @@ runLogger.debug("configFile: %s" % configFile)
 config = Configuration(configFile)
 
 def getVersion():
-  return 8
+  return 10
 
 def log(msg):
   runLogger.debug(msg)
@@ -116,6 +117,38 @@ def parseArgs(opts):
       filePath = arg
    
   return appName, logmessage,filePath  
+
+#See if PI is registered, if it has not been then register.  
+def registerPi():
+  piSerial = getPiSerial()
+  remotehost = config.main.remotehost;
+  r = requests.get('%s/services/homepi/pi/%s' % (remotehost,piSerial))
+  if r.status_code == 404:
+    #Register the Pi
+    reg = requests.post('%s/services/homepi/pi/%s/reg' % (remotehost,piSerial))
+    if reg.status_code == 200:
+      log('Created new Profile for %s' % (piSerial))
+      #update after redirect is added.
+    #profile = r.json()#json.loads(r.content)      
+    #log('Created new Profile for %s with id %s' % (profile['piSerialId'], profile['piId']))
+    #get payload and parse JSON
+  if r.status_code == 200:
+    profile = r.json()#json.loads(r.content)      
+    log('Retrieved Profile for %s with id %s' % (profile['piSerialId'], profile['piId']))
+    #Read in config info and POST update
+    if config.main.deviceName != profile['name']:
+      profile['name'] = config.main.deviceName
+      headers = {'content-type': 'application/json'}
+      requests.post( '%s/services/homepi/pi/%s' % (remotehost,profile['piSerialId']),data=json.dumps(profile), headers=headers )
+      
+#TODO Need a config file with Pi name, sshPort  and apps.
+
+#Ensure that the config file has any newly added config values and set a default if missing.
+def updateConfigParams():
+  if not hasattr(config.main, 'deviceName'):
+    config.setValue("main","deviceName","DefaultDeviceName")
+  if not hasattr(config.main, 'remoteHost'):
+    config.setValue("main","remoteHost","http://glacial-peak-3455.herokuapp.com")
     
 ### Main    
 def main():
@@ -124,11 +157,15 @@ def main():
   #Special processing of command args if present
   processCommands(sys.argv[1:])
   
+  #updateConfig if needed
+  updateConfigParams()
+  
   #Check for HomePi updates.
   downloadUpdates()
   
   #Do other tasks.
   log('Check PiProfile etc.')
+  registerPi()
   
   exit("HomePi done.")
 
