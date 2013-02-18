@@ -30,7 +30,7 @@ runLogger.debug("configFile: %s" % configFile)
 config = Configuration(configFile)
 
 def getVersion():
-  return 10
+  return 11
 
 def log(msg):
   runLogger.debug(msg)
@@ -125,10 +125,15 @@ def registerPi():
   r = requests.get('%s/services/homepi/pi/%s' % (remotehost,piSerial))
   if r.status_code == 404:
     #Register the Pi
+    log('Pi Not Registered, atempting now.')
     reg = requests.post('%s/services/homepi/pi/%s/reg' % (remotehost,piSerial))
     if reg.status_code == 200:
       log('Created new Profile for %s' % (piSerial))
       #update after redirect is added.
+    else:
+      log('Registration Failed for: %s' % (piSerial))
+      log('Response status: %s   - ' % (reg.status_code))
+      log('         content: %s' % (r.content))
     #profile = r.json()#json.loads(r.content)      
     #log('Created new Profile for %s with id %s' % (profile['piSerialId'], profile['piId']))
     #get payload and parse JSON
