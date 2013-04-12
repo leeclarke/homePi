@@ -13,6 +13,7 @@
   
   To run, add to PIs crontab:  [crontab -e]  -->>   */1 * * * *     pi /home/pi/homepi/homePi.sh
   
+  NOTE: New environments will require install of requests and simplejson.
 """
 from hpcommon import *
 import logConfig
