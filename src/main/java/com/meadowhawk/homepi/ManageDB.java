@@ -49,6 +49,32 @@ public class ManageDB {
 //    	  stmt.executeUpdate("ALTER TABLE PI_PROFILE ALTER COLUMN CREATE_TIME SET DEFAULT now()");
 //    	  stmt.executeUpdate("ALTER TABLE PI_PROFILE ALTER COLUMN PI_SERIAL_ID SET NOT NULL");
     	
+	    	//ADD User Table
+	    	stmt.executeUpdate("CREATE TABLE USERS (USER_ID SERIAL, CREATE_TIME timestamp, UPDATE_TIME timestamp)");
+	    	stmt.executeUpdate("ALTER TABLE USERS ADD PRIMARY KEY(USER_ID)");
+	    	stmt.executeUpdate("ALTER TABLE USERS ADD COLUMN USER_NAME VARCHAR(200) NOT NULL");
+	    	stmt.executeUpdate("ALTER TABLE USERS ADD CONSTRAINT userNameConst UNIQUE (USER_NAME)");
+	    	stmt.executeUpdate("ALTER TABLE USERS UPDATE COLUMN CREATE_TIME TIMESTAMP NOT NULL DEFAULT now()");
+
+    	
+    		//ADD ManagedApps Tables
+    		stmt.executeUpdate("CREATE TABLE MANAGED_APP (APP_ID SERIAL, CREATE_TIME timestamp, UPDATE_TIME timestamp)");
+    		stmt.executeUpdate("ALTER TABLE MANAGED_APP ADD PRIMARY KEY(APP_ID)");
+    		stmt.executeUpdate("ALTER TABLE MANAGED_APP ADD COLUMN VERSION_NUMBER numeric(12) NOT NULL DEFAULT 1");
+    		stmt.executeUpdate("ALTER TABLE MANAGED_APP ADD COLUMN APP_NAME VARCHAR(200)");
+    		stmt.executeUpdate("ALTER TABLE MANAGED_APP ADD COLUMN FILE_NAME VARCHAR(200) NOT NULL");
+    		stmt.executeUpdate("ALTER TABLE MANAGED_APP ADD COLUMN DEPLOYMENT_PATH VARCHAR(2000) NOT NULL");
+    		stmt.executeUpdate("ALTER TABLE MANAGED_APP ADD FOREIGN KEY(USER_ID) REFERENCES USERS(USER_ID)");
+    		
+    		//ADD MapTable for ManagedApps - USER_ID, APP_ID, and PI_ID are unique in combination
+    		stmt.executeUpdate("CREATE TABLE USER_PI_MANAGED_APP (USER_ID INT)");
+    		stmt.executeUpdate("ALTER TABLE USER_PI_MANAGED_APP ADD FOREIGN KEY(USER_ID) REFERENCES USERS(USER_ID)");
+    		stmt.executeUpdate("ALTER TABLE USER_PI_MANAGED_APP ADD FOREIGN KEY(APP_ID) REFERENCES MANAGED_APP(APP_ID)");
+    		stmt.executeUpdate("ALTER TABLE USER_PI_MANAGED_APP ADD FOREIGN KEY(PI_ID) REFERENCES PI_PROFILE(PI_ID)");
+    		stmt.executeUpdate("ALTER TABLE USER_PI_MANAGED_APP ADD CONSTRAINT uniqueIdsConst UNIQUE(USER_ID,APP_ID,PI_ID)");
+    		
+    		
+    		
     	} finally {
     		if (stmt != null) {
     			stmt.close();
