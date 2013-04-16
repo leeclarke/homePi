@@ -7,6 +7,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -18,13 +19,16 @@ import javax.ws.rs.Produces;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
@@ -36,11 +40,14 @@ import com.meadowhawk.homepi.util.model.ServiceDocTO;
  * Service searches the code base and renders REST API documentation for any services marked with the PublicRESTDoc annotation.
  * @author Lee Clarke
  */
+@Component
 public class DocService {
 	private static final String UNDEFINED = "Undefined";
 	private Log log = LogFactory.getLog(DocService.class);
-	private static final String DEFAULT_PACKAGE = "com.verizon.wfm.webservices";
-	private static final String DEFAULT_PACKAGE_IMPL = "com.verizon.wfm.core.webservice.impl";
+	
+	@Value("#{'${apidocs.scan_packages}'.split(',')}") 
+	private List<String> packagesToScan;
+	
 
 	/**
 	 * Retrieves Service Level Documentation
@@ -54,11 +61,13 @@ public class DocService {
 		TypeFilter tf = new AnnotationTypeFilter(PublicRESTDoc.class);
 		
 		s.addIncludeFilter(tf);
-		s.scan(DEFAULT_PACKAGE,DEFAULT_PACKAGE_IMPL);
+		
+		s.scan(packagesToScan.toArray(new String[packagesToScan.size()]));
 		String[] beans = bdr.getBeanDefinitionNames();
 		for (String bean : beans) {
 			BeanDefinition def = bdr.getBeanDefinition(bean);
-			if (def.getBeanClassName().startsWith(DEFAULT_PACKAGE) || def.getBeanClassName().startsWith(DEFAULT_PACKAGE_IMPL)) {
+			String packageString = def.getBeanClassName().substring(0, def.getBeanClassName().lastIndexOf('.')); 
+			if (packagesToScan.contains(packageString) ){
 				try {
 					boolean isRestDoc = false;
 					Class<?> servClass = Class.forName(def.getBeanClassName());

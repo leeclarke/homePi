@@ -13,6 +13,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
@@ -25,6 +26,7 @@ import com.meadowhawk.homepi.util.model.ServiceDocTO;
  */
 @Path("/docs")
 @PublicRESTDoc(serviceName = "DocumentationService", description = "Provides Documentation Services for all anotated REST EndPoints so the API can be easily documented from with in the codebase.")
+@Component
 public class DocumentationRESTService {
 	private Log log = LogFactory.getLog(DocumentationRESTService.class);
 	private static final String CONTENT = "#Content#";
