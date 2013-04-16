@@ -8,4 +8,9 @@
 	<bean id="piProfileDAO" class="com.meadowhawk.homepi.dao.PiProfileDAO">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>
+	
+	<bean id="managedAppDAO" class="com.meadowhawk.homepi.dao.ManagedAppDAO">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
 </beans>
