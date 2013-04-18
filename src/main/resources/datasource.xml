@@ -14,4 +14,17 @@
 		<property name="username" value="oxyghtjfrmqweu" />
 		<property name="password" value="R-Ky7iKIQ1Ug6QUbv5hV4PsuEv" />
 	</bean>
+	
+	<bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="entityManagerFactory">
+    <property name="persistenceUnitName" value="persistenceUnit"/>
+    <property name="dataSource" ref="dataSource"/>
+    <property name="jpaVendorAdapter">
+        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+            <property name="showSql" value="true" />
+            <property name="generateDdl" value="true" />
+            <property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
+        </bean>
+    </property>
+</bean>
+
 </beans>

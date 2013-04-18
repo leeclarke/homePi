@@ -29,7 +29,7 @@ public class ManagedAppDAO extends NamedParameterJdbcDaoSupport{
 		try{
 			return getNamedParameterJdbcTemplate().query(SELECT_MANAGED_APPS, paramMap, new HomePiBeanPropertyRowMapper<ManagedApp>(ManagedApp.class));
 		} catch (EmptyResultDataAccessException e) {
-			throw new HomePiAppException(Status.NOT_FOUND, "Profile with that PI id was not found.");
+			throw new HomePiAppException(Status.NOT_FOUND, "Managed Apps assigned to that PI id was not found.");
 		} catch (Exception e) {
 			throw new HomePiAppException(Status.BAD_REQUEST, e.getMessage());
 		}
