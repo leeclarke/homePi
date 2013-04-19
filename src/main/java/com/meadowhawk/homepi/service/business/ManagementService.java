@@ -22,7 +22,8 @@ public class ManagementService {
 	 * @throws HomePiAppException
 	 */
 	public PiProfile getPiProfile(String serialId) throws HomePiAppException {
-		return piProfileDao.getPiProfile(serialId);
+//		TODO: Add Exception handling!!
+		return piProfileDao.findByPiSerialId(serialId);
 	}
 
 	/**
@@ -30,7 +31,8 @@ public class ManagementService {
 	 * @throws HomePiAppException
 	 */
 	public List<PiProfile> getAllPiProfiles() throws HomePiAppException {
-		return piProfileDao.getAllPiProfiles();
+		//TODO: Add Exception handling!!
+		return piProfileDao.findAll();
 	}	
 	
 	/**
@@ -41,22 +43,21 @@ public class ManagementService {
 	 * @throws HomePiAppException
 	 */
 	public PiProfile createPiProfile(String piSerialId, String ipAddress) throws HomePiAppException {
+//		TODO: Add Exception handling!!
 		PiProfile piProfile = new PiProfile();
 		piProfile.setPiSerialId(piSerialId);
 		piProfile.setCreateTime(new DateTime());
 		piProfile.setIpAddress(ipAddress);
-		int resp = piProfileDao.createPiProfile(piProfile);
-		if(resp > 0) {
-			return piProfileDao.getPiProfile(piSerialId);
-		} else {
-			throw new HomePiAppException("Failed to create New Profile for Pi:" + piSerialId);
-		}
+		piProfileDao.save(piProfile);
+		
+		return piProfile;
 	}
 
 	public int updatePiProfile(PiProfile piProfile) throws HomePiAppException {
 		//TODO:  Deug this it isnt working.
-		return piProfileDao.updatePiProfile(piProfile);
-		
+//		TODO: Add Exception handling!!
+		piProfileDao.update(piProfile);
+		return 1;  //TODO: Remove
 	}
 	
 }

@@ -1,5 +1,22 @@
 package com.meadowhawk.homepi.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 /**
@@ -7,15 +24,42 @@ import org.joda.time.DateTime;
  * the represented application.
  * @author lee
  */
+@Entity
+@Table(name = "MANAGED_APP")
+@NamedNativeQuery(name="ManagedApp.findByPiSerialId", query="SELECT m.app_id, m.update_time, m.create_time, m.version_number, m.app_name, m.file_name, m.deployment_path, m.user_id" +
+		"  FROM MANAGED_APP m, USER_PI_MANAGED_APP u, PI_PROFILE p " +
+		"WHERE p.PI_SERIAL_ID = :piSerialId  AND p.PI_ID = u.PI_ID AND u.APP_ID = m.APP_ID", resultClass=ManagedApp.class)
+
 public class ManagedApp {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "app_id")
 	private Long appId;
+
+//	private List<PiProfile> piprofiles = new ArrayList<PiProfile>(0);
+	
+	@Column(name = "update_time")
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
 	private DateTime updateTime;
-	private DateTime createTime;
+	
+	@Column(name = "create_time")
+	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
+	private DateTime createTime = new DateTime();
+	
+	@Column(name = "version_number", nullable=false)
 	private Long versionNumber;
+	
+	@Column(name = "app_name", nullable=false)
 	private String AppName;
+	
+	@Column(name = "file_name", nullable=false)
 	private String fileName;
+	
+	@Column(name = "deployment_path", nullable=false)
 	private String deploymentPath;
+	
+	@Column(name = "user_id", nullable=false)
 	private Long ownerId;
 	
 	public Long getAppId() {
@@ -65,6 +109,20 @@ public class ManagedApp {
 	}
 	public void setCreateTime(DateTime createTime) {
 		this.createTime = createTime;
-	}	
+	}
+	
+	//TODO: Test this once PiProfile is converted.
+//	
+//	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//	@JoinTable(name = "profile_managed_app", joinColumns = { 
+//			@JoinColumn(name = "app_id", nullable = false, updatable = false) }, 
+//			inverseJoinColumns = { @JoinColumn(name = "pi_id", nullable = false, updatable = false) })
+//	public List<PiProfile> getPiprofiles() {
+//		return piprofiles;
+//	}
+//	
+//	public void setPiprofiles(List<PiProfile> piprofiles) {
+//		this.piprofiles = piprofiles;
+//	}
 	
 }

@@ -4,6 +4,9 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
+
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,33 +25,27 @@ public class PiProfileDAOTest {
 	PiProfileDAO piProfileDao;
 	
 	@Test
-	public void testGetPiProfile() throws HomePiAppException {
+	public void testGetPiProfile() {
 		String piSierialId = "2e848bg934";
 		
-		PiProfile respProfile = piProfileDao.getPiProfile(piSierialId);
+		PiProfile respProfile = piProfileDao.findByPiSerialId(piSierialId);
 		assertNotNull(respProfile);
 		assertEquals(piSierialId, respProfile.getPiSerialId());
 		assertEquals("Test Pi", respProfile.getName());
 		assertEquals("129.168.1.52", respProfile.getIpAddress());
 	}
 
-	@Test(expected=HomePiAppException.class)
-	public void testGetPiProfile_invalid() throws HomePiAppException {
-		String piSierialId = "-1234567";
-		piProfileDao.getPiProfile(piSierialId);
-	}
-	
 	@Test
 	public void testGetAllPiProfiles() throws HomePiAppException {
 		
-		List<PiProfile> respProfile = piProfileDao.getAllPiProfiles();
+		List<PiProfile> respProfile = piProfileDao.findAll();
 		assertNotNull(respProfile);
 		assertTrue(respProfile.size() > 0);
 	}
 	
 	
-	@Test
-	public void testCreateGetPiProfile() throws HomePiAppException {
+	@Test(expected=NoResultException.class)
+	public void testCreateGetPiProfile() {
 		PiProfile profile = new  PiProfile();
 		String ipAddress = "129.168.1.52";
 		String name = "Test Pi";
@@ -57,40 +54,39 @@ public class PiProfileDAOTest {
 		profile.setIpAddress(ipAddress);
 		profile.setName(name);
 		profile.setPiSerialId(piSierialId);
-		int resp = piProfileDao.createPiProfile(profile);
-		assertEquals(1, resp);
-		
+		piProfileDao.save(profile);
+		assertNotNull(profile.getPiId());
 		
 		//call get to validate
-		PiProfile respProfile = piProfileDao.getPiProfile(piSierialId);
+		PiProfile respProfile = piProfileDao.findByPiSerialId(piSierialId);
 		assertNotNull(respProfile);
 		assertEquals(piSierialId, respProfile.getPiSerialId());
 		assertEquals(name, respProfile.getName());
 		assertEquals(ipAddress, respProfile.getIpAddress());
 		assertNotNull(respProfile.getCreateTime());
-		assertNotNull(respProfile.getUpdateTime());
 		
 		//Clean up
-		int del =piProfileDao.deletePiProfile(respProfile);
-		assertTrue(del > 0);
+		piProfileDao.delete(respProfile);
+		piProfileDao.findByPiSerialId(piSierialId); //CAuses a NoResultException as expected.
+		
 	}
 
 	@Test
 	public void testUpdate(){
 		String piSierialId = "2e848bg934";
 		
-		PiProfile respProfile = piProfileDao.getPiProfile(piSierialId);
+		PiProfile respProfile = piProfileDao.findByPiSerialId(piSierialId);
 		assertNotNull(respProfile);
 		assertEquals(piSierialId, respProfile.getPiSerialId());
 		
 		respProfile.setSshPortNumber(22);
+		final DateTime priorUpdateTime = new DateTime(respProfile.getUpdateTime());
 		
-		int update = piProfileDao.updatePiProfile(respProfile);
-		assertEquals(1, update);
+		piProfileDao.update(respProfile);
 		
-		PiProfile updatedProfile = piProfileDao.getPiProfile(piSierialId);
+		PiProfile updatedProfile = piProfileDao.findByPiSerialId(piSierialId);
 		assertNotNull(updatedProfile);
 		assertEquals(new Integer(22), updatedProfile.getSshPortNumber());
-		assertFalse(respProfile.getUpdateTime().equals(updatedProfile.getUpdateTime()));
+		assertFalse(priorUpdateTime.equals(updatedProfile.getUpdateTime()));
 	}
 }
