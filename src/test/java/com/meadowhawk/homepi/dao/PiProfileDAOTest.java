@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.meadowhawk.homepi.exception.HomePiAppException;
+import com.meadowhawk.homepi.model.ManagedApp;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.util.RandomString;
 
@@ -24,15 +25,18 @@ public class PiProfileDAOTest {
 	@Autowired
 	PiProfileDAO piProfileDao;
 	
+	//Existing Valid PiProfile to use for testing where expected exists. Don't delete. 
+	public static final String DEFAULT_EXISTING_PI_SERIAL = "2e848bg934";
+	
 	@Test
 	public void testGetPiProfile() {
-		String piSierialId = "2e848bg934";
 		
-		PiProfile respProfile = piProfileDao.findByPiSerialId(piSierialId);
+		PiProfile respProfile = piProfileDao.findByPiSerialId(DEFAULT_EXISTING_PI_SERIAL);
 		assertNotNull(respProfile);
-		assertEquals(piSierialId, respProfile.getPiSerialId());
+		assertEquals(DEFAULT_EXISTING_PI_SERIAL, respProfile.getPiSerialId());
 		assertEquals("Test Pi", respProfile.getName());
 		assertEquals("129.168.1.52", respProfile.getIpAddress());
+		
 	}
 
 	@Test
@@ -49,11 +53,14 @@ public class PiProfileDAOTest {
 		PiProfile profile = new  PiProfile();
 		String ipAddress = "129.168.1.52";
 		String name = "Test Pi";
+		Long userId = 1L;
 		String piSierialId = new RandomString(10).nextString();
 		
 		profile.setIpAddress(ipAddress);
 		profile.setName(name);
 		profile.setPiSerialId(piSierialId);
+		
+		profile.setUserId(userId);
 		piProfileDao.save(profile);
 		assertNotNull(profile.getPiId());
 		
@@ -73,20 +80,37 @@ public class PiProfileDAOTest {
 
 	@Test
 	public void testUpdate(){
-		String piSierialId = "2e848bg934";
 		
-		PiProfile respProfile = piProfileDao.findByPiSerialId(piSierialId);
+		PiProfile respProfile = piProfileDao.findByPiSerialId(DEFAULT_EXISTING_PI_SERIAL);
 		assertNotNull(respProfile);
-		assertEquals(piSierialId, respProfile.getPiSerialId());
+		assertEquals(DEFAULT_EXISTING_PI_SERIAL, respProfile.getPiSerialId());
 		
 		respProfile.setSshPortNumber(22);
 		final DateTime priorUpdateTime = new DateTime(respProfile.getUpdateTime());
 		
+		//Test adding a ManagedApp
+		String appName = "TestApp";
+		String deploymentPath = "/usr/home/pi/test";
+		String fileName = "TestFile.jar";
+		
+		Long versionNumber = 1L;
+		Long ownerId = 1L;
+		ManagedApp newApp = new ManagedApp();
+		
+		newApp.setFileName(fileName);
+		newApp.setVersionNumber(versionNumber);
+		newApp.setDeploymentPath(deploymentPath);
+		newApp.setAppName(appName);
+		newApp.setOwnerId(ownerId );
+		
+		respProfile.getManagedApps().add(newApp);
+		
 		piProfileDao.update(respProfile);
 		
-		PiProfile updatedProfile = piProfileDao.findByPiSerialId(piSierialId);
+		PiProfile updatedProfile = piProfileDao.findByPiSerialId(DEFAULT_EXISTING_PI_SERIAL);
 		assertNotNull(updatedProfile);
 		assertEquals(new Integer(22), updatedProfile.getSshPortNumber());
 		assertFalse(priorUpdateTime.equals(updatedProfile.getUpdateTime()));
+		assertTrue(updatedProfile.getManagedApps().size()>0);
 	}
 }

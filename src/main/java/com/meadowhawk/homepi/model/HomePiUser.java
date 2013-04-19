@@ -1,13 +1,17 @@
 package com.meadowhawk.homepi.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -41,6 +45,9 @@ public class HomePiUser implements Serializable{
 	
 	@Column(name = "email", length=255, unique=true	)
 	private String email;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+	private List<PiProfile> piProfiles = new ArrayList<PiProfile>(0);
 	
 	public Long getUserId() {
 		return userId;
@@ -71,5 +78,11 @@ public class HomePiUser implements Serializable{
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public List<PiProfile> getPiProfiles() {
+		return piProfiles;
+	}
+	public void setPiProfiles(List<PiProfile> piProfiles) {
+		this.piProfiles = piProfiles;
 	}
 }

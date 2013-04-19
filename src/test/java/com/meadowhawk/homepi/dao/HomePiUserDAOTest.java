@@ -28,7 +28,11 @@ public class HomePiUserDAOTest {
 	public void testFindOne() {
 		
 		Long id = 1L;
-		Object resp = homePiUserDAO.findOne(id );
+		HomePiUser resp = homePiUserDAO.findOne(id);
+		assertNotNull(resp);
+		//verify piProfile is populated
+		assertNotNull(resp.getPiProfiles());
+		assertTrue(resp.getPiProfiles().size()>0);
 	}
 
 	@Test
@@ -91,4 +95,5 @@ public class HomePiUserDAOTest {
 		homePiUserDAO.findByUserName(userName);
 	}
 
+	
 }

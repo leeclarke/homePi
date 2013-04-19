@@ -1,7 +1,9 @@
 package com.meadowhawk.homepi.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,7 +39,8 @@ public class ManagedApp {
   @Column(name = "app_id")
 	private Long appId;
 
-//	private List<PiProfile> piprofiles = new ArrayList<PiProfile>(0);
+	@ManyToMany(mappedBy="managedApps", fetch=FetchType.EAGER)
+	private Set<PiProfile> piProfiles = new HashSet<PiProfile>(0);
 	
 	@Column(name = "update_time")
 	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
@@ -110,19 +113,13 @@ public class ManagedApp {
 	public void setCreateTime(DateTime createTime) {
 		this.createTime = createTime;
 	}
+	public Set<PiProfile> getPiProfiles() {
+		return piProfiles;
+	}
+	public void setPiProfiles(Set<PiProfile> piProfiles) {
+		this.piProfiles = piProfiles;
+	}
 	
-	//TODO: Test this once PiProfile is converted.
-//	
-//	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//	@JoinTable(name = "profile_managed_app", joinColumns = { 
-//			@JoinColumn(name = "app_id", nullable = false, updatable = false) }, 
-//			inverseJoinColumns = { @JoinColumn(name = "pi_id", nullable = false, updatable = false) })
-//	public List<PiProfile> getPiprofiles() {
-//		return piprofiles;
-//	}
-//	
-//	public void setPiprofiles(List<PiProfile> piprofiles) {
-//		this.piprofiles = piprofiles;
-//	}
+
 	
 }
