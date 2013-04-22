@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonManagedReference;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -46,6 +47,7 @@ public class HomePiUser implements Serializable{
 	@Column(name = "email", length=255, unique=true	)
 	private String email;
 
+	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
 	private List<PiProfile> piProfiles = new ArrayList<PiProfile>(0);
 	

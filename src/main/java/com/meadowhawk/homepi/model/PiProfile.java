@@ -17,6 +17,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonManagedReference;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
@@ -61,9 +64,12 @@ public class PiProfile {
 	@Column(name = "user_id")
 	private Long userId;
 	
+	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="user_id", insertable=false, updatable=false)
+	@JsonIgnore
 	private HomePiUser user;
+	
 	
 	@ManyToMany(cascade = {CascadeType.ALL})
   @JoinTable(name="PROFILE_MANAGED_APP", 
@@ -126,6 +132,7 @@ public class PiProfile {
 	public void setManagedApps(Set<ManagedApp> managedApps) {
 		this.managedApps = managedApps;
 	}
+	@JsonIgnore
 	public HomePiUser getUser() {
 		return user;
 	}

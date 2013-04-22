@@ -1,23 +1,20 @@
 package com.meadowhawk.homepi.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -39,7 +36,9 @@ public class ManagedApp {
   @Column(name = "app_id")
 	private Long appId;
 
+	
 	@ManyToMany(mappedBy="managedApps", fetch=FetchType.EAGER)
+	@JsonIgnore
 	private Set<PiProfile> piProfiles = new HashSet<PiProfile>(0);
 	
 	@Column(name = "update_time")
@@ -113,6 +112,7 @@ public class ManagedApp {
 	public void setCreateTime(DateTime createTime) {
 		this.createTime = createTime;
 	}
+	@JsonIgnore
 	public Set<PiProfile> getPiProfiles() {
 		return piProfiles;
 	}
