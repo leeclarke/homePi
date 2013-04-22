@@ -2,6 +2,7 @@ package com.meadowhawk.homepi.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,7 +32,7 @@ import org.joda.time.DateTime;
  */
 @Entity
 @Table(name = "pi_profile")
-@NamedNativeQuery(name="PiProfile.findByPiSerialId", query="SELECT p.pi_id, p.update_time, p.create_time, p.pi_serial_id, p.name, p.ip_address, p.ssh_port_number, p.user_id" +
+@NamedNativeQuery(name="PiProfile.findByPiSerialId", query="SELECT p.pi_id, p.update_time, p.create_time, p.pi_serial_id, p.name, p.ip_address, p.ssh_port_number, p.user_id, p.api_key" +
 		"  FROM pi_profile p WHERE p.PI_SERIAL_ID = :piSerialId", resultClass=PiProfile.class)
 
 public class PiProfile {
@@ -39,7 +40,7 @@ public class PiProfile {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "pi_id")
-	private Integer piId;
+	private Long piId;
 	
 	@Column(name = "pi_serial_id", nullable=false)
 	private String piSerialId;
@@ -64,6 +65,9 @@ public class PiProfile {
 	@Column(name = "user_id")
 	private Long userId;
 	
+	@Column(name="api_key")
+	@Type(type="pg-uuid")
+	private UUID apiKey;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="user_id", insertable=false, updatable=false)
@@ -90,10 +94,10 @@ public class PiProfile {
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
-	public Integer getPiId() {
+	public Long getPiId() {
 		return piId;
 	}
-	public void setPiId(Integer piId) {
+	public void setPiId(Long piId) {
 		this.piId = piId;
 	}
 	public Integer getSshPortNumber() {
@@ -135,6 +139,14 @@ public class PiProfile {
 	@JsonIgnore
 	public HomePiUser getUser() {
 		return user;
+	}
+	
+	public String getApiKey() {
+		return (apiKey!=null)?apiKey.toString():null;
+	}
+	
+	public void setApiKey(UUID apiKey) {
+		this.apiKey = apiKey;
 	}
 	
 	

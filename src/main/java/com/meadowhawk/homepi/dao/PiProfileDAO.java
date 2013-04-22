@@ -27,4 +27,8 @@ public class PiProfileDAO extends AbstractJpaDAO< PiProfile >{
 		super.update(entity);
 	}
 	
+	@Transactional
+	public int updateUUID(PiProfile entity){
+		return entityManager.createNativeQuery("update PI_PROFILE set api_key = uuid_generate_v4() where pi_id = " +entity.getPiId()).executeUpdate();
+	}
 }

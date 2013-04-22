@@ -69,9 +69,15 @@ public class ManagementService {
 			piProfile.setPiSerialId(piSerialId);
 			piProfile.setCreateTime(new DateTime());
 			piProfile.setIpAddress(ipAddress);
+			//TODO: Fix once User Auth complete!!!
+			piProfile.setUserId(1L);
+			
 			piProfileDao.save(piProfile);
 			
-			return piProfile;
+			//Add apiKey to the entry.
+			piProfileDao.updateUUID(piProfile);
+			
+			return piProfileDao.findOne(piProfile.getPiId());
 		} catch(EntityExistsException eee){
 			throw new HomePiAppException(Status.BAD_REQUEST, piSerialId + ": This PI has already been registered");
 		} catch(Exception e){
@@ -90,6 +96,30 @@ public class ManagementService {
 			return 1;
 		} catch(Exception e){
 			throw new HomePiAppException(Status.NOT_MODIFIED, e);
+		}
+	}
+
+	/**
+	 * @param piSerialId
+	 * @param apiKey
+	 * @return
+	 */
+	public PiProfile updateApiKey(String piSerialId, String apiKey) {
+		try{
+			PiProfile profile = piProfileDao.findByPiSerialId(piSerialId);
+			if(StringUtil.isNullOrEmpty(apiKey) || StringUtil.isNullOrEmpty( profile.getApiKey()) || !profile.getApiKey().equals(apiKey)){
+				throw new HomePiAppException(Status.BAD_REQUEST, "Invalid API Key.");
+			}
+			piProfileDao.updateUUID(profile);
+			
+			return piProfileDao.findByPiSerialId(piSerialId);
+		}
+		catch (NoResultException nre) {
+			throw new HomePiAppException(Status.NOT_FOUND, piSerialId + ": is not valid");
+		} catch (HomePiAppException h) {
+			throw h;
+		}	catch (Exception e) {
+			throw new HomePiAppException(Status.BAD_REQUEST, e);
 		}
 	}
 	

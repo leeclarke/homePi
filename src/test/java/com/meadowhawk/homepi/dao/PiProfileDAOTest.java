@@ -113,4 +113,17 @@ public class PiProfileDAOTest {
 		assertFalse(priorUpdateTime.equals(updatedProfile.getUpdateTime()));
 		assertTrue(updatedProfile.getManagedApps().size()>0);
 	}
+	
+	@Test
+	public void testUpdateUUID() {
+		PiProfile profile = piProfileDao.findByPiSerialId(DEFAULT_EXISTING_PI_SERIAL);
+		assertNotNull(profile);
+		final String oldApiKey = profile.getApiKey();
+		
+		int resp = piProfileDao.updateUUID(profile);
+		assertEquals(1, resp);
+		PiProfile updatedProfile = piProfileDao.findByPiSerialId(DEFAULT_EXISTING_PI_SERIAL);
+		assertNotNull(updatedProfile);
+		assertFalse(updatedProfile.getApiKey().equals(oldApiKey));
+	}
 }
