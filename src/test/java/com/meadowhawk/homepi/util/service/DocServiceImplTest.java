@@ -18,7 +18,7 @@ import com.meadowhawk.homepi.util.model.ServiceDocTO;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:beans.xml"})
+@ContextConfiguration(locations={"classpath:localbeans.xml"})
 public class DocServiceImplTest {
 	private Log log = LogFactory.getLog(DocServiceImplTest.class);
 	
