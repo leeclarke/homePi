@@ -21,4 +21,14 @@ public class AppConfigService {
 		}
 		return appConfig;
 	}
+	
+	/**
+	 * Scheduled task to refresh the config periodically
+	 */
+	@SuppressWarnings("static-access")
+	public void refreshCache(){
+		synchronized (appConfig) {
+			this.appConfig = appConfigDao.loadAppConfig();
+		}
+	}
 }

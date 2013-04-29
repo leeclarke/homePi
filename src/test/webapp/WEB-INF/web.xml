@@ -36,5 +36,4 @@
 		<servlet-name>jersey-services</servlet-name>
 		<url-pattern>/services/*</url-pattern>
 	</servlet-mapping>
-
 </web-app>

@@ -9,6 +9,10 @@ public class AppConfig {
 
 	private List<AppConfigEntry> config;
 
+	public AppConfig(){
+		
+	}
+	
 	public AppConfig(List<AppConfigEntry> confEntries) {
 		this.config = confEntries;
 	}

@@ -64,10 +64,9 @@ public class HomePiRestService {
 	
 	@POST
 	@Path("/pi/{piSerialId}/api/{apiKey}")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually.", sampleLinks={"/homepi/pi/01r735ds720/reg/api/de4d9e75-d6b3-43d7-9fef-3fb958356ded"})
-	public PiProfile updatePiApiKey(@PathParam("piSerialId") String piSerialId, @Context String apiKey) {
+	public PiProfile updatePiApiKey(@PathParam("piSerialId") String piSerialId, @PathParam("apiKey") String apiKey) {
 		//TODO: Add user auth here!
 		return managementService.updateApiKey(piSerialId, apiKey);
 	}
