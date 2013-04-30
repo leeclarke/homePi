@@ -13,8 +13,8 @@
 		<property name="driverClassName" value="org.postgresql.Driver" />
 		<property name="url"
 			value="jdbc:postgresql://ec2-54-243-182-70.compute-1.amazonaws.com:5432/d37cvnjoirhmpo" />
-		<property name="username" value="oxyghtjfrmqweu" />
-		<property name="password" value="R-Ky7iKIQ1Ug6QUbv5hV4PsuEv" />
+		<property name="username" value="${db.userid}" />
+		<property name="password" value="${db.password}" />
 	</bean>
 	
 	<bean id="jpaEmf"

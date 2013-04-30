@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,8 @@ import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 @Component
 @PublicRESTDoc(serviceName = "HomePiService", description = "Pi focused management services.")
 public class HomePiRestService {
-
+	private static Logger log = Logger.getLogger( HomePiRestService.class );
+	
 	@Context UriInfo uriInfo;
 	
 	@Autowired
@@ -128,11 +130,10 @@ public class HomePiRestService {
 			ResponseBuilder response = Response.ok((Object) file);
 			response.header("Content-Disposition", "attachment; filename=homePi.py");
 			response.header("file-version", mainUpdateFileVersion);
-			System.out.println("mainFile name=" + this.mainUpdateFileName);
+			log.debug("mainFile name=" + this.mainUpdateFileName);
 			return response.build();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn("Error while trying to get update file.", e);
 		}
 		 
 		return Response.noContent().build();

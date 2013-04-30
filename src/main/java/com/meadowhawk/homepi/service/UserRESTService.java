@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.restlet.data.Form;
 import org.restlet.representation.Representation;
@@ -38,6 +39,7 @@ import com.meadowhawk.homepi.util.service.AppConfigService;
 @Component
 @PublicRESTDoc(serviceName = "UserRESTService", description = "User focused management services.")
 public class UserRESTService {
+	private static Logger log = Logger.getLogger( UserRESTService.class );
 	
 	@Autowired
 	AppConfigService appConfigService;
@@ -107,10 +109,10 @@ public class UserRESTService {
 					
 				}				
 			} catch (ResourceException re) {
-				System.out.println("Request error:"+re);
+				log.warn("GAuth Error - Request error:",re);
 				throw new HomePiAppException(Status.BAD_REQUEST, "Unable to retrieve user info from auth service.");
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.warn("GAuth Error",e);
 				throw new HomePiAppException(Status.BAD_REQUEST, "Unable to retrieve user info from auth service.");
 			}
 			return userInfo;
@@ -133,12 +135,12 @@ public class UserRESTService {
 			form.set("grant_type", GRANT_TYPE_AUTH);
 
 			ClientResource cr = new ClientResource(AUTH_CALLBACK_URI);
-			// cr.setc
+			
 			Representation response = null;
 			try {
 				response = cr.post(form.getWebRepresentation()); 
 			} catch (ResourceException re) {
-				System.out.println("Request error:"+re);
+				log.warn("GAuth Error - Request error:",re);
 				throw new HomePiAppException(Status.BAD_REQUEST, "Unable to authorize with Google account.", re);
 			}
 			if (cr.getStatus().isSuccess()) {
@@ -147,7 +149,7 @@ public class UserRESTService {
 					Map<String,String> resp = om.readValue(response.getText(), HashMap.class);
 					return resp;
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.warn("GAuth Error:",e);
 					throw new HomePiAppException(Status.PRECONDITION_FAILED, "Unknown response from auth service.", e);
 				}
 			}

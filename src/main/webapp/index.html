@@ -102,6 +102,21 @@
             prettyPrint();
             $('.prettyprint.once').removeClass('prettyprint');
         }
+        
+        function signinCallback(authResult) {
+			  if (authResult['access_token']) {
+			    // Successfully authorized
+			    // Hide the sign-in button now that the user is authorized, for example:
+			    document.getElementById('signinButton').setAttribute('style', 'display: none');
+			  } else if (authResult['error']) {
+			    // There was an error.
+			    // Possible error codes:
+			    //   "access_denied" - User denied access to your app
+			    //   "immediate_failed" - Could not automatically log in the user
+			    // console.log('There was an error: ' + authResult['error']);
+			    alert('There was an error: ' + authResult['error']);
+			  }
+			}
         // -->
     </script>
 </head>
@@ -120,12 +135,12 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
-            <a href="/" class="brand">JAX-RS Template</a>
+            <a href="/" class="brand">HomePi</a>
             <!--
             IMPORTANT:
-            This is Heroku specific markup. Remove to customize.
+            This is Heroku specific markup. Remove to customize.	
             -->
-            <a href="/" class="brand" id="heroku">by <strong>heroku</strong></a>
+            <a href="/" class="brand" id="heroku">by <strong>Meadowhawk</strong></a>
             <!-- /// -->
         </div>
     </div>
@@ -134,340 +149,49 @@
 <div class="container" id="getting-started">
 <div class="row">
 <div class="span8 offset2">
-<h1 class="alert alert-success">Your app is ready!</h1>
+<h1 class="alert alert-success">Welcome to HomePi!</h1>
 
 <div class="page-header">
-    <h1>Get started with JAX-RS</h1>
+    <h1>Get started with HomePi</h1>
 </div>
 
 <div style="margin-bottom: 20px">
-    This is a template for a lightweight RESTful API using JAX-RS.
-    The sample code is a call for getting the current time.
-    To try it out use the example REST client below to send a <code>GET</code> request to <code>/services/time</code>.
-    Then use Eclipse or the Command Line to deploy some changes.
+    This API provides access to all of the info you need to manage you Raspberry Pi as well as see some of the information belonging to other peoples Pis. Imagine a world where all the Pis talk, share and just get along! 
+    The sample code is a call for getting information about a single configured Pi.
+    To try it out use the example REST client below to send a <code>GET</code> request to <code>/services/homepi/pi/2e848bg934</code>.
+    <p>To get started managing your Raspberry Pis sign-in with G+</p>
+ 		<span id="signinButton">
+		  <span
+		    class="g-signin"
+		    data-callback="signinCallback"
+		    data-clientid="4255733398.apps.googleusercontent.com"
+		    data-cookiepolicy="single_host_origin"
+		    data-requestvisibleactions="http://schemas.google.com/AddActivity"
+		    data-scope="https://www.googleapis.com/auth/plus.login">
+		  </span>
+		</span>
 </div>
 
 <ul id="tab" class="nav nav-tabs">
-    <li class="active"><a id="eclipse-instructions-tab" href="#eclipse-instructions" data-toggle="tab">Use Eclipse
-        3.7</a></li>
-    <li><a id="cli-instructions-tab" href="#cli-instructions" data-toggle="tab">Use Command Line</a></li>
+    <li><a id="about-tab" href="#about" data-toggle="tab">About</a></li>
+    <li><a id="rest-doc-tab" href="#rest-doc" data-toggle="tab">Rest Documentation</a></li>
     <li><a id="rest-client-tab" href="#rest-client" data-toggle="tab">Example REST Client</a></li>
 </ul>
 
 <div class="tab-content">
 
-<div id="eclipse-instructions" class="instructions tab-pane active">
-    <a name="using-eclipse"></a>
-
-    <div class="alert alert-warn">If you already created this app from the Heroku Eclipse Plugin, proceed to <a
-            href="#step3">Step 3</a>.
-        The following steps depends on the Heroku Eclipse plugin. If you do not have the Heroku Eclipse plugin installed
-        and configured,
-        follow a <a
-                href="https://devcenter.heroku.com/articles/getting-started-with-heroku-eclipse#installation-and-setup"
-                target="_blank">step-by-step guide</a>
-        on Dev Center to install the plugin and
-        configure the plugin in Eclipse.
-    </div>
-
-    <h2>Step 1.Configure Heroku Eclipse preferences</h2>
-    <ol>
-        <li>Open <code>Eclipse</code><i class="icon-chevron-right"></i><code>Preferences</code></li>
-        <li>Select <code>Heroku</code></li>
-        <li>Enter your <code>Email</code> and <code>Password</code></li>
-        <li>Click <code>Login</code>. If your login was successful, your Heroku API key would be populated in the
-            <code>API Key</code> field.<br/>
-
-            <div class="modal hide" id="apiPreferences">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal"><i class="icon-remove"></i></a>
-
-                    <h3>Setup API Key</h3>
-                </div>
-                <div class="modal-body">
-                    <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/heroku_preferences.png'
-                         alt="setup api key"/>
-                </div>
-            </div>
-                    <span class="screenshot">
-                      <a href="#apiPreferences" data-toggle="modal">
-                          <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/heroku_preferences.png'
-                               alt="setup api key" width="100">
-                          <i class="icon-zoom-in"></i>
-                      </a>
-                    </span>
-        </li>
-        <li>In the SSH Key section, click <code>Generate</code> if you need to generate a new key.
-            If you have previously generated and saved a SSH key is automatically loaded from the default location. If
-            it is not
-            in the default location, click <code>Load SSH Key</code><br/>
-        </li>
-        <li>Click on <code>Add</code> to add your SSH Key to Heroku
-            <div class="modal hide" id="sshkeyadd">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal"><i class="icon-remove"></i></a>
-
-                    <h3>Add SSH Key to Heroku</h3>
-                </div>
-                <div class="modal-body">
-                    <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/heroku_ssh_add.png'
-                         alt="Add SSH Key to Heroku"/>
-                </div>
-            </div>
-	                    <span class="screenshot">
-	                      <a href="#sshkeyadd" data-toggle="modal">
-                              <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/heroku_ssh_add.png'
-                                   alt="Add SSH Key to Heroku" width="100"/>
-                              <i class="icon-zoom-in"></i>
-                          </a>
-	                    </span>
-        </li>
-    </ol>
-
-    <h2>Step 2. Importing this App</h2>
-    <ol>
-        <li>Open <code>File</code><i class="icon-chevron-right"></i><code>Import</code> and expand the Heroku section
-            <div class="modal hide" id="importAppSelect">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal"><i class="icon-remove"></i></a>
-
-                    <h3>Import App</h3>
-                </div>
-                <div class="modal-body">
-                    <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/import_app_1.png'
-                         alt="Import App"/>
-                </div>
-            </div>
-	                    <span class="screenshot">
-	                      <a href="#importAppSelect" data-toggle="modal">
-                              <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/import_app_1.png'
-                                   alt="Import App" width="100"/>
-                              <i class="icon-zoom-in"></i>
-                          </a>
-	                    </span>
-
-        </li>
-        <li>Select <code>Existing Heroku Application</code><i class="icon-chevron-right"></i><code>Next</code></li>
-        <li>Select <code>
-            <script>document.write(appname());</script>
-        </code> and click <code>Next</code>
-
-            <div class="modal hide" id="importApp2">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal"><i class="icon-remove"></i></a>
-
-                    <h3>Select App to import</h3>
-                </div>
-                <div class="modal-body">
-                    <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/import_app_2.png'
-                         alt="Create app from template"/>
-                </div>
-            </div>
-	                    <span class="screenshot">
-	                      <a href="#importApp2" data-toggle="modal">
-                              <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/import_app_2.png'
-                                   alt="Create app from template" width="100"/>
-                              <i class="icon-zoom-in"></i>
-                          </a>
-	                    </span>
-        </li>
-        <li>Choose <code>Auto detected project</code>
-
-            <div class="modal hide" id="importApp3">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal"><i class="icon-remove"></i></a>
-
-                    <h3>Project Type selection</h3>
-                </div>
-                <div class="modal-body">
-                    <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/import_app_3.png'
-                         alt="Project Type selection"/>
-                </div>
-            </div>
-	                    <span class="screenshot">
-	                      <a href="#importApp3" data-toggle="modal">
-                              <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/import_app_3.png'
-                                   alt="Project Type selection" width="100"/>
-                              <i class="icon-zoom-in"></i>
-                          </a>
-	                    </span>
-        </li>
-        <li>Click <code>Finish</code> to complete the import. The plugin will use <a
-                href="http://www.eclipse.org/egit/">eGit</a> and clone the source code repository to a local Git
-            repository.
-            <div class="modal hide" id="importApp4">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal"><i class="icon-remove"></i></a>
-
-                    <h3>Local Project and Git Repository</h3>
-                </div>
-                <div class="modal-body">
-                    <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/create_app_template_4.png'
-                         alt="Local Project and Git Repository"/>
-                </div>
-            </div>
-	                    <span class="screenshot">
-	                      <a href="#importApp4" data-toggle="modal">
-                              <img src='https://template-app-instructions-screenshots.s3.amazonaws.com/eclipse/create_app_template_4.png'
-                                   alt="Local Project and Git Repository" width="100"/>
-                              <i class="icon-zoom-in"></i>
-                          </a>
-	                    </span>
-        </li>
-    </ol>
-    <a name="step3" id="step3"></a>
-
-    <h2>Step 3. Makes some changes to the app</h2>
-    <ol>
-        <li>Open <code>src/main/java/com/example/services/TimeService.java</code></li>
-        <li>To add a new resource path that supports specific time zones (e.g. <code>GET /services/time/est</code> for
-            the time in Eastern Standard Time), add this method:
-            <pre class="prettyprint once language-java">
-@GET
-@Path("/{timezone}")
-public Time get(@PathParam("timezone") String timezone) {
-    return new Time(TimeZone.getTimeZone(timezone.toUpperCase()));
-}</pre>
-
-            Be sure to also add the necessary import statements:
-            <pre class="prettyprint once language-java">
-import javax.ws.rs.PathParam;
-import java.util.TimeZone;
-</pre>
-        </li>
-    </ol>
-
-    <h2>Step 4. Deploy to Heroku</h2>
-    <ol>
-        <li>Right-click the project root and choose <code>Team</code> <i class="icon-chevron-right"></i>
-            <code>Commit</code></li>
-        <li>Enter a commit message and click <code>Commit</code>
-
-            <div class="modal hide" id="commitChanges">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal"><i class="icon-remove"></i></a>
-
-                    <h3>Commit Changes</h3>
-                </div>
-                <div class="modal-body">
-                    <img src="https://s3.amazonaws.com/template-app-instructions-screenshots/eclipse/6-5-commit.png"
-                         alt="Commit Changes"/>
-                </div>
-            </div>
-                <span class="screenshot">
-                  <a href="#commitChanges" data-toggle="modal">
-                      <img src="https://s3.amazonaws.com/template-app-instructions-screenshots/eclipse/6-5-commit.png"
-                           alt="Commit Changes" width="100"/>
-                      <i class="icon-zoom-in"></i>
-                  </a>
-                </span>
-        </li>
-        <li>Right-click the project root and choose <code>Team</code> <i class="icon-chevron-right"></i> <code>Push to
-            Upstream</code></li>
-        <li>Review the push results. At the bottom, a "... deployed to Heroku" message will appear.
-            <div class="modal hide" id="pushResults">
-                <div class="modal-header">
-                    <a class="close" data-dismiss="modal"><i class="icon-remove"></i></a>
-
-                    <h3>Push Results</h3>
-                </div>
-                <div class="modal-body">
-                    <img src="https://s3.amazonaws.com/template-app-instructions-screenshots/eclipse/6-8-push-result.png"
-                         alt="Push Results"/>
-                </div>
-            </div>
-                <span class="screenshot">
-                  <a href="#pushResults" data-toggle="modal">
-                      <img src="https://s3.amazonaws.com/template-app-instructions-screenshots/eclipse/6-8-push-result.png"
-                           alt="Push Results" width="100"/>
-                      <i class="icon-zoom-in"></i>
-                  </a>
-                </span>
-        </li>
-    </ol>
-
-    <div class="hero-unit">
-        <h1>Done!</h1>
-
-        <p>You've just cloned, modified, and deployed a brand new app.</p>
-        <a href="#" onclick="openRestClient('/services/time/est');" class="btn btn-primary btn-large">See your
-            changes</a>
-
-        <p style="margin-top: 20px">Learn more at the
-            <a href="http://devcenter.heroku.com/categories/java">Heroku Dev Center</a></p>
-    </div>
+<div id="about" class="tab-pane">
+	Manage all of your online Raspberry Pis from one location! View logged data, push new software and receive alerts from your Pi no matter where it's located, if it has access to the internet it can call home.
 </div>
-<!-- End Eclipse tab-->
+<!-- End About -->
+	
+<div id="rest-doc" class="instructions tab-pane">
+    <a name="using-api"></a>
 
-<div id="cli-instructions" class="instructions tab-pane">
-    <a name="using-cli"></a>
+    <p>HomePI generates its own online <a href="./services/docs">API Documentation</a>, take a look and see what you can do with the API!</p>
 
-    <h2>Step 1. Setup your environment</h2>
-    <ol>
-        <li>Install the <a href="http://toolbelt.heroku.com">Heroku Toolbelt</a>.</li>
-        <li>Install <a href="http://maven.apache.org/download.html">Maven</a>.</li>
-    </ol>
-
-    <h2>Step 2. Login to Heroku</h2>
-    <code>heroku login</code>
-    <blockquote>
-        Be sure to create, or associate an SSH key with your account.
-    </blockquote>
-            <pre>
-$ heroku login
-Enter your Heroku credentials.
-Email: naaman@heroku.com
-Password:
-Could not find an existing public key.
-Would you like to generate one? [Yn] Y
-Generating new SSH public key.
-Uploading SSH public key /Users/Administrator/.ssh/id_rsa.pub
-Authentication successful.</pre>
-
-    <h2>Step 3. Clone the App</h2>
-    <code>git clone -o heroku git@heroku.com:<script>document.write(appname())</script>.git</code>
-
-    <h2>Step 4. Makes some changes to the app</h2>
-    <ol>
-        <li>Open <code>src/main/java/com/example/services/TimeService.java</code> in your favorite editor.</li>
-        <li>To add a new resource path that supports specific time zones (e.g. <code>GET /services/time/est</code>
-            for the time in Eastern Standard Time), add this method:
-            <pre class="prettyprint once language-java">
-@GET
-@Path("/{timezone}")
-public Time get(@PathParam("timezone") String timezone) {
-    return new Time(TimeZone.getTimeZone(timezone.toUpperCase()));
-}</pre>
-
-            Be sure to also add the necessary import statements:
-            <pre class="prettyprint once language-java">
-import javax.ws.rs.PathParam;
-import java.util.TimeZone;
-</pre>
-        </li>
-    </ol>
-
-    <h2>Step 5. Make sure the app still compiles</h2>
-    <code>mvn clean package</code>
-
-    <h2>Step 6. Deploy your changes</h2>
-    <ol>
-        <li><code>git commit -am "New changes to deploy"</code></li>
-        <li><code>git push heroku master</code></li>
-    </ol>
-
-    <div class="hero-unit">
-        <h1>Done!</h1>
-
-        <p>You've just cloned, modified, and deployed a brand new app.</p>
-        <a href="#" onclick="openRestClient('/services/time/est');" class="btn btn-primary btn-large">See your
-            changes</a>
-
-        <p style="margin-top: 20px">Learn more at the
-            <a href="http://devcenter.heroku.com/categories/java">Heroku Dev Center</a></p>
-    </div>
 </div>
-<!-- End CLI tab -->
+<!-- End Docs tab -->
 
 <div id="rest-client" class="tab-pane">
     <h1>REST Client</h1>
@@ -476,7 +200,7 @@ import java.util.TimeZone;
         <form class="form-horizontal" class="row-fluid">
             <fieldset>
                 <label class="control-label search-query" for="rest-url"><strong>URL</strong></label>
-                <input id="rest-url" type="text" value="/services/time">
+                <input id="rest-url" type="text" value="/services/homepi/pi/2e848bg934">
                 <button type="submit" class="btn btn-primary" onclick="sendGetRequest(); return false;">GET</button>
             </fieldset>
         </form>
@@ -516,17 +240,6 @@ import java.util.TimeZone;
 <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
 <script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
 
- <p>G+ Signin</p>
- 		<span id="signinButton">
-		  <span
-		    class="g-signin"
-		    data-callback="signinCallback"
-		    data-clientid="4255733398.apps.googleusercontent.com"
-		    data-cookiepolicy="single_host_origin"
-		    data-requestvisibleactions="http://schemas.google.com/AddActivity"
-		    data-scope="https://www.googleapis.com/auth/plus.login">
-		  </span>
-		</span>
  </body>
 </html>
 </body>

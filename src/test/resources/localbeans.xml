@@ -9,11 +9,15 @@
 
 
 	<import resource="localDatasource.xml"/>
-	<import resource="dao.xml"/>
+	
 	
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location">
-			<value>classpath:update.properties</value>
+		<property name="locations">
+			<list>
+				<value>classpath:restdocs.properties</value>
+				<value>classpath:update.properties</value>
+				<value>classpath:db.properties</value>
+		  </list>
 		</property>
 	</bean>
 	
