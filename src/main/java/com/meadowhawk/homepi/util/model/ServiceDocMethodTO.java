@@ -16,6 +16,7 @@ public class ServiceDocMethodTO {
 	private String[] sampleLinks;
 	private String[] consumes;
 	private String[] errors;
+	private String endPointMethodName;
 	
 	/**
 	 * @return the endPointRequestType
@@ -94,5 +95,11 @@ public class ServiceDocMethodTO {
 	}
 	public void setErrors(String[] errors) {
 		this.errors = errors;
+	}
+	public String getEndPointMethodName() {
+		return this.endPointMethodName;
+	}
+	public void setEndPointMethodName(String methodName) {
+		this.endPointMethodName = methodName;
 	}
 }

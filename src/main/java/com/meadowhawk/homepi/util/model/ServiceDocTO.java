@@ -65,11 +65,11 @@ public class ServiceDocTO {
 		return servicePath;
 	}
 	
-	public void setClass(Class<?> servClass) {
+	public void setServiceClass(Class<?> servClass) {
 		this.clazz = servClass;
 	}
 
-	public Class<?> setClass() {
+	public Class<?> getServiceClass() {
 		return this.clazz;
 	}
 	

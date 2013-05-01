@@ -60,36 +60,39 @@ public class DocService {
 		ClassPathBeanDefinitionScanner s = new ClassPathBeanDefinitionScanner(bdr);
 
 		TypeFilter tf = new AnnotationTypeFilter(PublicRESTDoc.class);
-//		tf.match(arg0, arg1); ??
+		// tf.match(arg0, arg1); ??
 		s.addIncludeFilter(tf);
-		
+
 		s.scan(packagesToScan.toArray(new String[packagesToScan.size()]));
 		String[] beans = bdr.getBeanDefinitionNames();
 		log.debug("Scanning packages for Docs: " + packagesToScan.size());
-		log.debug("Beans: "+beans.length);
+		log.debug("Beans: " + beans.length);
 		for (String beanName : beans) {
 			log.debug(beanName);
 		}
 		for (String bean : beans) {
 			BeanDefinition def = bdr.getBeanDefinition(bean);
-			String packageString = def.getBeanClassName().substring(0, def.getBeanClassName().lastIndexOf('.')); 
-			if (packagesToScan.contains(packageString) ){
+			String packageString = def.getBeanClassName().substring(0,
+					def.getBeanClassName().lastIndexOf('.'));
+			if (packagesToScan.contains(packageString)) {
 				try {
 					boolean isRestDoc = false;
 					Class<?> servClass = Class.forName(def.getBeanClassName());
 
 					Annotation[] classAnnotations = servClass.getAnnotations();
 					ServiceDocTO servDoc = new ServiceDocTO();
-					servDoc.setClass(servClass);
+					servDoc.setServiceClass(servClass);
 
 					for (Annotation annotation : classAnnotations) {
 						if (annotation instanceof PublicRESTDoc) {
 							isRestDoc = true;
-							servDoc.setServiceName(((PublicRESTDoc) annotation).serviceName());
-							if(StringUtil.isNullOrEmpty(servDoc.getServiceName())){
-								servDoc.setServiceName(UNDEFINED); //can't allow a null here.
+							servDoc
+									.setServiceName(((PublicRESTDoc) annotation).serviceName());
+							if (StringUtil.isNullOrEmpty(servDoc.getServiceName())) {
+								servDoc.setServiceName(UNDEFINED); // can't allow a null here.
 							}
-							servDoc.setServiceDescription(((PublicRESTDoc) annotation).description());
+							servDoc.setServiceDescription(((PublicRESTDoc) annotation)
+									.description());
 
 						} else if (annotation instanceof Path) {
 							servDoc.setServicePath(((Path) annotation).value());
@@ -102,16 +105,19 @@ public class DocService {
 						List<Annotation> annos = Arrays.asList(method.getAnnotations());
 
 						if (annos.size() > 0) {
-
 							ServiceDocMethodTO methodDoc = new ServiceDocMethodTO();
-							boolean isDocMethod = false; 
+							boolean isDocMethod = false;
 							for (Annotation anno : annos) {
 								if (anno instanceof PublicRESTDocMethod) {
 									isDocMethod = true;
 									methodDoc.setEndPointName(((PublicRESTDocMethod) anno).endPointName());
-									methodDoc.setEndPointDescription(((PublicRESTDocMethod) anno).description());
-									methodDoc.setSampleLinks(((PublicRESTDocMethod) anno).sampleLinks());
-									methodDoc.setErrors(((PublicRESTDocMethod) anno).errorCodes());
+									methodDoc.setEndPointMethodName(method.getName());
+									methodDoc.setEndPointDescription(((PublicRESTDocMethod) anno)
+											.description());
+									methodDoc.setSampleLinks(((PublicRESTDocMethod) anno)
+											.sampleLinks());
+									methodDoc
+											.setErrors(((PublicRESTDocMethod) anno).errorCodes());
 								} else if (anno instanceof Path) {
 									methodDoc.setEndPointPath(((Path) anno).value());
 								} else if (anno instanceof Produces) {
@@ -128,15 +134,15 @@ public class DocService {
 									methodDoc.setEndPointRequestType(HttpMethod.DELETE.name());
 								}
 							}
-							if(isDocMethod) //Don't add methods that don't have docs.
+							if (isDocMethod) // Don't add methods that don't have docs.
 								servDoc.getMethodDocs().add(methodDoc);
 						}
 					}
-					
-					if(isRestDoc) //Don't add services that don't have docs.
+
+					if (isRestDoc) // Don't add services that don't have docs.
 						serviceDocs.add(servDoc);
 				} catch (ClassNotFoundException e) {
-					// log it, eat it.
+					// log it, eat it, yum.
 					log.debug(e);
 				}
 			}

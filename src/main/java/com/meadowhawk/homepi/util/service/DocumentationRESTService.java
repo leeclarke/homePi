@@ -71,23 +71,7 @@ public class DocumentationRESTService {
 		
 		return INDEX.replaceFirst(CONTENT, indexString.toString());
 	}
-	
-	private String getLocalMethodPath(Class restServiceclazz, String methodName, Object... params){
-		if(params == null){
-			params = new Object[]{""};
-		}
-		UriBuilder ub = uriInfo.getBaseUriBuilder().path(restServiceclazz);
-		URI methodURI = ub.path(restServiceclazz, methodName).build(params);
-		
-		return methodURI.toASCIIString();
-	}
-	
-	private String getIndexLinkHTML() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("<a href=\"../index\">");
-		sb.append("Index</a>");
-		return sb.toString();
-	}
+
 
 	@GET
 	@Path("/endpoint/{endPointName}")
@@ -106,19 +90,18 @@ public class DocumentationRESTService {
 		indexString.append("<TR><TH align=\"left\">Description</TH><TD>")
 			.append(serviceDoc.getServiceDescription())
 			.append("</TD></TR>");
-		indexString.append("<TR><TH align=\"left\">Root Path</TH><TD>")
+		indexString.append("<TR><TH a20lign=\"left\">Root Path</TH><TD>")
 			.append(serviceDoc.getServicePath())
 			.append("</TD></TR>").append("<TR><TD colspan=2>&nbsp;</TD></TR>");
 		
 		//TODO: Output Endpoint Data.
 		indexString.append("<TR><TH align=\"left\">&nbsp;</TH><TD>");
-//TODO: Need to fix the URI generation as it is not right for the PATH display field.		
-		String rootPath = serviceDoc.getServicePath() + "/";
+
 		for (ServiceDocMethodTO method : serviceDoc.getMethodDocs()) {
 			indexString.append("<table class=\"end-point\"><TR><TH colspan=2 align=\"left\" bgcolor='red'><a href=\"#").append(method.getEndPointName()).append("\">")
 				.append(method.getEndPointName()).append("</TH></TR>")
 				.append("<TR><th>HTTP Method</th><td>").append(method.getEndPointRequestType()).append("</td></TR>")
-				.append("<TR><th>Path</th><td>").append(rootPath).append(method.getEndPointPath()).append("</td></TR>")
+				.append("<TR><th>Path</th><td>").append(getLocalMethodPattern(serviceDoc.getServiceClass(), method.getEndPointMethodName())).append("</td></TR>")
 				.append("<TR><th>Consumes</th><td>").append(convertToStringList(method.getConsumes())).append("</td></TR>")
 				.append("<TR><th>Provides</th><td>").append(convertToStringList(method.getEndPointProvides())).append("</td></TR>")
 				.append("<TR><th>Sample Links</th><td>").append(convertToLinks(method.getSampleLinks())).append("</td></TR>") //TODO: Finish prepending correct URI
@@ -146,28 +129,24 @@ public class DocumentationRESTService {
 	}
 
 	/**
-	 * Makes a list of links into HTML links.
+	 * Makes a list of links into HTML links. If the link starts with a './' or '/' then the current host will be prepended to the sample link.
 	 * @param array of url strings.
 	 * @return html string
 	 */
 	private Object convertToLinks(String[] sampleLinks) {
 		StringBuilder sb = new StringBuilder();
-		//TODO: Prepend this servers HostName so the links work right.
-		//uriInfo.getBaseUri().
-//		UriBuilder ub = uriInfo.getBaseUriBuilder().path(restServiceclazz);
 		
 		for (String string : sampleLinks) {
 			if(string.startsWith("./") || string.startsWith("/")){
 				//add host to URL so that the URL works correctly.
-				String sampleurl = "";
+				String sampleurl = uriInfo.getBaseUri() + string.substring(string.indexOf("/")+1);
 				
 				sb.append("<a href=\"")
-				.append(string)
+				.append(sampleurl)
 				.append("\" class=\"plain\">")
-				.append(string)
+				.append(sampleurl)
 				.append("</a><br>");
 			} else {
-				
 			sb.append("<a href=\"")
 				.append(string)
 				.append("\" class=\"plain\">")
@@ -180,7 +159,7 @@ public class DocumentationRESTService {
 
 	/**
 	 * Makes an array of string into a comma separated list for display.
-	 * @param consumes
+	 * @param values
 	 * @return
 	 */
 	private String convertToStringList(String[] values) {
@@ -202,5 +181,48 @@ public class DocumentationRESTService {
 			}
 		}
 		return sb.substring(0, sb.length());
+	}
+	
+	/**
+	 * Builds a link to the referenced link and replaces any paramater values with values provided. 
+	 * @param restServiceclazz -methods class for uri references
+	 * @param methodName - name of the method contained in the restServiceclazz 
+	 * @param params - replacement values for replacing params noted as {}
+	 * @return - uri
+	 */
+	private String getLocalMethodPath(Class<?> restServiceclazz, String methodName, Object... params){
+		if(params == null){
+			params = new Object[]{""};
+		}
+		UriBuilder ub = uriInfo.getBaseUriBuilder().path(restServiceclazz);
+		URI methodURI = ub.path(restServiceclazz, methodName).build(params);
+		
+		return methodURI.toASCIIString();
+	}
+	
+	/**
+	 * Returns an unencoded pattern used for displaying the api path on the docs.
+	 * @param restServiceclazz
+	 * @param methodName
+	 * @return
+	 */
+	private String getLocalMethodPattern(Class<?> restServiceclazz, String methodName){
+		try{
+			UriBuilder ub = uriInfo.getBaseUriBuilder().path(restServiceclazz);
+			URI methodURI = ub.path(restServiceclazz, methodName).build();
+
+			return methodURI.getPath();
+		} catch(Exception e){
+			log.debug("Trying to derive MethodPattern but failed, soemthing is probably wrong with the doc configuration. Method Name:" + methodName ,e);
+			return "";
+		}
+	}
+	
+	
+	private String getIndexLinkHTML() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<a href=\"../index\">");
+		sb.append("Index</a>");
+		return sb.toString();
 	}
 }

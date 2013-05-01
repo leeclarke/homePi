@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- *
+ * Annotation for providing information to populate the generated API Docs.
  * @author lee
  */
 @Retention(value=RetentionPolicy.RUNTIME)
@@ -33,4 +33,6 @@ public @interface PublicRESTDocMethod {
 	 * @return
 	 */
 	public String[] errorCodes() default "[unspecified]";
+	
+	
 }
