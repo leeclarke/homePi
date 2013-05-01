@@ -19,6 +19,7 @@ import javax.ws.rs.Produces;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -43,7 +44,7 @@ import com.meadowhawk.homepi.util.model.ServiceDocTO;
 @Component
 public class DocService {
 	private static final String UNDEFINED = "Undefined";
-	private Log log = LogFactory.getLog(DocService.class);
+	private static Logger log = Logger.getLogger(DocService.class);
 	
 	@Value("#{'${apidocs.scan_packages}'.split(',')}") 
 	private List<String> packagesToScan;
@@ -59,11 +60,16 @@ public class DocService {
 		ClassPathBeanDefinitionScanner s = new ClassPathBeanDefinitionScanner(bdr);
 
 		TypeFilter tf = new AnnotationTypeFilter(PublicRESTDoc.class);
-		
+//		tf.match(arg0, arg1); ??
 		s.addIncludeFilter(tf);
 		
 		s.scan(packagesToScan.toArray(new String[packagesToScan.size()]));
 		String[] beans = bdr.getBeanDefinitionNames();
+		log.debug("Scanning packages for Docs: " + packagesToScan.size());
+		log.debug("Beans: "+beans.length);
+		for (String beanName : beans) {
+			log.debug(beanName);
+		}
 		for (String bean : beans) {
 			BeanDefinition def = bdr.getBeanDefinition(bean);
 			String packageString = def.getBeanClassName().substring(0, def.getBeanClassName().lastIndexOf('.')); 
@@ -74,7 +80,7 @@ public class DocService {
 
 					Annotation[] classAnnotations = servClass.getAnnotations();
 					ServiceDocTO servDoc = new ServiceDocTO();
-					
+					servDoc.setClass(servClass);
 
 					for (Annotation annotation : classAnnotations) {
 						if (annotation instanceof PublicRESTDoc) {

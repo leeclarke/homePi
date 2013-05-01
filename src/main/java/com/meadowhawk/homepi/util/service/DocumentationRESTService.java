@@ -1,5 +1,6 @@
 package com.meadowhawk.homepi.util.service;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -8,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.logging.Log;
@@ -15,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.meadowhawk.homepi.service.UserRESTService;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 import com.meadowhawk.homepi.util.model.ServiceDocMethodTO;
@@ -52,8 +55,8 @@ public class DocumentationRESTService {
 		for (ServiceDocTO serviceDoc : serviceDocs) {
 			
 			indexString.append("<TR><TH colspan=2 align=\"left\" bgcolor='red'><a href=\"")
-				.append("/wfm-dev/docs/endpoint/").append(serviceDoc.getServiceName()).append("\">")
-				.append(serviceDoc.getServiceName())   //TODO:  Build Links to Endpoint Pages.
+				.append(getLocalMethodPath(DocumentationRESTService.class,"getRestServiceEndPointDocs",serviceDoc.getServiceName())).append("\">")
+				.append(serviceDoc.getServiceName())   
 				.append("</a>")
 				.append("</TH></TR>");
 				
@@ -68,7 +71,17 @@ public class DocumentationRESTService {
 		
 		return INDEX.replaceFirst(CONTENT, indexString.toString());
 	}
+	
+	private String getLocalMethodPath(Class restServiceclazz, String methodName, Object... params){
+		if(params == null){
+			params = new Object[]{""};
+		}
+		UriBuilder ub = uriInfo.getBaseUriBuilder().path(restServiceclazz);
+		URI methodURI = ub.path(restServiceclazz, methodName).build(params);
 		
+		return methodURI.toASCIIString();
+	}
+	
 	private String getIndexLinkHTML() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<a href=\"../index\">");
@@ -85,7 +98,7 @@ public class DocumentationRESTService {
 		ServiceDocTO serviceDoc = docService.getEndpointDocsByName(endPointName);
 			
 		indexString.append("<TR><TH colspan=2 align=\"left\" bgcolor='red'><a href=\"")
-			.append("/wfm-dev/docs/endpoint/").append(serviceDoc.getServiceName()).append("\">")
+			.append(getLocalMethodPath(DocumentationRESTService.class,"getRestServiceEndPointDocs",serviceDoc.getServiceName())).append("\">")
 			.append(serviceDoc.getServiceName())
 			.append("</a>")
 			.append("</TH></TR>");
@@ -99,7 +112,7 @@ public class DocumentationRESTService {
 		
 		//TODO: Output Endpoint Data.
 		indexString.append("<TR><TH align=\"left\">&nbsp;</TH><TD>");
-		
+//TODO: Need to fix the URI generation as it is not right for the PATH display field.		
 		String rootPath = serviceDoc.getServicePath() + "/";
 		for (ServiceDocMethodTO method : serviceDoc.getMethodDocs()) {
 			indexString.append("<table class=\"end-point\"><TR><TH colspan=2 align=\"left\" bgcolor='red'><a href=\"#").append(method.getEndPointName()).append("\">")
@@ -108,7 +121,7 @@ public class DocumentationRESTService {
 				.append("<TR><th>Path</th><td>").append(rootPath).append(method.getEndPointPath()).append("</td></TR>")
 				.append("<TR><th>Consumes</th><td>").append(convertToStringList(method.getConsumes())).append("</td></TR>")
 				.append("<TR><th>Provides</th><td>").append(convertToStringList(method.getEndPointProvides())).append("</td></TR>")
-				.append("<TR><th>Sample Links</th><td>").append(convertToLinks(method.getSampleLinks())).append("</td></TR>")
+				.append("<TR><th>Sample Links</th><td>").append(convertToLinks(method.getSampleLinks())).append("</td></TR>") //TODO: Finish prepending correct URI
 				.append("<TR><th align=\"top\">Description</th><td>").append(method.getEndPointDescription()).append("</td></TR>")
 				.append("<TR><th align=\"top\">Error Codes</th><td>").append(convertToBulletedList(method.getErrors())).append("</td></TR>")
 				.append("<TR><TD colspan=2>&nbsp;</TD></TR></table>");
@@ -141,13 +154,26 @@ public class DocumentationRESTService {
 		StringBuilder sb = new StringBuilder();
 		//TODO: Prepend this servers HostName so the links work right.
 		//uriInfo.getBaseUri().
+//		UriBuilder ub = uriInfo.getBaseUriBuilder().path(restServiceclazz);
 		
 		for (String string : sampleLinks) {
+			if(string.startsWith("./") || string.startsWith("/")){
+				//add host to URL so that the URL works correctly.
+				String sampleurl = "";
+				
+				sb.append("<a href=\"")
+				.append(string)
+				.append("\" class=\"plain\">")
+				.append(string)
+				.append("</a><br>");
+			} else {
+				
 			sb.append("<a href=\"")
 				.append(string)
 				.append("\" class=\"plain\">")
 				.append(string)
 				.append("</a><br>");
+			}
 		}
 		return sb.toString();
 	}

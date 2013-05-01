@@ -14,7 +14,8 @@ public class ServiceDocTO {
 	private String serviceDescription;
 
 	private List<ServiceDocMethodTO> methodDocs = new ArrayList<ServiceDocMethodTO>();
-	private String servicePath; 
+	private String servicePath;
+	private Class<?> clazz; 
 	
 	/**
 	 * @return the serviceName
@@ -62,6 +63,14 @@ public class ServiceDocTO {
 	 */
 	public String getServicePath() {
 		return servicePath;
+	}
+	
+	public void setClass(Class<?> servClass) {
+		this.clazz = servClass;
+	}
+
+	public Class<?> setClass() {
+		return this.clazz;
 	}
 	
 }

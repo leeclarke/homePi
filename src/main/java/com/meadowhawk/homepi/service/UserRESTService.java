@@ -169,7 +169,6 @@ public class UserRESTService {
 		UriBuilder ub = ui.getBaseUriBuilder().path(UserRESTService.class);
 		URI gauthCallbackURI = ub.path(UserRESTService.class, "googleAuthCallback").build();
 		
-		gauthCallbackURI.toASCIIString();
 		return gauthCallbackURI.toString();
 	}
 	
