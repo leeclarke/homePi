@@ -21,7 +21,8 @@
 		</property>
 	</bean>
 	
-	<bean id="updateInputResource" class="org.springframework.core.io.ClassPathResource">
+	<bean id="updateFile" class="org.springframework.core.io.ClassPathResource">
 	    <constructor-arg index="0" value="homePi.py"/>
 	</bean>
+	
 </beans>
