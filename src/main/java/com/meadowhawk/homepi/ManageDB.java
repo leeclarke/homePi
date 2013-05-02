@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class ManageDB {
-	@Autowired
+//	@Autowired
     private DataSource localDataSource;
 
     public static void main(String[] args) throws Exception {

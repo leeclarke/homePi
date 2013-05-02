@@ -10,9 +10,8 @@
 	
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-		<property name="driverClassName" value="org.postgresql.Driver" />
-		<property name="url"
-			value="jdbc:postgresql://ec2-54-243-182-70.compute-1.amazonaws.com:5432/d37cvnjoirhmpo" />
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.url}/${db.name}" />
 		<property name="username" value="${db.userid}" />
 		<property name="password" value="${db.password}" />
 	</bean>
