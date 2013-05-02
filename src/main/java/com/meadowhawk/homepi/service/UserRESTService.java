@@ -55,7 +55,7 @@ public class UserRESTService {
 	
 	@GET
 	@Path("/googleauth")
-	@PublicRESTDocMethod(endPointName = "Google Auth Request", description = "Initiates the OAuth requests for authentication with google.", sampleLinks = { "/user/googleauth" })
+	@PublicRESTDocMethod(endPointName = "Google Auth Request", description = "Initiates the OAuth requests for authentication with google doing redirect to google account accept page.", sampleLinks = { "/user/googleauth" })
 	public Response makeGoogleAuthRequest(@Context HttpServletRequest request) {
 
 		URI location;
@@ -85,6 +85,9 @@ public class UserRESTService {
 		}
 
 		//TODO: Determine flow, should probably retrieve user info from DB and or create new user.
+		//1. retrieve User
+		//2. If null, save user.
+		//TODO: verify what happens when user declines.
 		return Response.ok(user).build();
 	}
 
@@ -106,7 +109,7 @@ public class UserRESTService {
 					}
 				} else{
 					//TODO: Something has gone wrong or need to reauth? Not sure we ever get here.
-					
+					log.debug("Secondary auth request failed: " + cr.getStatus());
 				}				
 			} catch (ResourceException re) {
 				log.warn("GAuth Error - Request error:",re);
