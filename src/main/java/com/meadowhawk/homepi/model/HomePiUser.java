@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -24,7 +25,9 @@ import org.joda.time.DateTime;
  */
 @Entity
 @Table(name = "users")
-@NamedQuery(name="HomePiUser.findByUserName", query = "select u from HomePiUser u where u.userName = :name")
+
+@NamedQueries(value={@NamedQuery(name="HomePiUser.findByEmail", query = "select u from HomePiUser u where u.email = :email"),
+		@NamedQuery(name="HomePiUser.findByUserName", query = "select u from HomePiUser u where u.userName = :name")})
 public class HomePiUser implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -47,6 +50,23 @@ public class HomePiUser implements Serializable{
 	@Column(name = "email", length=255, unique=true	)
 	private String email;
 
+	@Column(name = "gauth_token")
+	private String googleAuthToken;
+	
+	@Column(name = "locale")
+	private String locale;
+	
+	@Column(name = "pic_link")
+	private String picLink;
+	
+	@Column(name = "given_name")
+	private String givenName;
+	
+	@Column(name = "family_name")
+	private String familyName;
+	
+	@Column(name = "full_name")
+	private String fullName;
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
 	private List<PiProfile> piProfiles = new ArrayList<PiProfile>(0);
@@ -87,4 +107,41 @@ public class HomePiUser implements Serializable{
 	public void setPiProfiles(List<PiProfile> piProfiles) {
 		this.piProfiles = piProfiles;
 	}
+	public String getLocale() {
+		return locale;
+	}
+	public void setLocale(String locale) {
+		this.locale = locale;
+	}
+	public String getPicLink() {
+		return picLink;
+	}
+	public void setPicLink(String picLink) {
+		this.picLink = picLink;
+	}
+	public String getGivenName() {
+		return givenName;
+	}
+	public void setGivenName(String givenName) {
+		this.givenName = givenName;
+	}
+	public String getFamilyName() {
+		return familyName;
+	}
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
+	}
+	public String getFullName() {
+		return fullName;
+	}
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	public String getGoogleAuthToken() {
+		return googleAuthToken;
+	}
+	public void setGoogleAuthToken(String googleAuthToken) {
+		this.googleAuthToken = googleAuthToken;
+	}
+
 }

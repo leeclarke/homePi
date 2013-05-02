@@ -1,9 +1,9 @@
 package com.meadowhawk.homepi.util;
 
 /**
- * Custome String Utils
+ * Custom String Utils
  * 
- * @author Lee.Clarke
+ * @author lee
  */
 public class StringUtil {
 	private StringUtil() {
@@ -41,7 +41,7 @@ public class StringUtil {
 	}
 	
 	/**
-	 * Returns uppercase string if a string is not null or if the trimmed value has a length of > 0.
+	 * Returns upper-case string if a string is not null or if the trimmed value has a length of > 0.
 	 * 
 	 * @param value - string to test
 	 * @return value - string in upperCase
@@ -105,5 +105,18 @@ public class StringUtil {
 			return string.trim();
 		}
 		return null;
+	}
+	
+	/**
+	 * Makes sure the string meets length requirements and trims if not.
+	 * @param value - string to trim
+	 * @param maxLength
+	 * @return trimmed string
+	 */
+	public static String assureLength(String value, int maxLength){
+		if(value != null && value.length()>maxLength){
+			return value.substring(0, maxLength);
+		}
+		return value;
 	}
 }

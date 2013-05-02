@@ -50,11 +50,24 @@ public class HomePiUserDAOTest {
 		assertEquals(userName, resp.getUserName());
 	}
 	
+	@Test
+	public void testFindByEmail(){
+		String userEmail = "tester@homepi.com";
+		HomePiUser resp = homePiUserDAO.findByEmail(userEmail);
+		assertNotNull(resp);
+		assertEquals(userEmail, resp.getEmail());
+	}
+	
 	@Test(expected=NoResultException.class)
 	public void testSaveFindDelete() {
 		String userName = "HomePiTestUser";
 		HomePiUser entity = new HomePiUser();
 		entity.setUserName(userName);
+		entity.setEmail("junit@homepi.org");
+		entity.setGoogleAuthToken("7has87fn0w94rn0an9fay0w9rnfgw0r7ng9");
+		entity.setGivenName("J");
+		entity.setFamilyName("Unit");
+		entity.setFullName("JUnit");
 		
 		homePiUserDAO.save(entity);
 		HomePiUser resp = homePiUserDAO.findByUserName(userName);

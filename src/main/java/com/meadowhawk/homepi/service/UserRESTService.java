@@ -29,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.exception.HomePiAppException;
+import com.meadowhawk.homepi.model.HomePiUser;
+import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.GoogleInfo;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
@@ -43,6 +45,9 @@ public class UserRESTService {
 	
 	@Autowired
 	AppConfigService appConfigService;
+	
+	@Autowired
+	HomePiUserService userService;
 
 	private static final String ACCESS_TOKEN = "access_token"; //First pass authorization token used to verify on second auth check. see google oAuth docs for more info
 	private static final String GOOGLE_USER_INFO_LINK = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=";
@@ -76,19 +81,21 @@ public class UserRESTService {
 	@PublicRESTDocMethod(endPointName = "Google Auth Callback", description = "Google auth request, provides a callback for google oAuth and shouldnt be called directly elsewhere.", sampleLinks = { "/user/goocallback" })
 	public Response googleAuthCallback(@QueryParam("state") String state,
 			@QueryParam("code") String code, @QueryParam("error") String error) {
-		Object user = "";
+		GoogleInfo user = null;
 		if (error != null) {			
 			throw new HomePiAppException(Status.UNAUTHORIZED);
 		} else {
 			Map<String, String> auth = requestSecondStageRequest(state, code);
 			user = getUserInfo(auth);
 		}
-
-		//TODO: Determine flow, should probably retrieve user info from DB and or create new user.
-		//1. retrieve User
-		//2. If null, save user.
-		//TODO: verify what happens when user declines.
-		return Response.ok(user).build();
+		HomePiUser hUser = null;
+		if(user != null && !StringUtil.isNullOrEmpty(user.getEmail())){
+			 hUser = userService.getUserFromGoogleAuth(user);
+		} else {
+			throw new HomePiAppException(Status.UNAUTHORIZED,"Auth was unauthorized or incomplete.");
+		}
+		
+		return Response.ok(hUser).build();
 	}
 
 	/**
@@ -99,13 +106,15 @@ public class UserRESTService {
 	protected GoogleInfo getUserInfo(Map<String, String> auth) {
 		if(auth.containsKey(ACCESS_TOKEN)){
 			GoogleInfo userInfo = null;
-			ClientResource cr = new ClientResource(GOOGLE_USER_INFO_LINK+auth.get(ACCESS_TOKEN));
+			String accessToken = auth.get(ACCESS_TOKEN);
+			ClientResource cr = new ClientResource(GOOGLE_USER_INFO_LINK+accessToken);
 			Representation response = null;
 			try {
 				response = cr.get();
 				if(cr.getStatus().isSuccess()){
 					if(response != null){
 						userInfo = GoogleInfo.buildGoogleInfo(response.getText());
+						userInfo.setAuth_token(accessToken);
 					}
 				} else{
 					//TODO: Something has gone wrong or need to reauth? Not sure we ever get here.

@@ -22,7 +22,7 @@ public class NullPointerExceptionMapper implements ExceptionMapper<NullPointerEx
 		log.warn(message ,exception);
         return Response
                 .status(Response.Status.BAD_REQUEST)
-                .entity(new HomePiAppException(Status.BAD_REQUEST, message, exception.getCause().toString(),0).toResponse())
+                .entity(new HomePiAppException(Status.BAD_REQUEST, message, (exception.getCause() != null)?exception.getCause().toString():"",0).toResponse())
                 .type( MediaType.APPLICATION_JSON)
                 .build();
 	}
