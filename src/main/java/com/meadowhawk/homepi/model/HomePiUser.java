@@ -15,7 +15,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.codehaus.jackson.annotate.JsonManagedReference;
+import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -28,6 +28,7 @@ import org.joda.time.DateTime;
 
 @NamedQueries(value={@NamedQuery(name="HomePiUser.findByEmail", query = "select u from HomePiUser u where u.email = :email"),
 		@NamedQuery(name="HomePiUser.findByUserName", query = "select u from HomePiUser u where u.userName = :name")})
+@JsonFilter("privateUser")
 public class HomePiUser implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
