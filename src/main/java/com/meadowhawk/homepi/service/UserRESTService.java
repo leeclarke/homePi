@@ -8,8 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -62,6 +64,7 @@ public class UserRESTService {
 	
 	@GET
 	@Path("/profile/{user_id}")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUser(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){//@Context HttpServletRequest request){
 		if(!StringUtil.isNullOrEmpty(userId)){
 			//get authfrom request or set to null
@@ -71,6 +74,15 @@ public class UserRESTService {
 			throw new HomePiAppException(Status.NOT_FOUND,"Invalid user ID");
 		}
 		
+	}
+	
+	@POST
+	@Path("/profile/{user_id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateUserInfo(HomePiUser updateUser, @HeaderParam(ACCESS_TOKEN) String authToken){
+		HomePiUser hUser = userService.updateUserData(updateUser, authToken);
+		return Response.ok(hUser).build();
 	}
 	
 	@GET

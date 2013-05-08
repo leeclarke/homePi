@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 
 /**
- * Filters out non-public information from the user profile.
+ * Filters out private information from the user profile.
  * @author lee
  */
 public class HomePiUserFilter extends SimpleBeanPropertyFilter {
@@ -25,7 +25,7 @@ public class HomePiUserFilter extends SimpleBeanPropertyFilter {
 			      filterFields.add("email");
 			      filterFields.add("fullName");
 			      filterFields.add("givenName");
-			      
+			      filterFields.add("family	Name");
 			}
 			
 			SimpleBeanPropertyFilter.serializeAllExcept(filterFields).serializeAsField(bean, jGen, provider, writer);

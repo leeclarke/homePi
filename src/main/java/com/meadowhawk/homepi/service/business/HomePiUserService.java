@@ -80,5 +80,31 @@ public class HomePiUserService {
 		
 		return hUser;
 	}
+
+
+	/**
+	 * Update user updatable data.  Not all values are updatable!
+	 * @param updateUser - user
+	 * @param authToken - auth token
+	 * @return updated user if sucessful
+	 */
+	public HomePiUser updateUserData(HomePiUser updateUser, String authToken) {
+		if (StringUtil.isNullOrEmpty(authToken)) {
+			throw new HomePiAppException(Status.FORBIDDEN);
+		}
+		HomePiUser hUser = null;
+		if (homePiUserDao.authorizeToken(updateUser.getUserName(), authToken)) {
+			try {
+				homePiUserDao.update(updateUser);
+				hUser = homePiUserDao.findByUserName(updateUser.getUserName());
+			} catch (NoResultException nre) {
+				throw new HomePiAppException(Status.NOT_FOUND, "Invalid user");
+			}
+		} else {
+			throw new HomePiAppException(Status.FORBIDDEN, "Permission denied");
+		}
+
+		return hUser;
+	}
 	
 }

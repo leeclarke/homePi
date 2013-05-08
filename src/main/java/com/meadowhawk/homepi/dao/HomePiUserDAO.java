@@ -30,5 +30,11 @@ public class HomePiUserDAO  extends AbstractJpaDAO< HomePiUser >{
 	public HomePiUser findByEmail(String email) throws NoResultException{
 		return entityManager.createNamedQuery("HomePiUser.findByEmail",this.clazz).setParameter("email", email).getSingleResult();
 	}
+
+
+	public boolean authorizeToken(String userName, String authToken) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
