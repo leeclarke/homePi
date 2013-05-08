@@ -1,6 +1,7 @@
 package com.meadowhawk.homepi.service.business;
 
 import javax.persistence.NoResultException;
+import javax.ws.rs.core.Response.Status;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.meadowhawk.homepi.dao.HomePiUserDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.HomePiUser;
+import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.GoogleInfo;
 
 /**
@@ -52,6 +54,28 @@ public class HomePiUserService {
 		} catch(NoResultException nre){
 			hUser = UserAuthAdaptor.adaptGoogleInfo(user);
 			homePiUserDao.save(hUser);
+		}
+		
+		return hUser;
+	}
+
+
+	/**
+	 * Retrieves User profile, only public data is displayed unless auth tokens match.
+	 * @param userName
+	 * @param authToken
+	 * @return
+	 */
+	public HomePiUser getUserData(String userName, String authToken) {
+		HomePiUser hUser =  null;
+		try{
+			hUser = homePiUserDao.findByUserName(userName);
+			
+			if(StringUtil.isNullOrEmpty(authToken) || !hUser.getGoogleAuthToken().equals(authToken)){
+				hUser.setPrivateVersion(true);
+			} 
+		} catch(NoResultException nre){
+			throw new HomePiAppException(Status.NOT_FOUND,"Invalid user");
 		}
 		
 		return hUser;

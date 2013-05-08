@@ -14,7 +14,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
@@ -32,9 +34,13 @@ import org.joda.time.DateTime;
 public class HomePiUser implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
+	@JsonIgnore
+	@Transient
+	public boolean privateVersion = false;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "user_id")
+	@Column(name = "user_id")
 	private Long userId;
 	
 	@Column(name = "create_time")
@@ -145,4 +151,10 @@ public class HomePiUser implements Serializable{
 		this.googleAuthToken = googleAuthToken;
 	}
 
+	public boolean isPrivateVersion() {
+		return privateVersion;
+	}
+	public void setPrivateVersion(boolean privateVersion) {
+		this.privateVersion = privateVersion;
+	}
 }

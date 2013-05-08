@@ -9,7 +9,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -59,6 +61,19 @@ public class UserRESTService {
 	@Context UriInfo ui;
 	
 	@GET
+	@Path("/profile/{user_id}")
+	public Response getUser(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){//@Context HttpServletRequest request){
+		if(!StringUtil.isNullOrEmpty(userId)){
+			//get authfrom request or set to null
+			HomePiUser hUser = userService.getUserData(userId, authToken);
+			return Response.ok(hUser).build(); 
+		} else {
+			throw new HomePiAppException(Status.NOT_FOUND,"Invalid user ID");
+		}
+		
+	}
+	
+	@GET
 	@Path("/googleauth")
 	@PublicRESTDocMethod(endPointName = "Google Auth Request", description = "Initiates the OAuth requests for authentication with google doing redirect to google account accept page.", sampleLinks = { "/user/googleauth" })
 	public Response makeGoogleAuthRequest(@Context HttpServletRequest request) {
@@ -79,8 +94,7 @@ public class UserRESTService {
 	@Path("/gauthcallback")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName = "Google Auth Callback", description = "Google auth request, provides a callback for google oAuth and shouldnt be called directly elsewhere.", sampleLinks = { "/user/goocallback" })
-	public Response googleAuthCallback(@QueryParam("state") String state,
-			@QueryParam("code") String code, @QueryParam("error") String error) {
+	public Response googleAuthCallback(@QueryParam("state") String state, @QueryParam("code") String code, @QueryParam("error") String error) {
 		GoogleInfo user = null;
 		if (error != null) {			
 			throw new HomePiAppException(Status.UNAUTHORIZED);
@@ -94,7 +108,8 @@ public class UserRESTService {
 		} else {
 			throw new HomePiAppException(Status.UNAUTHORIZED,"Auth was unauthorized or incomplete.");
 		}
-		
+//TODO: Consider generating a new token for use on HomePi to protect G+ access.		
+//		return Response.ok(hUser).header("www-", ).build();
 		return Response.ok(hUser).build();
 	}
 
