@@ -18,15 +18,13 @@ public class HomePiUserTestFilter extends SimpleBeanPropertyFilter {
 		if(bean instanceof HomePiUser){
 			HomePiUser user = (HomePiUser)bean;
 			Set<String> filterFields = new HashSet<String>();
-//			if(user.isPrivateVersion()){
-			      filterFields.add("userName");
-			      filterFields.add("email");
-			      filterFields.add("locale");
-			      filterFields.add("picLink");
-			      filterFields.add("givenName");
-			      filterFields.add("familyName");
-			      filterFields.add("fullName");
-//			}
+      filterFields.add("userName");
+      filterFields.add("email");
+      filterFields.add("locale");
+      filterFields.add("picLink");
+      filterFields.add("givenName");
+      filterFields.add("familyName");
+      filterFields.add("fullName");
 			
 			SimpleBeanPropertyFilter.filterOutAllExcept(filterFields).serializeAsField(bean, jGen, provider, writer);
 		} 
