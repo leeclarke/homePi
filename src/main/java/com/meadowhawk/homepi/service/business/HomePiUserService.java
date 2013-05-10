@@ -83,20 +83,28 @@ public class HomePiUserService {
 
 
 	/**
-	 * Update user updatable data.  Not all values are updatable!
+	 * Update user data.  Not all values are editable!
+	 * @param userName 
 	 * @param updateUser - user
 	 * @param authToken - auth token
-	 * @return updated user if sucessful
+	 * @return updated user if successful
 	 */
-	public HomePiUser updateUserData(HomePiUser updateUser, String authToken) {
+	public HomePiUser updateUserData(String userName, HomePiUser updateUser, String authToken) {
 		if (StringUtil.isNullOrEmpty(authToken)) {
 			throw new HomePiAppException(Status.FORBIDDEN);
 		}
 		HomePiUser hUser = null;
-		if (homePiUserDao.authorizeToken(updateUser.getUserName(), authToken)) {
+		if (homePiUserDao.authorizeToken(userName, authToken)) {
 			try {
-				homePiUserDao.update(updateUser);
-				hUser = homePiUserDao.findByUserName(updateUser.getUserName());
+				hUser = homePiUserDao.findByUserName(userName);
+				hUser.setFamilyName(updateUser.getFamilyName());
+				hUser.setGivenName(updateUser.getGivenName());
+				hUser.setFullName(updateUser.getFullName());
+				hUser.setPicLink(updateUser.getPicLink());
+				hUser.setUserName(updateUser.getUserName());
+				hUser.setUpdateTime(new DateTime());
+				homePiUserDao.update(hUser);
+				hUser = homePiUserDao.findByUserName(hUser.getUserName());
 			} catch (NoResultException nre) {
 				throw new HomePiAppException(Status.NOT_FOUND, "Invalid user");
 			}

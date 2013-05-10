@@ -12,6 +12,7 @@ import javax.persistence.NoResultException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.AssertThrows;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -56,6 +57,22 @@ public class HomePiUserDAOTest {
 		HomePiUser resp = homePiUserDAO.findByEmail(userEmail);
 		assertNotNull(resp);
 		assertEquals(userEmail, resp.getEmail());
+	}
+	
+	@Test
+	public void testAuthorizeToken(){
+		String userName = "test-user2";
+		String authToken = "XYZ-123";
+		boolean resp = homePiUserDAO.authorizeToken(userName, authToken);
+		assertTrue(resp);
+	}
+	
+	@Test
+	public void testAuthorizeTokenBadToken(){
+		String userName = "test-user2";
+		String authToken = "XYZ-123-123-123-123";
+		boolean resp = homePiUserDAO.authorizeToken(userName, authToken);
+		assertTrue(!resp);
 	}
 	
 	@Test(expected=NoResultException.class)

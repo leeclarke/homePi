@@ -1,33 +1,34 @@
-package com.meadowhawk.homepi.model;
+package com.meadowhawk.homepi.integration.jax;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.ser.BeanPropertyFilter;
 import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 
-/**
- * Filters out private information from the user profile.
- * @author lee
- */
-public class HomePiUserFilter extends SimpleBeanPropertyFilter {
+import com.meadowhawk.homepi.model.HomePiUser;
+
+public class HomePiUserTestFilter extends SimpleBeanPropertyFilter {
 
 	public void serializeAsField(Object bean, JsonGenerator jGen, SerializerProvider provider, BeanPropertyWriter writer) throws Exception {
 		
 		if(bean instanceof HomePiUser){
 			HomePiUser user = (HomePiUser)bean;
 			Set<String> filterFields = new HashSet<String>();
-			if(user.isPrivateVersion()){
-			      filterFields.add("googleAuthToken");
-			      filterFields.add("fullName");
+//			if(user.isPrivateVersion()){
+			      filterFields.add("userName");
 			      filterFields.add("email");
+			      filterFields.add("locale");
+			      filterFields.add("picLink");
 			      filterFields.add("givenName");
 			      filterFields.add("familyName");
-			}
+			      filterFields.add("fullName");
+//			}
 			
-			SimpleBeanPropertyFilter.serializeAllExcept(filterFields).serializeAsField(bean, jGen, provider, writer);
+			SimpleBeanPropertyFilter.filterOutAllExcept(filterFields).serializeAsField(bean, jGen, provider, writer);
 		} 
 	}
 

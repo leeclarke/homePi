@@ -32,9 +32,15 @@ public class HomePiUserDAO  extends AbstractJpaDAO< HomePiUser >{
 	}
 
 
+	/**
+	 * Verifies user by checking user name and auth token.
+	 * @param userName
+	 * @param authToken
+	 * @return true if valid
+	 */
 	public boolean authorizeToken(String userName, String authToken) {
-		// TODO Auto-generated method stub
-		return false;
+		Long ct = entityManager.createNamedQuery("HomePiUser.authToken",Long.class).setParameter("userName", userName).setParameter("authToken", authToken).getSingleResult();
+		return (ct==1)?true:false;
 	}
 	
 }

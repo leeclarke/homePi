@@ -80,8 +80,8 @@ public class UserRESTService {
 	@Path("/profile/{user_id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateUserInfo(HomePiUser updateUser, @HeaderParam(ACCESS_TOKEN) String authToken){
-		HomePiUser hUser = userService.updateUserData(updateUser, authToken);
+	public Response updateUserInfo(HomePiUser updateUser, @PathParam("user_id") String userName, @HeaderParam(ACCESS_TOKEN) String authToken){
+		HomePiUser hUser = userService.updateUserData(userName, updateUser, authToken);
 		return Response.ok(hUser).build();
 	}
 	
