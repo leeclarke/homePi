@@ -44,10 +44,11 @@ public class UserSerivceIT {
 	@Test
 	public void testUpdateUser() throws JsonGenerationException, JsonMappingException, IOException{
 		String userId = "test-user42";
+		String org_email = "test-user2@homepi.org";
 		HomePiUser user = new HomePiUser();
 		String newUserName = "test-user42";
 		user.setUserName(newUserName);
-		user.setEmail("x@y.com"); //should not be changed
+		user.setEmail("x@y.com"); //should not be changed, not updatable
 		user.setFamilyName("SuperUser");
 		user.setGivenName("Testaz");
 		user.setPicLink("http://homepi.org/mypic.jpg");
@@ -59,7 +60,8 @@ public class UserSerivceIT {
 		expect().
     statusCode(200).log().body().
     body("userName",equalToIgnoringCase(newUserName),
-    		"updateTime", notNullValue()
+    		"updateTime", notNullValue(),
+    		"email", equalToIgnoringCase(org_email)
     		).
     when().
     post(BASE_URI+userId);
