@@ -9,6 +9,8 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.junit.Test;
 
+import com.meadowhawk.homepi.model.filter.HomePiUserFilter;
+
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations={"classpath:localbeans.xml"})
 public class HomePiUserFilteringTest {

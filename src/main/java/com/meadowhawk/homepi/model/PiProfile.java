@@ -17,6 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonBackReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -26,6 +27,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 /**
  * Pi device data used for identifying the remote PI and how to connect to it if possible.
  * @author lee
@@ -34,8 +37,11 @@ import org.joda.time.DateTime;
 @Table(name = "pi_profile")
 @NamedNativeQuery(name="PiProfile.findByPiSerialId", query="SELECT p.pi_id, p.update_time, p.create_time, p.pi_serial_id, p.name, p.ip_address, p.ssh_port_number, p.user_id, p.api_key" +
 		"  FROM pi_profile p WHERE p.PI_SERIAL_ID = :piSerialId", resultClass=PiProfile.class)
-
+@JsonFilter("privateProfile")
 public class PiProfile {
+	@JsonIgnore
+	@Transient
+	public boolean privateVersion = false;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -147,6 +153,12 @@ public class PiProfile {
 	
 	public void setApiKey(UUID apiKey) {
 		this.apiKey = apiKey;
+	}
+	public boolean isPrivateVersion() {
+		return privateVersion;
+	}
+	public void setPrivateVersion(boolean privateVersion) {
+		this.privateVersion = privateVersion;
 	}
 	
 	

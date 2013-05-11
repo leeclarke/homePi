@@ -109,6 +109,7 @@ public class HomePiUser implements Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
 	public List<PiProfile> getPiProfiles() {
 		return piProfiles;
 	}
@@ -157,5 +158,10 @@ public class HomePiUser implements Serializable{
 	}
 	public void setPrivateVersion(boolean privateVersion) {
 		this.privateVersion = privateVersion;
+	//TODO: consider AOP for this.
+			for (PiProfile profile : this.piProfiles) {
+				profile.setPrivateVersion(this.privateVersion);
+			}
+			
 	}
 }

@@ -1,4 +1,4 @@
-package com.meadowhawk.homepi.model;
+package com.meadowhawk.homepi.model.filter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +7,8 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.codehaus.jackson.map.ser.BeanPropertyWriter;
 import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
+
+import com.meadowhawk.homepi.model.HomePiUser;
 
 /**
  * Filters out private information from the user profile.
