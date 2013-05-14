@@ -13,6 +13,7 @@ import com.meadowhawk.homepi.model.HomePiUser;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.GoogleInfo;
+import com.meadowhawk.homepi.util.service.MaskData;
 
 /**
  * @author lee
@@ -22,6 +23,9 @@ public class HomePiUserService {
 
 	@Autowired
 	HomePiUserDAO homePiUserDao;
+	
+	@Autowired
+	ManagementService managementService;
 	
 	public HomePiUser getUser(String email){
 		return homePiUserDao.findByUserName(email);
@@ -67,18 +71,19 @@ public class HomePiUserService {
 	 * @param authToken
 	 * @return
 	 */
+	@MaskData
 	public HomePiUser getUserData(String userName, String authToken) {
 		HomePiUser hUser =  null;
 		try{
 			hUser = homePiUserDao.findByUserName(userName);
 			
-			//Ensure security. TODO: consider AOP for this
-			if(StringUtil.isNullOrEmpty(authToken) || !hUser.getGoogleAuthToken().equals(authToken)){
-				hUser.setMaskedView(true);
-				for (PiProfile profile : hUser.getPiProfiles()) {
-					profile.setMaskedView(true);	
-				}	
-			} 
+//			//Ensure security. TODO: consider AOP for this
+//			if(StringUtil.isNullOrEmpty(authToken) || !hUser.getGoogleAuthToken().equals(authToken)){
+//				hUser.setMaskedView(true);
+//				for (PiProfile profile : hUser.getPiProfiles()) {
+//					profile.setMaskedView(true);	
+//				}	
+//			} 
 		} catch(NoResultException nre){
 			throw new HomePiAppException(Status.NOT_FOUND,"Invalid user");
 		}
@@ -122,12 +127,29 @@ public class HomePiUserService {
 	
 	
 	/**
-	 * Validates user toekn and user name.
+	 * Validates user token and user name.
 	 * @param userName
 	 * @param authToken
 	 * @return - true if authorized.
 	 */
 	public boolean verifyUserToken(String userName, String authToken){
+		if(StringUtil.isNullOrEmpty(userName) || StringUtil.isNullOrEmpty(authToken) ){
+			return false;
+		}
 		return homePiUserDao.authorizeToken(userName, authToken);
+	}
+
+
+	/**
+	 * Wrapped method allows for Annotation and AOP support. Different rules apply to the managemnetService as it is a PI only service.
+	 * @param userName
+	 * @param authToken
+	 * @param piSerialId
+	 * @return requested profile.
+	 */
+	@MaskData
+	public PiProfile getPiProfile(String userName, String authToken, String piSerialId) {
+		PiProfile profile = managementService.getPiProfile(piSerialId);
+		return profile;
 	}
 }

@@ -149,4 +149,11 @@ public class PiProfile extends MaskableDataObject{
 		this.apiKey = apiKey;
 	}
 	
+	@Override
+	public void setMaskedView(boolean maskView) {
+		super.setMaskedView(maskView);
+		for (ManagedApp ma : this.managedApps) {
+			ma.setMaskedView(isMaskedView());
+		}
+	}
 }

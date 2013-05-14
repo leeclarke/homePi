@@ -148,4 +148,12 @@ public class HomePiUser extends MaskableDataObject implements Serializable{
 	public void setGoogleAuthToken(String googleAuthToken) {
 		this.googleAuthToken = googleAuthToken;
 	}
+	
+	@Override
+	public void setMaskedView(boolean maskView) {
+		super.setMaskedView(maskView);
+		for (PiProfile profile : this.piProfiles) {
+			profile.setMaskedView(isMaskedView());	
+		}
+	}
 }

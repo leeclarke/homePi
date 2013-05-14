@@ -45,6 +45,7 @@ import com.meadowhawk.homepi.util.model.GoogleInfo;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 import com.meadowhawk.homepi.util.service.AppConfigService;
+import com.meadowhawk.homepi.util.service.MaskData;
 
 @Path("/user")
 @Component
@@ -74,11 +75,9 @@ public class UserRESTService {
 	@GET
 	@Path("/profile/{user_id}/pi/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@MaskData
 	public Response getUserPiProfile(@PathParam("user_id") String userName,@PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken){
-		PiProfile profile = managementService.getPiProfile(piSerialId);
-		if(!userService.verifyUserToken(userName, authToken)){
-			profile.setMaskedView(true);
-		} 
+		PiProfile profile = userService.getPiProfile(userName, authToken,piSerialId);
 		
 		return Response.ok(profile).build();
 	}

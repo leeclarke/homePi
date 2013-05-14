@@ -5,13 +5,13 @@ import javax.persistence.Transient;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
- * Provides common method for determining if data should be masked when rendered.
+ * Provides common method for determining if data should be masked when rendered. Default behavior is to be masked.
  * @author lee
  */
 public abstract class MaskableDataObject {
 	@JsonIgnore
 	@Transient
-	private boolean maskedView = false;
+	private boolean maskedView = true;
 
 	public boolean isMaskedView() {
 		return maskedView;
