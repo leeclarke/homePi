@@ -60,7 +60,6 @@ public class MaskDataAspect{
 
 	@Around("@annotation(MaskData)")
 	public Object checkForPrivateData(ProceedingJoinPoint pjp) throws Throwable{
-		System.out.println("Handling memoize");  
     Object[] args = pjp.getArgs();  
     Object obj = pjp.proceed();  
     
