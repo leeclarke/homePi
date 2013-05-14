@@ -8,8 +8,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 
-import com.meadowhawk.homepi.model.filter.HomePiUserFilter;
-import com.meadowhawk.homepi.model.filter.PiProfileFilter;
+import com.meadowhawk.homepi.model.filter.HomePiPrivateFilter;
 
 @Provider
 @Produces("application/json")
@@ -22,8 +21,7 @@ public class JacksonConfigurator  implements ContextResolver<ObjectMapper>{
       SimpleFilterProvider fp = new SimpleFilterProvider();
       
       //Add filters here!  TODO: Extract to properties and inject
-      fp.addFilter("privateUser", new HomePiUserFilter());
-      fp.addFilter("privateProfile", new PiProfileFilter());
+      fp.addFilter("privateView", new HomePiPrivateFilter());
 
       mapper.setSerializationConfig(serConfig.withFilters(fp));
       mapper.setFilters(fp);

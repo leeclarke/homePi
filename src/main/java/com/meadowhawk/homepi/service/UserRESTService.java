@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +31,15 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.meadowhawk.homepi.dao.PiProfileDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.HomePiUser;
+import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
+import com.meadowhawk.homepi.service.business.ManagementService;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.GoogleInfo;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
@@ -52,7 +57,10 @@ public class UserRESTService {
 	
 	@Autowired
 	HomePiUserService userService;
-
+	
+	@Autowired
+	ManagementService managementService;
+	
 	private static final String ACCESS_TOKEN = "access_token"; //First pass authorization token used to verify on second auth check. see google oAuth docs for more info
 	private static final String GOOGLE_USER_INFO_LINK = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=";
 	private static final String GRANT_TYPE_AUTH = "authorization_code";
@@ -62,10 +70,33 @@ public class UserRESTService {
 	
 	@Context UriInfo ui;
 	
+	
+	@GET
+	@Path("/profile/{user_id}/pi/{piSerialId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUserPiProfile(@PathParam("user_id") String userName,@PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken){
+		PiProfile profile = managementService.getPiProfile(piSerialId);
+		if(!userService.verifyUserToken(userName, authToken)){
+			profile.setMaskedView(true);
+		} 
+		
+		return Response.ok(profile).build();
+	}
+	
+	
+	@GET
+	@Path("/profile/{user_id}/pi")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUserPiProfiles(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
+		HomePiUser hUser = userService.getUserData(userId, authToken);
+		return Response.ok(hUser.getPiProfiles()).build();
+	}
+	
 	@GET
 	@Path("/profile/{user_id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUser(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){//@Context HttpServletRequest request){
+	@PublicRESTDocMethod(endPointName = "User Profile", description = "Retrieve user profile. Include access_token in head to gain owner view.", sampleLinks = { "/user/profile/test_user" })
+	public Response getUser(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
 		if(!StringUtil.isNullOrEmpty(userId)){
 			//get authfrom request or set to null
 			HomePiUser hUser = userService.getUserData(userId, authToken);

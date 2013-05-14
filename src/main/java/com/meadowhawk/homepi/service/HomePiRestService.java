@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -29,15 +30,17 @@ import org.springframework.stereotype.Component;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.LogEntries;
 import com.meadowhawk.homepi.model.PiProfile;
+import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.ManagementService;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 
 @Path("/homepi")
 @Component
-@PublicRESTDoc(serviceName = "HomePiService", description = "Pi focused management services.")
+@PublicRESTDoc(serviceName = "HomePiService", description = "Pi focused management services specifically for Pis.")
 public class HomePiRestService {
 	private static Logger log = Logger.getLogger( HomePiRestService.class );
+	private static final String ACCESS_TOKEN = "access_token";
 	
 	@Context UriInfo uriInfo;
 	
@@ -78,10 +81,10 @@ public class HomePiRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Pi Profile", description="Returns registered info related to the given Pi serial id.", sampleLinks={"/homepi/pi/01r735ds720"})
 	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId) throws HomePiAppException{
-		
+		//TODO: Add api token verification.
 		return managementService.getPiProfile(piSerialId);
-	}
-
+	}	
+	
 	@POST
 	@Path("/pi/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)

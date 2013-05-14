@@ -11,6 +11,10 @@ import org.codehaus.jackson.map.ser.impl.SimpleBeanPropertyFilter;
 
 import com.meadowhawk.homepi.model.HomePiUser;
 
+/**
+ * THis is used by Integration Testing to produce a specific POST JSON representation, not production code.
+ * @author lee
+ */
 public class HomePiUserTestFilter extends SimpleBeanPropertyFilter {
 
 	public void serializeAsField(Object bean, JsonGenerator jGen, SerializerProvider provider, BeanPropertyWriter writer) throws Exception {

@@ -31,13 +31,9 @@ import org.joda.time.DateTime;
 @NamedQueries(value={@NamedQuery(name="HomePiUser.findByEmail", query = "select u from HomePiUser u where u.email = :email"),
 		@NamedQuery(name="HomePiUser.findByUserName", query = "select u from HomePiUser u where u.userName = :name"),
 		@NamedQuery(name="HomePiUser.authToken", query="select count(*) from HomePiUser u where u.userName = :userName and u.googleAuthToken = :authToken")})
-@JsonFilter("privateUser")
-public class HomePiUser implements Serializable{
+@JsonFilter("privateView")
+public class HomePiUser extends MaskableDataObject implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
-	@JsonIgnore
-	@Transient
-	public boolean privateVersion = false;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -151,17 +147,5 @@ public class HomePiUser implements Serializable{
 	}
 	public void setGoogleAuthToken(String googleAuthToken) {
 		this.googleAuthToken = googleAuthToken;
-	}
-
-	public boolean isPrivateVersion() {
-		return privateVersion;
-	}
-	public void setPrivateVersion(boolean privateVersion) {
-		this.privateVersion = privateVersion;
-	//TODO: consider AOP for this.
-			for (PiProfile profile : this.piProfiles) {
-				profile.setPrivateVersion(this.privateVersion);
-			}
-			
 	}
 }

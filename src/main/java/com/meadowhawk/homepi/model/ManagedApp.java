@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonBackReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonFilter;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
@@ -28,8 +29,8 @@ import org.joda.time.DateTime;
 @NamedNativeQuery(name="ManagedApp.findByPiSerialId", query="SELECT m.app_id, m.update_time, m.create_time, m.version_number, m.app_name, m.file_name, m.deployment_path, m.user_id" +
 		"  FROM MANAGED_APP m, USER_PI_MANAGED_APP u, PI_PROFILE p " +
 		"WHERE p.PI_SERIAL_ID = :piSerialId  AND p.PI_ID = u.PI_ID AND u.APP_ID = m.APP_ID", resultClass=ManagedApp.class)
-
-public class ManagedApp {
+@JsonFilter("privateView")
+public class ManagedApp extends MaskableDataObject{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -119,7 +120,5 @@ public class ManagedApp {
 	public void setPiProfiles(Set<PiProfile> piProfiles) {
 		this.piProfiles = piProfiles;
 	}
-	
-
 	
 }

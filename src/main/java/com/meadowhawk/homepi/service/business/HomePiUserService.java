@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.meadowhawk.homepi.dao.HomePiUserDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.HomePiUser;
+import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.GoogleInfo;
 
@@ -71,8 +72,12 @@ public class HomePiUserService {
 		try{
 			hUser = homePiUserDao.findByUserName(userName);
 			
+			//Ensure security. TODO: consider AOP for this
 			if(StringUtil.isNullOrEmpty(authToken) || !hUser.getGoogleAuthToken().equals(authToken)){
-				hUser.setPrivateVersion(true);
+				hUser.setMaskedView(true);
+				for (PiProfile profile : hUser.getPiProfiles()) {
+					profile.setMaskedView(true);	
+				}	
 			} 
 		} catch(NoResultException nre){
 			throw new HomePiAppException(Status.NOT_FOUND,"Invalid user");
@@ -115,4 +120,14 @@ public class HomePiUserService {
 		return hUser;
 	}
 	
+	
+	/**
+	 * Validates user toekn and user name.
+	 * @param userName
+	 * @param authToken
+	 * @return - true if authorized.
+	 */
+	public boolean verifyUserToken(String userName, String authToken){
+		return homePiUserDao.authorizeToken(userName, authToken);
+	}
 }
