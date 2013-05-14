@@ -16,7 +16,7 @@ import com.meadowhawk.homepi.dao.PiProfileDAOTest;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.ManagedAppsService;
-import com.meadowhawk.homepi.service.business.ManagementService;
+import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.util.RandomString;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -24,7 +24,7 @@ import com.meadowhawk.util.RandomString;
 public class ManagementServiceTest {
 
 	@Autowired
-	ManagementService managedService;
+	DeviceManagementService managedService;
 	
 	@Autowired
 	PiProfileDAO piProfileDao;

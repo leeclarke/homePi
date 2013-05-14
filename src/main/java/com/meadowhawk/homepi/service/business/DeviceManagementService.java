@@ -17,10 +17,11 @@ import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.service.MaskData;
 
 /**
+ * Service that is used for providing data specifically to the Raspberry Pi device. All Calls should enforce an API verification for security reasons. 
  * @author lee
  */
 @Component
-public class ManagementService {
+public class DeviceManagementService {
 
 	@Autowired
 	PiProfileDAO piProfileDao;

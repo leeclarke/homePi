@@ -31,7 +31,7 @@ import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.LogEntries;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
-import com.meadowhawk.homepi.service.business.ManagementService;
+import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 
@@ -55,8 +55,7 @@ public class HomePiRestService {
 	
 	
 	@Autowired
-	@Qualifier("managementService")
-	ManagementService managementService;
+	DeviceManagementService deviceManagementService;
 	
 	@POST
 	@Path("/pi/{piSerialId}/reg")
@@ -64,7 +63,7 @@ public class HomePiRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Register Pi", description="Registers a new PI with the HomePi. This is called directly from the Pi, the first tiem the Pi runs the local HomePi application. The HomePi serial ID is mandatory and must match the Pi's actual number or things wont work out later on.. ", sampleLinks={"/homepi/pi/01r735ds720/reg"})
 	public PiProfile registerPi(@PathParam("piSerialId") String piSerialId, @Context HttpServletRequest request) {
-		return managementService.createPiProfile(piSerialId, request.getRemoteAddr());
+		return deviceManagementService.createPiProfile(piSerialId, request.getRemoteAddr());
 	}
 	
 	@POST
@@ -72,8 +71,7 @@ public class HomePiRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually.", sampleLinks={"/homepi/pi/01r735ds720/reg/api/de4d9e75-d6b3-43d7-9fef-3fb958356ded"})
 	public PiProfile updatePiApiKey(@PathParam("piSerialId") String piSerialId, @PathParam("apiKey") String apiKey) {
-		//TODO: Add user auth here!
-		return managementService.updateApiKey(piSerialId, apiKey);
+		return deviceManagementService.updateApiKey(piSerialId, apiKey);
 	}
 	
 	@GET
@@ -82,7 +80,7 @@ public class HomePiRestService {
 	@PublicRESTDocMethod(endPointName="Pi Profile", description="Returns registered info related to the given Pi serial id.", sampleLinks={"/homepi/pi/01r735ds720"})
 	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId) throws HomePiAppException{
 		//TODO: Add api token verification.
-		return managementService.getPiProfile(piSerialId);
+		return deviceManagementService.getPiProfile(piSerialId);
 	}	
 	
 	@POST
@@ -95,7 +93,7 @@ public class HomePiRestService {
 		}
 //TODO: Make this into a Redirect!!!!!
 		
-		managementService.updatePiProfile(piProfile);
+		deviceManagementService.updatePiProfile(piProfile);
 		return Response.ok(piProfile).build();  
 	}
 	

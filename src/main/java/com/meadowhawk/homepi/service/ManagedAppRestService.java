@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.model.ManagedApp;
 import com.meadowhawk.homepi.service.business.ManagedAppsService;
-import com.meadowhawk.homepi.service.business.ManagementService;
+import com.meadowhawk.homepi.service.business.DeviceManagementService;
+import com.meadowhawk.homepi.util.model.PublicRESTDoc;
+import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 
 /**
  * All interaction with ManagedApps will be done through this endPoint.
@@ -22,11 +24,12 @@ import com.meadowhawk.homepi.service.business.ManagementService;
  */
 @Path("/homepi/pi/apps")
 @Component
+@PublicRESTDoc(serviceName = "ManagedAppRestService", description = "Pi application endPoints.")
 public class ManagedAppRestService {
 
+	//TODO: Determine if this is even needed!!
 	@Autowired
-	@Qualifier("managementService")
-	ManagementService managementService;
+	DeviceManagementService deviceManagementService;
 	
 	@Autowired
 	@Qualifier("managedAppsService")
@@ -35,6 +38,7 @@ public class ManagedAppRestService {
 	@GET
 	@Path("/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(endPointName="List Apps", description="", sampleLinks={"./homepi/pi/apps/01r735ds720"})
 	public List<ManagedApp> getApps(@PathParam("piSerialId") String piSerialId){ //TODO: Why is this a String?
 		//TODO: Should included user auth/id in this request once defined.
 		return managedAppsService.getManagedAppsForDevice(piSerialId);		

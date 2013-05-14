@@ -25,7 +25,7 @@ public class HomePiUserService {
 	HomePiUserDAO homePiUserDao;
 	
 	@Autowired
-	ManagementService managementService;
+	DeviceManagementService managementService;
 	
 	public HomePiUser getUser(String email){
 		return homePiUserDao.findByUserName(email);
