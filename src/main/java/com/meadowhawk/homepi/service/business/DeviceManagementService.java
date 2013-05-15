@@ -14,7 +14,7 @@ import com.meadowhawk.homepi.dao.PiProfileDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.util.StringUtil;
-import com.meadowhawk.homepi.util.service.MaskData;
+import com.meadowhawk.homepi.util.service.ApiKeyRequired;
 
 /**
  * Service that is used for providing data specifically to the Raspberry Pi device. All Calls should enforce an API verification for security reasons. 
@@ -31,7 +31,7 @@ public class DeviceManagementService {
 	 * @return
 	 * @throws HomePiAppException
 	 */
-	public PiProfile getPiProfile(String serialId) throws HomePiAppException {
+	protected PiProfile getPiProfile(String serialId) throws HomePiAppException {
 		try{
 			return piProfileDao.findByPiSerialId(serialId);
 		} catch(NoResultException nre){
@@ -39,6 +39,11 @@ public class DeviceManagementService {
 		} catch(Exception e){
 			throw new HomePiAppException(Status.BAD_REQUEST, e);
 		}
+	}
+
+	@ApiKeyRequired
+	public PiProfile getPiProfile(String deviceId, String apiKey) {
+		return getPiProfile(deviceId);
 	}
 
 	/**

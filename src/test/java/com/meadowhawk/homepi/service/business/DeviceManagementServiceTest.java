@@ -1,6 +1,9 @@
-package com.meadowhawk.homepi.service;
+package com.meadowhawk.homepi.service.business;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -10,21 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.meadowhawk.homepi.dao.ManagedAppDAO;
 import com.meadowhawk.homepi.dao.PiProfileDAO;
 import com.meadowhawk.homepi.dao.PiProfileDAOTest;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.PiProfile;
-import com.meadowhawk.homepi.service.business.ManagedAppsService;
-import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.util.RandomString;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:localbeans.xml"})
-public class ManagementServiceTest {
+public class DeviceManagementServiceTest {
 
 	@Autowired
-	DeviceManagementService managedService;
+	DeviceManagementService deviceManagedService;
 	
 	@Autowired
 	PiProfileDAO piProfileDao;
@@ -32,12 +32,30 @@ public class ManagementServiceTest {
 	@Test(expected=HomePiAppException.class)
 	public void testGetPiProfile() {
 		String serialId = "InvalidSerialId1234";
-		managedService.getPiProfile(serialId);
+		deviceManagedService.getPiProfile(serialId);
+	}
+	
+	@Test
+	public void testGetPiProfileApiKey() {
+		String piSerialId = "2e848bg934";
+		String apiKey = "035a0f4c-5dd2-4805-aa0c-9a545a738c51";
+		PiProfile resp = deviceManagedService.getPiProfile(piSerialId, apiKey);
+		assertNotNull(resp);
+		assertTrue(!resp.isMaskedView());
 	}
 
 	@Test
+	public void testGetPiProfileApiKeyInvalid() {
+		String piSerialId = "2e848bg934";
+		String apiKey = "bad-key";
+		PiProfile resp = deviceManagedService.getPiProfile(piSerialId, apiKey);
+		assertNotNull(resp);
+		assertTrue(resp.isMaskedView());
+	}
+	
+	@Test
 	public void testGetAllPiProfiles() {
-		List<PiProfile> resp = managedService.getAllPiProfiles();
+		List<PiProfile> resp = deviceManagedService.getAllPiProfiles();
 		assertNotNull(resp);
 		assertTrue(resp.size()>0);
 	}
@@ -47,7 +65,7 @@ public class ManagementServiceTest {
 		PiProfile profile = piProfileDao.findByPiSerialId(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
 		final String oldApiKey = profile.getApiKey();
 		assertNotNull(profile);
-		managedService.updateApiKey(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, profile.getApiKey());
+		deviceManagedService.updateApiKey(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, profile.getApiKey());
 		
 		PiProfile updatedProfile = piProfileDao.findByPiSerialId(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
 		assertFalse(updatedProfile.getApiKey().equals(oldApiKey));
@@ -55,7 +73,7 @@ public class ManagementServiceTest {
 	
 	@Test(expected=HomePiAppException.class)
 	public void testUpdateApiKeyBadAPIKey() {
-		managedService.updateApiKey(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, new RandomString(30).nextString());
+		deviceManagedService.updateApiKey(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, new RandomString(30).nextString());
 		
 		piProfileDao.findByPiSerialId(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
 	}
@@ -64,7 +82,7 @@ public class ManagementServiceTest {
 	public void testCreateProfile() {
 		String piSerialId = new RandomString(50).nextString();
 		String ipAddress = "192.168.1.20";
-		PiProfile resp = managedService.createPiProfile(piSerialId, ipAddress );
+		PiProfile resp = deviceManagedService.createPiProfile(piSerialId, ipAddress );
 		assertNotNull(resp);
 		assertNotNull(resp.getPiId());
 		assertNotNull(resp.getApiKey());
@@ -77,29 +95,29 @@ public class ManagementServiceTest {
 	
 	@Test(expected=HomePiAppException.class)
 	public void testCreatePiProfileNullCheck() {
-		managedService.createPiProfile(null, null);
+		deviceManagedService.createPiProfile(null, null);
 	}
 	
 	@Test(expected=HomePiAppException.class)
 	public void testCreatePiProfileBlanksCheck() {
 		String piSerialId = "";
 		String ipAddress = "";
-		managedService.createPiProfile(piSerialId, ipAddress);
+		deviceManagedService.createPiProfile(piSerialId, ipAddress);
 		
 	}
 
 	@Test(expected=HomePiAppException.class)
 	public void testCreatePiProfileDupeId() {
 		String ipAddress = "123.123.123.123";
-		managedService.createPiProfile(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, ipAddress);
+		deviceManagedService.createPiProfile(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, ipAddress);
 	}
 	
 	@Test
 	public void testUpdatePiProfileBadFieldValue() {
-		PiProfile resp = managedService.getPiProfile(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
+		PiProfile resp = deviceManagedService.getPiProfile(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
 		resp.setName("Test Pi");
 		
-		managedService.updatePiProfile(resp);
+		deviceManagedService.updatePiProfile(resp);
 	}
 
 }

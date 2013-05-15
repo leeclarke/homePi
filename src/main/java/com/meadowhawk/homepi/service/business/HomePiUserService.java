@@ -150,6 +150,7 @@ public class HomePiUserService {
 	@MaskData
 	public PiProfile getPiProfile(String userName, String authToken, String piSerialId) {
 		PiProfile profile = managementService.getPiProfile(piSerialId);
+		
 		return profile;
 	}
 }

@@ -41,6 +41,7 @@ import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 public class HomePiRestService {
 	private static Logger log = Logger.getLogger( HomePiRestService.class );
 	private static final String ACCESS_TOKEN = "access_token";
+	private static final String API_KEY = "api_key";
 	
 	@Context UriInfo uriInfo;
 	
@@ -78,9 +79,8 @@ public class HomePiRestService {
 	@Path("/pi/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Pi Profile", description="Returns registered info related to the given Pi serial id.", sampleLinks={"/homepi/pi/01r735ds720"})
-	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId) throws HomePiAppException{
-		//TODO: Add api token verification.
-		return deviceManagementService.getPiProfile(piSerialId);
+	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId,@HeaderParam(API_KEY) String apiKey) throws HomePiAppException{
+		return deviceManagementService.getPiProfile(piSerialId, apiKey);
 	}	
 	
 	@POST

@@ -14,9 +14,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface ApiKeyRequired {
 
-	/**
-	 * When set to true, and exception will be thrown when API Key is invalid.
-	 * @return
-	 */
-	public boolean exceptionOnError() default false;
 }
