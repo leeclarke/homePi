@@ -15,6 +15,8 @@ import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.service.ApiKeyRequired;
+import com.meadowhawk.homepi.util.service.ApiKeyRequiredBeforeException;
+import com.meadowhawk.homepi.util.service.ApiKeyRequiredException;
 
 /**
  * Service that is used for providing data specifically to the Raspberry Pi device. All Calls should enforce an API verification for security reasons. 
@@ -50,6 +52,9 @@ public class DeviceManagementService {
 	 * @return
 	 * @throws HomePiAppException
 	 */
+//	@ApiKeyRequired
+	//TODO: EVAL: NOt currently in use. I can't think of a reason for Pis to know about other Pis's...  yet.  Also API keys, only grant access to one profile.
+	@Deprecated
 	public List<PiProfile> getAllPiProfiles() throws HomePiAppException {
 		try{
 			return piProfileDao.findAll();
@@ -93,10 +98,13 @@ public class DeviceManagementService {
 	}
 
 	/**
+	 * Update Pi Profile
 	 * @param piProfile
 	 * @return
 	 * @throws HomePiAppException
 	 */
+//	@ApiKeyRequiredBeforeException
+	//TODO: What would the Pi update here?
 	public int updatePiProfile(PiProfile piProfile) throws HomePiAppException {
 		try{
 			piProfileDao.update(piProfile);

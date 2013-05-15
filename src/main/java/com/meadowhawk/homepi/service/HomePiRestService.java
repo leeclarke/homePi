@@ -87,7 +87,7 @@ public class HomePiRestService {
 	@Path("/pi/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Update Pi Profile", description="Updates a Pi profile, this requires a valid user auth or the Pi API key.", sampleLinks={"/homepi/pi/01r735ds720"})
-	public Response updatePiData(@PathParam("piSerialId") String piSerialId, PiProfile piProfile) throws HomePiAppException{
+	public Response updatePiData(@PathParam("piSerialId") String piSerialId, PiProfile piProfile,@HeaderParam(API_KEY) String apiKey) throws HomePiAppException{
 		if(piProfile == null){
 			throw new HomePiAppException(Status.BAD_REQUEST, "No data provided in request.");
 		}

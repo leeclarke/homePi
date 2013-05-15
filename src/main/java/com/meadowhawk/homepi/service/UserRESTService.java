@@ -75,17 +75,28 @@ public class UserRESTService {
 	@GET
 	@Path("/profile/{user_id}/pi/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@MaskData
+	@PublicRESTDocMethod(endPointName = "Get PiProfile", description = "Retrieve pi profile by pi serial id. Include access_token for owner view.", sampleLinks = { "/user/profile/test_user/pi/tu12345" })
 	public Response getUserPiProfile(@PathParam("user_id") String userName,@PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken){
 		PiProfile profile = userService.getPiProfile(userName, authToken,piSerialId);
 		
 		return Response.ok(profile).build();
 	}
 	
+	@POST
+	@Path("/profile/{user_id}/pi/{piSerialId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(endPointName = "Update PiProfile", description = "Retrieve users pi profiles. access_token is required or returns NoAccess.", sampleLinks = { "/user/profile/test_user/pi/tu12345" })
+	public Response updatePiProfile(@PathParam("user_id") String userName,@PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken, PiProfile piProfile){
+		userService.updatePiProfile(userName, authToken,piSerialId, piProfile);
+		//TODO: add redirect
+		return Response.ok().build();
+	}
 	
 	@GET
 	@Path("/profile/{user_id}/pi")
 	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(endPointName = "Get User PiProfiles", description = "Retrieve users pi profiles. Include access_token in head to gain owner view.", sampleLinks = { "/user/profile/test_user/pi" })
 	public Response getUserPiProfiles(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
 		HomePiUser hUser = userService.getUserData(userId, authToken);
 		return Response.ok(hUser.getPiProfiles()).build();
@@ -111,7 +122,7 @@ public class UserRESTService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateUserInfo(HomePiUser updateUser, @PathParam("user_id") String userName, @HeaderParam(ACCESS_TOKEN) String authToken){
-		HomePiUser hUser = userService.updateUserData(userName, updateUser, authToken);
+		HomePiUser hUser = userService.updateUserData(userName, authToken, updateUser);
 		return Response.ok(hUser).build();
 	}
 	

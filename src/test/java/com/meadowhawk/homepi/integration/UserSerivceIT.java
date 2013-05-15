@@ -32,7 +32,7 @@ public class UserSerivceIT {
 	private static String getUserJson(HomePiUser user) {
 		try{
 			ObjectMapper mapper = new ObjectMapper();
-			SimpleFilterProvider filters = new SimpleFilterProvider().addFilter("privateUser",new HomePiUserTestFilter());
+			SimpleFilterProvider filters = new SimpleFilterProvider().addFilter("privateView",new HomePiUserTestFilter());
 			// and then serialize using that filter provider:
 			return mapper.writer(filters).writeValueAsString(user);
 		} catch(Exception e) {
@@ -79,7 +79,6 @@ public class UserSerivceIT {
 		user.setPicLink("http://homepi.org/mypic.jpg");
 		
 		
-		SimpleFilterProvider filters = new SimpleFilterProvider().addFilter("privateUser",new HomePiUserTestFilter());
 		// and then serialize using that filter provider:
 		String json = getUserJson(user);
 
@@ -132,4 +131,32 @@ public class UserSerivceIT {
     	get(BASE_URI+userId);
 	}
 	
+	@Test
+	public void testCreateUpdatePiProfile() throws JsonGenerationException, JsonMappingException, IOException{
+		String userId = "test-user42";
+		String org_email = "test-user2@homepi.org";
+		HomePiUser user = new HomePiUser();
+		String newUserName = "test-user42";
+		user.setUserName(newUserName);
+		user.setEmail("x@y.com"); //should not be changed, not updatable
+		user.setFamilyName("SuperUser");
+		user.setGivenName("Testaz");
+		user.setPicLink("http://homepi.org/mypic.jpg");
+		
+		String json = getUserJson(user);
+
+		//TODO: Test Create a PiProfile
+		
+		
+//		given().log().all().port(8088).headers("access_token","XYZ-123").
+//		contentType(MediaType.APPLICATION_JSON).body(json).
+//		expect().
+//    statusCode(200).log().body().
+//    body("userName",equalToIgnoringCase(newUserName),
+//    		"updateTime", notNullValue(),
+//    		"email", equalToIgnoringCase(org_email)
+//    		).
+//    when().
+//    post(BASE_URI+"/"+userId+"/pi/{piSerialId}");
+	}
 }

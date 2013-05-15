@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.meadowhawk.homepi.exception.HomePiAppException;
+import com.meadowhawk.homepi.model.HomePiUser;
 import com.meadowhawk.homepi.model.PiProfile;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -48,5 +50,20 @@ public class HomePiUserServiceTest {
 		
 		assertNotNull(resp);
 		assertTrue(resp.isMaskedView());
+	}
+	
+	@Test(expected=HomePiAppException.class)
+	public void testUpdateUserDataBadToken(){
+		String userName = "test_user";
+		String authToken = "XD123-YT53";
+		String authBadToken = "XD123-YXXXXT53";
+		
+		HomePiUser updateUser = homePiUserService.getUserData(userName, authToken);
+		assertNotNull(updateUser);
+		updateUser.setEmail("spam@goo.com");
+		
+				
+		homePiUserService.updateUserData(userName, authBadToken, updateUser );
+		
 	}
 }

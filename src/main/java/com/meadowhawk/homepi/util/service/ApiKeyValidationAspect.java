@@ -5,9 +5,11 @@ import java.util.Arrays;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -81,5 +83,20 @@ public class ApiKeyValidationAspect {
     }
     
     return obj;
+	}
+	
+	@Before("@annotation(ApiKeyRequiredBeforeException)")
+	public void verifyApiKeyFirstReportException(JoinPoint pjp)	throws Throwable {
+		Object[] args = pjp.getArgs();
+
+		if (args != null && log.isDebugEnabled()) {
+			log.debug(">>>>>   BEFORE Arguments : " + Arrays.toString(pjp.getArgs()));
+		}
+		
+		String piSerialId = (String) args[0];
+		String apiKey = (String) args[1];
+		if (!deviceManagementService.validateApiKey(piSerialId, apiKey)) {
+			throw new HomePiAppException(Status.FORBIDDEN);			
+		}
 	}
 }

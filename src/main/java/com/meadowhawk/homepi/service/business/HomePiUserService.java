@@ -13,6 +13,7 @@ import com.meadowhawk.homepi.model.HomePiUser;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.GoogleInfo;
+import com.meadowhawk.homepi.util.service.AuthRequiredBeforeException;
 import com.meadowhawk.homepi.util.service.MaskData;
 
 /**
@@ -76,14 +77,7 @@ public class HomePiUserService {
 		HomePiUser hUser =  null;
 		try{
 			hUser = homePiUserDao.findByUserName(userName);
-			
-//			//Ensure security. TODO: consider AOP for this
-//			if(StringUtil.isNullOrEmpty(authToken) || !hUser.getGoogleAuthToken().equals(authToken)){
-//				hUser.setMaskedView(true);
-//				for (PiProfile profile : hUser.getPiProfiles()) {
-//					profile.setMaskedView(true);	
-//				}	
-//			} 
+
 		} catch(NoResultException nre){
 			throw new HomePiAppException(Status.NOT_FOUND,"Invalid user");
 		}
@@ -95,16 +89,13 @@ public class HomePiUserService {
 	/**
 	 * Update user data.  Not all values are editable!
 	 * @param userName 
-	 * @param updateUser - user
 	 * @param authToken - auth token
+	 * @param updateUser - user
 	 * @return updated user if successful
 	 */
-	public HomePiUser updateUserData(String userName, HomePiUser updateUser, String authToken) {
-		if (StringUtil.isNullOrEmpty(authToken)) {
-			throw new HomePiAppException(Status.FORBIDDEN);
-		}
+	@AuthRequiredBeforeException
+	public HomePiUser updateUserData(String userName, String authToken, HomePiUser updateUser) {
 		HomePiUser hUser = null;
-		if (homePiUserDao.authorizeToken(userName, authToken)) {
 			try {
 				hUser = homePiUserDao.findByUserName(userName);
 				hUser.setFamilyName(updateUser.getFamilyName());
@@ -118,9 +109,6 @@ public class HomePiUserService {
 			} catch (NoResultException nre) {
 				throw new HomePiAppException(Status.NOT_FOUND, "Invalid user");
 			}
-		} else {
-			throw new HomePiAppException(Status.FORBIDDEN, "Permission denied");
-		}
 
 		return hUser;
 	}
@@ -152,5 +140,26 @@ public class HomePiUserService {
 		PiProfile profile = managementService.getPiProfile(piSerialId);
 		
 		return profile;
+	}
+
+
+	/**
+	 * Update PiProfile id user auth is valid.
+	 * @param userName
+	 * @param authToken
+	 * @param piSerialId
+	 * @param piProfile
+	 * @return
+	 */
+	@AuthRequiredBeforeException
+	public void updatePiProfile(String userName, String authToken, String piSerialId, PiProfile piProfile) {
+		PiProfile profile = managementService.getPiProfile(piSerialId);
+		//make updates
+		//TODO: Add ProfileAdaprot for copying updatable values.
+		profile.setIpAddress(piProfile.getIpAddress());
+		profile.setName(piProfile.getName());
+		profile.setSshPortNumber(piProfile.getSshPortNumber());
+		
+		managementService.updatePiProfile(profile);
 	}
 }

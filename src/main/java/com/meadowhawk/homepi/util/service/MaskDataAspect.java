@@ -2,6 +2,8 @@ package com.meadowhawk.homepi.util.service;
 
 import java.util.Arrays;
 
+import javax.ws.rs.core.Response.Status;
+
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -13,6 +15,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.MaskableDataObject;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
 
@@ -84,4 +87,18 @@ public class MaskDataAspect{
     return obj;
 	}
 
+	@Before("@annotation(AuthRequiredBeforeException)")
+	public void verifyAuthFirstReportException(JoinPoint pjp)	throws Throwable {
+		Object[] args = pjp.getArgs();
+
+		if (args != null && log.isDebugEnabled()) {
+			log.debug(">>>>>   BEFORE Arguments : " + Arrays.toString(pjp.getArgs()));
+		}
+		
+		String userName = (String) args[0];
+		String authToken = (String) args[1];
+		if(!userService.verifyUserToken(userName, authToken)){
+			throw new HomePiAppException(Status.FORBIDDEN);			
+		}
+	}
 }

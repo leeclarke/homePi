@@ -119,5 +119,13 @@ public class DeviceManagementServiceTest {
 		
 		deviceManagedService.updatePiProfile(resp);
 	}
+	
+	@Test(expected=HomePiAppException.class)
+	public void testUpdateNoApiKey(){
+		PiProfile resp = deviceManagedService.getPiProfile(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
+		resp.setName("Test Pi");
+		
+		deviceManagedService.updatePiProfile(resp);
+	}
 
 }
