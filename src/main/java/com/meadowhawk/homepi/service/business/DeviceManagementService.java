@@ -132,8 +132,7 @@ public class DeviceManagementService {
 	 * @return - true if valid
 	 */
 	public boolean validateApiKey(String piSerialId, String apiKey) {
-		piProfileDao.validateApiKey(piSerialId,apiKey);
-		return false;
+		return piProfileDao.validateApiKey(piSerialId,apiKey);
 	}
 	
 }
