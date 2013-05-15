@@ -15,7 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -32,8 +35,11 @@ import org.joda.time.DateTime;
  */
 @Entity
 @Table(name = "pi_profile")
-@NamedNativeQuery(name="PiProfile.findByPiSerialId", query="SELECT p.pi_id, p.update_time, p.create_time, p.pi_serial_id, p.name, p.ip_address, p.ssh_port_number, p.user_id, p.api_key" +
-		"  FROM pi_profile p WHERE p.PI_SERIAL_ID = :piSerialId", resultClass=PiProfile.class)
+@NamedNativeQueries(value={
+		@NamedNativeQuery(name="PiProfile.findByPiSerialId", query="SELECT p.pi_id, p.update_time, p.create_time, p.pi_serial_id, p.name, p.ip_address, p.ssh_port_number, p.user_id, p.api_key FROM pi_profile p WHERE p.PI_SERIAL_ID = :piSerialId", resultClass=PiProfile.class)} ) //,
+		//@NamedNativeQuery(name="PiProfile.findByPiSerialIdApiToken", query="select count(*) from pi_profile p where p.pi_serial_id = :piSerialId and p.api_key = :apiKey",resultClass=Long.class)
+//})
+//@NamedQueries(@NamedQuery(name="PiProfile.findByPiSerialIdApiToken", query="select count(*) from pi_profile p where p.pi_serial_id = :piSerialId and p.apiKey = :apiKey"))
 @JsonFilter("privateView")
 public class PiProfile extends MaskableDataObject{
 	

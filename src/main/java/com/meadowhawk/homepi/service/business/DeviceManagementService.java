@@ -124,5 +124,16 @@ public class DeviceManagementService {
 			throw new HomePiAppException(Status.BAD_REQUEST, e);
 		}
 	}
+
+	/**
+	 * Verifies that a given serialId and ApiKey Match.
+	 * @param piSerialId
+	 * @param apiKey
+	 * @return - true if valid
+	 */
+	public boolean validateApiKey(String piSerialId, String apiKey) {
+		piProfileDao.validateApiKey(piSerialId,apiKey);
+		return false;
+	}
 	
 }

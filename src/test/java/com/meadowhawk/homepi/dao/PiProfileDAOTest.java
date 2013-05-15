@@ -47,6 +47,14 @@ public class PiProfileDAOTest {
 		assertTrue(respProfile.size() > 0);
 	}
 	
+	@Test
+	public void testValidateApiKey() throws HomePiAppException {
+		
+		String piSerialId = "2e848bg934";
+		String apiKey = "035a0f4c-5dd2-4805-aa0c-9a545a738c51";
+		
+		assertTrue(piProfileDao.validateApiKey(piSerialId, apiKey));
+	}
 	
 	@Test(expected=NoResultException.class)
 	public void testCreateGetPiProfile() {
