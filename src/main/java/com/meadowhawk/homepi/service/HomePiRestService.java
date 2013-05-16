@@ -28,6 +28,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.exception.HomePiAppException;
+import com.meadowhawk.homepi.model.HomePiUser;
 import com.meadowhawk.homepi.model.LogEntries;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
@@ -47,6 +48,9 @@ public class HomePiRestService {
 	
 	@Autowired
 	ClassPathResource updateFile;
+
+	@Autowired
+	HomePiUserService userService;
 	
 	@Value("${update.mainFile}")
 	String mainUpdateFileName;
@@ -57,59 +61,46 @@ public class HomePiRestService {
 	
 	@Autowired
 	DeviceManagementService deviceManagementService;
-	
+
+//TODO: Nonstandard URI, and dupe, EVAL
 	@POST
-	@Path("/pi/{piSerialId}/reg")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Register Pi", description="Registers a new PI with the HomePi. This is called directly from the Pi, the first tiem the Pi runs the local HomePi application. The HomePi serial ID is mandatory and must match the Pi's actual number or things wont work out later on.. ", sampleLinks={"/homepi/pi/01r735ds720/reg"})
-	public PiProfile registerPi(@PathParam("piSerialId") String piSerialId, @Context HttpServletRequest request) {
-		return deviceManagementService.createPiProfile(piSerialId, request.getRemoteAddr());
-	}
-	
-	@POST
-	@Path("/pi/{piSerialId}/api/{apiKey}")
+	@Path("/user/{user_id}/pi/{piSerialId}/api")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually.", sampleLinks={"/homepi/pi/01r735ds720/reg/api/de4d9e75-d6b3-43d7-9fef-3fb958356ded"})
-	public PiProfile updatePiApiKey(@PathParam("piSerialId") String piSerialId, @PathParam("apiKey") String apiKey) {
-		return deviceManagementService.updateApiKey(piSerialId, apiKey);
+	public PiProfile updatePiApiKey(@PathParam("user_id") String userId, @PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken) {
+//todo: tHIS REQUIRES USER INFO NOT aPIkEY, fix
+//		return deviceManagementService.updateApiKey(piSerialId, apiKey);
+		return null;
 	}
-	
+
+//TODO: Nonstandard URI, and dupe, EVAL
 	@GET
 	@Path("/pi/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Pi Profile", description="Returns registered info related to the given Pi serial id.", sampleLinks={"/homepi/pi/01r735ds720"})
-	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId,@HeaderParam(API_KEY) String apiKey) throws HomePiAppException{
-		return deviceManagementService.getPiProfile(piSerialId, apiKey);
+	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId,@HeaderParam(ACCESS_TOKEN) String acessToekn) throws HomePiAppException{
+//		return deviceManagementService.getPiProfile(piSerialId, apiKey);
+		return null;
 	}	
+
 	
 	@POST
-	@Path("/pi/{piSerialId}")
+	@Path("/user/{user_id}/pi/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Update Pi Profile", description="Updates a Pi profile, this requires a valid user auth or the Pi API key.", sampleLinks={"/homepi/pi/01r735ds720"})
-	public Response updatePiData(@PathParam("piSerialId") String piSerialId, PiProfile piProfile,@HeaderParam(API_KEY) String apiKey) throws HomePiAppException{
+	@PublicRESTDocMethod(endPointName="Update Pi Profile", description="Updates a Pi profile, this requires a valid user auth.", sampleLinks={"/homepi/pi/01r735ds720"})
+	public Response updatePiData(@PathParam("piSerialId") String piSerialId, PiProfile piProfile,@HeaderParam(ACCESS_TOKEN) String accessToken) throws HomePiAppException{
 		if(piProfile == null){
 			throw new HomePiAppException(Status.BAD_REQUEST, "No data provided in request.");
 		}
 //TODO: Make this into a Redirect!!!!!
+//TODO: Refactor, to require AuthToken
 		
 		deviceManagementService.updatePiProfile(piProfile);
 		return Response.ok(piProfile).build();  
 	}
 	
-	@POST
-	@Path("/pi/{piSerialId}/log")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Logs a message from the Pi. Pi API key is required.", sampleLinks={"/homepi/pi/01r735ds720/log"})
-	public Response logStatus(@PathParam("piSerialId") String piSerialId){
-		
-		
-		return Response.ok().build();
-	}
-	
 	@GET
-	@Path("/pi/{piSerialId}/log")
+	@Path("/user/{user_id}/pi/{piSerialId}/log")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/01r735ds720/log"})
 	public List<LogEntries> getLlogs(@PathParam("piSerialId") String piSerialId){
@@ -118,13 +109,47 @@ public class HomePiRestService {
 		return new ArrayList<LogEntries>();
 	}
 	
+	
+	//ProfileManagement
+	@GET
+	@Path("/user/{user_id}/pi/{piSerialId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(endPointName = "Get PiProfile", description = "Retrieve pi profile by pi serial id. Include access_token for owner view.", sampleLinks = { "/homepi/user/test_user/pi/tu12345" })
+	public Response getUserPiProfile(@PathParam("user_id") String userName,@PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken){
+		PiProfile profile = userService.getPiProfile(userName, authToken,piSerialId);
+		return Response.ok(profile).build();
+	}
+	
+	@POST
+	@Path("/user/{user_id}/pi/{piSerialId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(endPointName = "Update PiProfile", description = "Retrieve users pi profiles. access_token is required or returns NoAccess.", sampleLinks = { "/homepi/user/test_user/pi/tu12345" })
+	public Response updatePiProfile(@PathParam("user_id") String userName,@PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken, PiProfile piProfile){
+		userService.updatePiProfile(userName, authToken,piSerialId, piProfile);
+		//TODO: add redirect
+		return Response.ok().build();
+	}
+	
+	@GET
+	@Path("/user/{user_id}/pi")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(endPointName = "Get User PiProfiles", description = "Retrieve users pi profiles. Include access_token in head to gain owner view.", sampleLinks = { "/homepi/user/test_user/pi" })
+	public Response getUserPiProfiles(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
+		HomePiUser hUser = userService.getUserData(userId, authToken);
+		return Response.ok(hUser.getPiProfiles()).build();
+	}
+	
+	
+	
 	//TODO: add string replace on py file to update the version number
 	@GET
 	@Path("/update")
 	@Produces("text/x-python")
 	@PublicRESTDocMethod(endPointName="Update Pi", description="EndPoint a Pi will call to request updates. Pi API key is required.", sampleLinks={"/homepi/pi/update"})
+	@Deprecated
 	public Response getScriptUpdate(){
-		//TODO: Add API key verification
+		//TODO: Remove this once PY script is updated.
 		File file;
 		try {
 			file = updateFile.getFile();
