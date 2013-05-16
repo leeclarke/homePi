@@ -62,7 +62,8 @@ public class DocService {
 		TypeFilter tf = new AnnotationTypeFilter(PublicRESTDoc.class);
 		// tf.match(arg0, arg1); ??
 		s.addIncludeFilter(tf);
-
+		//Filter out Spring stuff
+		
 		s.scan(packagesToScan.toArray(new String[packagesToScan.size()]));
 		String[] beans = bdr.getBeanDefinitionNames();
 		log.debug("Scanning packages for Docs: " + packagesToScan.size());
