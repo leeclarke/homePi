@@ -5,7 +5,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,21 +30,17 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.meadowhawk.homepi.dao.PiProfileDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.HomePiUser;
-import com.meadowhawk.homepi.model.PiProfile;
-import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
+import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.GoogleInfo;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 import com.meadowhawk.homepi.util.service.AppConfigService;
-import com.meadowhawk.homepi.util.service.MaskData;
 
 @Path("/user")
 @Component
@@ -91,6 +86,7 @@ public class UserRESTService {
 	@Path("/profile/{user_id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(endPointName = "Update User Profile", description = "Update profile. Include access_token in head or will return error.", sampleLinks = { "/user/profile/test_user" })
 	public Response updateUserInfo(HomePiUser updateUser, @PathParam("user_id") String userName, @HeaderParam(ACCESS_TOKEN) String authToken){
 		HomePiUser hUser = userService.updateUserData(userName, authToken, updateUser);
 		return Response.ok(hUser).build();

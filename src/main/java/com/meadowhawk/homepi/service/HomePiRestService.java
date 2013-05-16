@@ -2,6 +2,7 @@ package com.meadowhawk.homepi.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
@@ -33,6 +35,7 @@ import com.meadowhawk.homepi.model.LogEntries;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
+import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 
@@ -73,6 +76,21 @@ public class HomePiRestService {
 		return null;
 	}
 
+	@GET
+	@Path("/user/{user_id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(endPointName = "User Profile", description = "Retrieve user profile. Include access_token in head to gain owner view.", sampleLinks = { "/user/profile/test_user" })
+	public Response getUser(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
+		if(!StringUtil.isNullOrEmpty(userId)){
+			//get authfrom request or set to null
+			HomePiUser hUser = userService.getUserData(userId, authToken);
+			return Response.ok(hUser).build(); 
+		} else {
+			throw new HomePiAppException(Status.NOT_FOUND,"Invalid user ID");
+		}
+		
+	}
+	
 //TODO: Nonstandard URI, and dupe, EVAL
 	@GET
 	@Path("/pi/{piSerialId}")
@@ -84,20 +102,21 @@ public class HomePiRestService {
 	}	
 
 	
-	@POST
-	@Path("/user/{user_id}/pi/{piSerialId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Update Pi Profile", description="Updates a Pi profile, this requires a valid user auth.", sampleLinks={"/homepi/pi/01r735ds720"})
-	public Response updatePiData(@PathParam("piSerialId") String piSerialId, PiProfile piProfile,@HeaderParam(ACCESS_TOKEN) String accessToken) throws HomePiAppException{
-		if(piProfile == null){
-			throw new HomePiAppException(Status.BAD_REQUEST, "No data provided in request.");
-		}
-//TODO: Make this into a Redirect!!!!!
-//TODO: Refactor, to require AuthToken
-		
-		deviceManagementService.updatePiProfile(piProfile);
-		return Response.ok(piProfile).build();  
-	}
+//	@POST
+//	@Path("/user/{user_id}/pi/{piSerialId}")
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@PublicRESTDocMethod(endPointName="Update Pi Profile", description="Updates a Pi profile, this requires a valid user auth.", sampleLinks={"/user/homepi/test_user/pi/01r735ds720"})
+//	public Response updatePiData(@PathParam("piSerialId") String piSerialId, PiProfile piProfile,@HeaderParam(ACCESS_TOKEN) String accessToken) throws HomePiAppException{
+//		if(piProfile == null){
+//			throw new HomePiAppException(Status.BAD_REQUEST, "No data provided in request.");
+//		}
+////TODO: Make this into a Redirect!!!!!
+////TODO: Refactor, to require AuthToken
+//		
+//		deviceManagementService.updatePiProfile(piProfile);
+//		return Response.ok(piProfile).build();  
+//	}
 	
 	@GET
 	@Path("/user/{user_id}/pi/{piSerialId}/log")
@@ -127,8 +146,16 @@ public class HomePiRestService {
 	@PublicRESTDocMethod(endPointName = "Update PiProfile", description = "Retrieve users pi profiles. access_token is required or returns NoAccess.", sampleLinks = { "/homepi/user/test_user/pi/tu12345" })
 	public Response updatePiProfile(@PathParam("user_id") String userName,@PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken, PiProfile piProfile){
 		userService.updatePiProfile(userName, authToken,piSerialId, piProfile);
-		//TODO: add redirect
-		return Response.ok().build();
+		log.debug("Redirection to:"+getUriRedirect("getUserPiProfile"));
+//		return Response.seeOther(getUriRedirect("getUserPiProfile")).build();
+		return Response.noContent().build();
+	}
+	
+	protected URI getUriRedirect(String methodName){
+		UriBuilder ub = uriInfo.getBaseUriBuilder().path(HomePiRestService.class);
+		URI redirectURI = ub.path(HomePiRestService.class, methodName).build();
+		
+		return redirectURI;
 	}
 	
 	@GET

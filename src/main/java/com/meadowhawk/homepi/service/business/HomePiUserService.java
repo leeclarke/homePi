@@ -94,6 +94,7 @@ public class HomePiUserService {
 	 * @return updated user if successful
 	 */
 	@AuthRequiredBeforeException
+	@MaskData
 	public HomePiUser updateUserData(String userName, String authToken, HomePiUser updateUser) {
 		HomePiUser hUser = null;
 			try {
@@ -155,7 +156,7 @@ public class HomePiUserService {
 	public void updatePiProfile(String userName, String authToken, String piSerialId, PiProfile piProfile) {
 		PiProfile profile = managementService.getPiProfile(piSerialId);
 		//make updates
-		//TODO: Add ProfileAdaprot for copying updatable values.
+		//TODO: Add ProfileAdaptort for copying updatable values.
 		profile.setIpAddress(piProfile.getIpAddress());
 		profile.setName(piProfile.getName());
 		profile.setSshPortNumber(piProfile.getSshPortNumber());

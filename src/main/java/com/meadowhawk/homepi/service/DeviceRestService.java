@@ -97,6 +97,7 @@ public class DeviceRestService {
 	}
 	
 	//TODO: add string replace on py file to update the version number
+	//TODO: Feature :  add optional version umber and allow Pi to provide its current version to prevent full download.
 	@GET
 	@Path("/update")
 	@Produces("text/x-python")
