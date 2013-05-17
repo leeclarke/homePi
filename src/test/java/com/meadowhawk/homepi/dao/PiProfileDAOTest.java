@@ -124,13 +124,13 @@ public class PiProfileDAOTest {
 	
 	@Test
 	public void testUpdateUUID() {
-		PiProfile profile = piProfileDao.findByPiSerialId(DEFAULT_EXISTING_PI_SERIAL);
+		PiProfile profile = piProfileDao.findByPiSerialId("hls1zeugsi");
 		assertNotNull(profile);
 		final String oldApiKey = profile.getApiKey();
 		
 		int resp = piProfileDao.updateUUID(profile);
 		assertEquals(1, resp);
-		PiProfile updatedProfile = piProfileDao.findByPiSerialId(DEFAULT_EXISTING_PI_SERIAL);
+		PiProfile updatedProfile = piProfileDao.findByPiSerialId("hls1zeugsi");
 		assertNotNull(updatedProfile);
 		assertFalse(updatedProfile.getApiKey().equals(oldApiKey));
 	}

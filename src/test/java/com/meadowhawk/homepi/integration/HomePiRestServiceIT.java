@@ -18,8 +18,10 @@ import org.codehaus.jackson.map.ser.impl.SimpleFilterProvider;
 import org.junit.Test;
 
 import com.jayway.restassured.internal.RestAssuredResponseImpl;
+import com.jayway.restassured.path.json.JsonPath;
 import com.meadowhawk.homepi.integration.jax.PiProfileTestFilter;
 import com.meadowhawk.homepi.model.PiProfile;
+import com.sun.istack.NotNull;
 
 public class HomePiRestServiceIT {
 	static final String BASE_URI = "/services/homepi/user/";
@@ -53,15 +55,15 @@ public class HomePiRestServiceIT {
 //TODO: not right		
 		given().port(8088).
 		expect().statusCode(200).log().body().
-    body("email", nullValue(),
-        "givenName", nullValue(),
-        "familyName", nullValue(),
-        "fullName", nullValue(),
-        "googleAuthToken", nullValue(),
-        "locale", equalTo("en"),
-        "userName",equalTo(serialId),
-        "userId", equalTo(1)).when().
-    	get("/services/homepi/pi/"+serialId);
+	    body("email", nullValue(),
+	        "givenName", nullValue(),
+	        "familyName", nullValue(),
+	        "fullName", nullValue(),
+	        "googleAuthToken", nullValue(),
+	        "locale", equalTo("en"),
+	        "userName",equalTo(serialId),
+	        "userId", equalTo(1)).when().
+	    	get("/services/homepi/pi/"+serialId);
 	}
 	
 	///services/homepi/user/{user_id}/pi/{piSerialId}
@@ -72,10 +74,10 @@ public class HomePiRestServiceIT {
 		
 		given().port(8088).
 		expect().statusCode(200).log().body().
-    body("apiKey", nullValue(),
-        "ipAddress", nullValue(),
-        "name", notNullValue(),
-        "piSerialId", equalTo(serialId)).when().
+		body("apiKey", nullValue(),
+	        "ipAddress", nullValue(),
+	        "name", notNullValue(),
+	        "piSerialId", equalTo(serialId)).when().
     	get(getBaseUserUri(userId) + serialId);
 	}
 	
@@ -86,10 +88,10 @@ public class HomePiRestServiceIT {
 		
 		given().port(8088).headers("access_token","XD123-YT53").
 		expect().statusCode(200).log().body().
-    body("apiKey", notNullValue(),
-        "ipAddress", notNullValue(),
-        "name", notNullValue(),
-        "piSerialId", equalTo(serialId)).when().
+		body("apiKey", notNullValue(),
+	        "ipAddress", notNullValue(),
+	        "name", notNullValue(),
+	        "piSerialId", equalTo(serialId)).when().
     	get(getBaseUserUri(userId) + serialId);
 	}
 //	access_token: XD123-YT53
@@ -101,8 +103,8 @@ public class HomePiRestServiceIT {
 		
 		Object resp = given().port(8088).
 		expect().statusCode(200).log().body().
-    body("name", notNullValue(),
-        "piSerialId", notNullValue()).when().
+	    body("name", notNullValue(),
+	        "piSerialId", notNullValue()).when().
     	get(getBaseUserUri(userId));
 		
 		String body = ((RestAssuredResponseImpl)resp).body().asString();
@@ -131,11 +133,32 @@ public class HomePiRestServiceIT {
 	///POST services/homepi/user/{user_id}/pi/{piSerialId}/api
 	@Test
 	public void testGetNewApiKey() {
+		String serialId = "hls1zeugsi";
+		String userId = "test_user";
+//TODO:  Key update isnt working but, the DAO works.
+		//Get current apiKey for validation
+		Object resp = given().port(8088).headers("access_token","XD123-YT53").
+		expect().statusCode(200).log().body().
+		body("apiKey", notNullValue(),
+	        "ipAddress", notNullValue(),
+	        "name", notNullValue(),
+	        "piSerialId", equalTo(serialId)).when().
+    	get(getBaseUserUri(userId) + serialId);
 		
+		
+		JsonPath body = ((RestAssuredResponseImpl)resp).body().jsonPath();
+		
+		String oldApiKey = body.getString("apiKey");
+		
+		Object resp2 = given().port(8088).headers("access_token","XD123-YT53").
+		expect().statusCode(200).log().body().
+			body("apiKey", notNullValue()).when().
+    	get(getBaseUserUri(userId) + serialId+ "/api");
+		JsonPath body2 = ((RestAssuredResponseImpl)resp2).body().jsonPath();
+		assertFalse(oldApiKey.equals(body2.getString("apiKey")));
 	}
 	
-	//POST /services/homepi/user/{user_id}/pi/{piSerialId}
-	//POST /services/homepi/user/{user_id}/pi/{piSerialId}  Check for dupe method
+	//POST /services/homepi/user/{user_id}/pi/{piSerialId}  
 	@Test
 	public void testUpdateProfile() {
 		String serialId = "2e848bg934";
@@ -156,15 +179,20 @@ public class HomePiRestServiceIT {
 		given().log().all().port(8088).headers("access_token","XD123-YT53").
 		contentType(MediaType.APPLICATION_JSON).body(json).
 		expect().
-    statusCode(200).log().body().
-    body( "ipAddress", equalTo(ipAddress),
-        "name", equalTo(name),
-        "sshPortNumber", notNullValue(),
-        "piSerialId", equalTo(serialId),
-        "apiKey", notNullValue()        
-    		).
-    when().
-    post(getBaseUserUri(userId) + serialId);
+		    statusCode(204).log().body().
+		when().
+		    post(getBaseUserUri(userId) + serialId);
+		
+		//Add GET to verify results.
+		given().port(8088).headers("access_token","XD123-YT53").
+				expect().statusCode(200).log().body().
+		    body("name", equalTo(name),
+		        "piSerialId", equalTo(serialId),
+		        "ipAddress",equalTo(ipAddress),
+		        "apiKey", notNullValue(),
+		        "sshPortNumber", notNullValue()).when().
+		    	get(getBaseUserUri(userId) + serialId);
+		
 	}
 	
 	@Test
@@ -226,5 +254,11 @@ public class HomePiRestServiceIT {
         "userName",equalTo(userId),
         "userId", equalTo(1)).when().
     	get(BASE_URI+userId);
+	}
+	
+	//GET /user/{user_id}/pi/{piSerialId}/log
+	@Test
+	public void testLogRetrieval() {
+		//TODO: code hasn't been designed yet.
 	}
 }

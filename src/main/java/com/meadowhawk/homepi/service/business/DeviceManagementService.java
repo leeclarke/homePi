@@ -17,6 +17,7 @@ import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.service.ApiKeyRequired;
 import com.meadowhawk.homepi.util.service.ApiKeyRequiredBeforeException;
 import com.meadowhawk.homepi.util.service.ApiKeyRequiredException;
+import com.meadowhawk.homepi.util.service.AuthRequiredBeforeException;
 
 /**
  * Service that is used for providing data specifically to the Raspberry Pi device. All Calls should enforce an API verification for security reasons. 
@@ -115,16 +116,18 @@ public class DeviceManagementService {
 	}
 
 	/**
-	 * @param piSerialId
-	 * @param apiKey
-	 * @return
+	 * Request new ApiKey using current api key credentials. Expected use by the Pi.
+	 * @param piSerialId - piSerialId
+	 * @param apiKey - apiKey
+	 * @return updated profile
 	 */
+	@ApiKeyRequiredBeforeException
 	public PiProfile updateApiKey(String piSerialId, String apiKey) {
 		try{
 			PiProfile profile = piProfileDao.findByPiSerialId(piSerialId);
-			if(StringUtil.isNullOrEmpty(apiKey) || StringUtil.isNullOrEmpty( profile.getApiKey()) || !profile.getApiKey().equals(apiKey)){
-				throw new HomePiAppException(Status.BAD_REQUEST, "Invalid API Key.");
-			}
+//			if(StringUtil.isNullOrEmpty(apiKey) || StringUtil.isNullOrEmpty( profile.getApiKey()) || !profile.getApiKey().equals(apiKey)){
+//				throw new HomePiAppException(Status.BAD_REQUEST, "Invalid API Key.");
+//			}
 			piProfileDao.updateUUID(profile);
 			
 			return piProfileDao.findByPiSerialId(piSerialId);
@@ -138,6 +141,30 @@ public class DeviceManagementService {
 		}
 	}
 
+	/**
+	 * Request new ApiKey using User credentials. Expected use by the UI.
+	 * @param userName - userName
+	 * @param authToken - authToken
+	 * @param piSerialId - piSerialId
+	 * @return updated profile
+	 */
+	@AuthRequiredBeforeException
+	public PiProfile updateApiKey(String userName, String authToken, String piSerialId) {
+		try{
+			PiProfile profile = piProfileDao.findByPiSerialId(piSerialId);
+			piProfileDao.updateUUID(profile);
+			
+			return piProfileDao.findByPiSerialId(piSerialId);
+		}
+		catch (NoResultException nre) {
+			throw new HomePiAppException(Status.NOT_FOUND, piSerialId + ": is not valid");
+		} catch (HomePiAppException h) {
+			throw h;
+		} catch (Exception e) {
+			throw new HomePiAppException(Status.BAD_REQUEST, e);
+		}
+	}
+	
 	/**
 	 * Verifies that a given serialId and ApiKey Match.
 	 * @param piSerialId

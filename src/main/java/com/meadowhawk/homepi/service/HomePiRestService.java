@@ -65,15 +65,12 @@ public class HomePiRestService {
 	@Autowired
 	DeviceManagementService deviceManagementService;
 
-//TODO: Nonstandard URI, and dupe, EVAL
 	@POST
 	@Path("/user/{user_id}/pi/{piSerialId}/api")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually.", sampleLinks={"/homepi/pi/01r735ds720/reg/api/de4d9e75-d6b3-43d7-9fef-3fb958356ded"})
 	public PiProfile updatePiApiKey(@PathParam("user_id") String userId, @PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken) {
-//todo: tHIS REQUIRES USER INFO NOT aPIkEY, fix
-//		return deviceManagementService.updateApiKey(piSerialId, apiKey);
-		return null;
+		return deviceManagementService.updateApiKey(userId, authToken, piSerialId);
 	}
 
 	@GET
@@ -90,33 +87,6 @@ public class HomePiRestService {
 		}
 		
 	}
-	
-//TODO: Nonstandard URI, and dupe, EVAL
-	@GET
-	@Path("/pi/{piSerialId}")
-	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Pi Profile", description="Returns registered info related to the given Pi serial id.", sampleLinks={"/homepi/pi/01r735ds720"})
-	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId,@HeaderParam(ACCESS_TOKEN) String acessToekn) throws HomePiAppException{
-//		return deviceManagementService.getPiProfile(piSerialId, apiKey);
-		return null;
-	}	
-
-	
-//	@POST
-//	@Path("/user/{user_id}/pi/{piSerialId}")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@PublicRESTDocMethod(endPointName="Update Pi Profile", description="Updates a Pi profile, this requires a valid user auth.", sampleLinks={"/user/homepi/test_user/pi/01r735ds720"})
-//	public Response updatePiData(@PathParam("piSerialId") String piSerialId, PiProfile piProfile,@HeaderParam(ACCESS_TOKEN) String accessToken) throws HomePiAppException{
-//		if(piProfile == null){
-//			throw new HomePiAppException(Status.BAD_REQUEST, "No data provided in request.");
-//		}
-////TODO: Make this into a Redirect!!!!!
-////TODO: Refactor, to require AuthToken
-//		
-//		deviceManagementService.updatePiProfile(piProfile);
-//		return Response.ok(piProfile).build();  
-//	}
 	
 	@GET
 	@Path("/user/{user_id}/pi/{piSerialId}/log")
