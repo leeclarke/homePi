@@ -65,7 +65,7 @@ public class DeviceManagementServiceTest {
 		PiProfile profile = piProfileDao.findByPiSerialId(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
 		final String oldApiKey = profile.getApiKey();
 		assertNotNull(profile);
-		deviceManagedService.updateApiKey(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, profile.getApiKey());
+		deviceManagedService.updateApiKey( profile.getApiKey(), PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
 		
 		PiProfile updatedProfile = piProfileDao.findByPiSerialId(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
 		assertFalse(updatedProfile.getApiKey().equals(oldApiKey));
@@ -73,7 +73,7 @@ public class DeviceManagementServiceTest {
 	
 	@Test(expected=HomePiAppException.class)
 	public void testUpdateApiKeyBadAPIKey() {
-		deviceManagedService.updateApiKey(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, new RandomString(30).nextString());
+		deviceManagedService.updateApiKey(new RandomString(30).nextString(),PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
 		
 		piProfileDao.findByPiSerialId(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL);
 	}

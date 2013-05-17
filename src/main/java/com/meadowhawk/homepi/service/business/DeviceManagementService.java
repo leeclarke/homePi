@@ -104,8 +104,7 @@ public class DeviceManagementService {
 	 * @return
 	 * @throws HomePiAppException
 	 */
-//	@ApiKeyRequiredBeforeException
-	//TODO: What would the Pi update here?
+	@ApiKeyRequiredBeforeException
 	public int updatePiProfile(PiProfile piProfile) throws HomePiAppException {
 		try{
 			piProfileDao.update(piProfile);
@@ -117,20 +116,18 @@ public class DeviceManagementService {
 
 	/**
 	 * Request new ApiKey using current api key credentials. Expected use by the Pi.
-	 * @param piSerialId - piSerialId
 	 * @param apiKey - apiKey
-	 * @return updated profile
+	 * @param piSerialId - piSerialId
+	 * @throws Exception if update fails
 	 */
 	@ApiKeyRequiredBeforeException
-	public PiProfile updateApiKey(String piSerialId, String apiKey) {
+	public void updateApiKey(String apiKey, String piSerialId) {
 		try{
 			PiProfile profile = piProfileDao.findByPiSerialId(piSerialId);
-//			if(StringUtil.isNullOrEmpty(apiKey) || StringUtil.isNullOrEmpty( profile.getApiKey()) || !profile.getApiKey().equals(apiKey)){
-//				throw new HomePiAppException(Status.BAD_REQUEST, "Invalid API Key.");
-//			}
-			piProfileDao.updateUUID(profile);
-			
-			return piProfileDao.findByPiSerialId(piSerialId);
+			int stat = piProfileDao.updateUUID(profile);
+			if(stat != 1){
+				throw new HomePiAppException(Status.NOT_MODIFIED, "Update failed");
+			}
 		}
 		catch (NoResultException nre) {
 			throw new HomePiAppException(Status.NOT_FOUND, piSerialId + ": is not valid");

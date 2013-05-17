@@ -21,7 +21,6 @@ import com.jayway.restassured.internal.RestAssuredResponseImpl;
 import com.jayway.restassured.path.json.JsonPath;
 import com.meadowhawk.homepi.integration.jax.PiProfileTestFilter;
 import com.meadowhawk.homepi.model.PiProfile;
-import com.sun.istack.NotNull;
 
 public class HomePiRestServiceIT {
 	static final String BASE_URI = "/services/homepi/user/";
@@ -96,7 +95,6 @@ public class HomePiRestServiceIT {
 	
 	@Test
 	public void testGetUser_PiProfiles_Private(){
-		String serialId = "2e848bg934";
 		String userId = "test_user";
 		
 		Object resp = given().port(8088).headers("access_token","XD123-YT53").

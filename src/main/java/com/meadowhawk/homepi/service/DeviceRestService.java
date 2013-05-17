@@ -40,7 +40,6 @@ import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 @PublicRESTDoc(serviceName = "HomePi Device Service", description = "Pi focused management services specifically for Pis.")
 public class DeviceRestService {
 	private static Logger log = Logger.getLogger( DeviceRestService.class );
-	private static final String ACCESS_TOKEN = "access_token";
 	private static final String API_KEY = "api_key";
 	
 	@Context UriInfo uriInfo;
@@ -57,6 +56,15 @@ public class DeviceRestService {
 	
 	@Autowired
 	DeviceManagementService deviceManagementService;
+	
+	@POST
+	@Path("/pi/{piSerialId}/api")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually. Returns 204 if sucessful.", sampleLinks={"/homepi/pi/01r735ds720/reg/api/de4d9e75-d6b3-43d7-9fef-3fb958356ded"})
+	public Response updatePiApiKey(@PathParam("piSerialId") String piSerialId, @HeaderParam(API_KEY) String apiKey) {
+		deviceManagementService.updateApiKey(apiKey, piSerialId);
+		return Response.noContent().build();
+	}
 	
 	@POST
 	@Path("/pi/{piSerialId}/reg")
@@ -97,9 +105,10 @@ public class DeviceRestService {
 	}
 	
 	//TODO: add string replace on py file to update the version number
-	//TODO: Feature :  add optional version umber and allow Pi to provide its current version to prevent full download.
+	//TODO: Feature :  add optional version number and allow Pi to provide its current version to prevent full download.
+	//TODO: change path to /pi/{piSerialId}/update?curVer={X}
 	@GET
-	@Path("/update")
+	@Path("/pi/update")
 	@Produces("text/x-python")
 	@PublicRESTDocMethod(endPointName="Update Pi", description="EndPoint a Pi will call to request updates. Pi API key is required.", sampleLinks={"/homepi/pi/update"})
 	public Response getScriptUpdate(){
