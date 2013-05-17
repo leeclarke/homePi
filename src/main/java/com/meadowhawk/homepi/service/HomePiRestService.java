@@ -6,7 +6,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -17,14 +16,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -33,8 +31,8 @@ import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.HomePiUser;
 import com.meadowhawk.homepi.model.LogEntries;
 import com.meadowhawk.homepi.model.PiProfile;
-import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
+import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
@@ -45,7 +43,6 @@ import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 public class HomePiRestService {
 	private static Logger log = Logger.getLogger( HomePiRestService.class );
 	private static final String ACCESS_TOKEN = "access_token";
-	private static final String API_KEY = "api_key";
 	
 	@Context UriInfo uriInfo;
 	
@@ -68,9 +65,10 @@ public class HomePiRestService {
 	@POST
 	@Path("/user/{user_id}/pi/{piSerialId}/api")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually.", sampleLinks={"/homepi/pi/01r735ds720/reg/api/de4d9e75-d6b3-43d7-9fef-3fb958356ded"})
-	public PiProfile updatePiApiKey(@PathParam("user_id") String userId, @PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken) {
-		return deviceManagementService.updateApiKey(userId, authToken, piSerialId);
+	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually. Returns 204 if sucessful.", sampleLinks={"/homepi/pi/01r735ds720/reg/api/de4d9e75-d6b3-43d7-9fef-3fb958356ded"})
+	public Response updatePiApiKey(@PathParam("user_id") String userId, @PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken) {
+		deviceManagementService.updateApiKey(userId, authToken, piSerialId);
+		return Response.noContent().build();
 	}
 
 	@GET

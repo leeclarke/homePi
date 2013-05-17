@@ -41,7 +41,7 @@ public class GeneralExceptionMapper implements ExceptionMapper<Exception>{
 			Status status = Status.fromStatusCode(wae.getResponse().getStatus());
 			String cause = (wae.getCause()!= null)?wae.getCause().toString():"";
 			if(status == null && wae.getResponse().getStatus() == 405){
-				status = Status.NOT_ACCEPTABLE;
+				status = Status.BAD_REQUEST;
 				msg += (" [Unmapped Status:" + wae.getResponse().getStatus()+"]");
 				if(cause == null) cause = "Method Not Allowed";
 			}

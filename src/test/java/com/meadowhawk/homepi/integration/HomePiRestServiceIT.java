@@ -48,24 +48,6 @@ public class HomePiRestServiceIT {
 		}
 	}
 	
-	///services/homepi/pi/{piSerialId}
-	@Test
-	public void testGetProfile_Public(){
-		String serialId = "2e848bg934";
-//TODO: not right		
-		given().port(8088).
-		expect().statusCode(200).log().body().
-	    body("email", nullValue(),
-	        "givenName", nullValue(),
-	        "familyName", nullValue(),
-	        "fullName", nullValue(),
-	        "googleAuthToken", nullValue(),
-	        "locale", equalTo("en"),
-	        "userName",equalTo(serialId),
-	        "userId", equalTo(1)).when().
-	    	get("/services/homepi/pi/"+serialId);
-	}
-	
 	///services/homepi/user/{user_id}/pi/{piSerialId}
 	@Test
 	public void testGetUser_PiProfile_Public(){
@@ -135,7 +117,7 @@ public class HomePiRestServiceIT {
 	public void testGetNewApiKey() {
 		String serialId = "hls1zeugsi";
 		String userId = "test_user";
-//TODO:  Key update isnt working but, the DAO works.
+
 		//Get current apiKey for validation
 		Object resp = given().port(8088).headers("access_token","XD123-YT53").
 		expect().statusCode(200).log().body().
@@ -150,10 +132,21 @@ public class HomePiRestServiceIT {
 		
 		String oldApiKey = body.getString("apiKey");
 		
+		//Make the call
+		given().port(8088).headers("access_token","XD123-YT53").
+		expect().statusCode(204).log().body().
+			when().
+    post(getBaseUserUri(userId) + serialId+ "/api");
+		
+		//Get updated results and compare.
 		Object resp2 = given().port(8088).headers("access_token","XD123-YT53").
-		expect().statusCode(200).log().body().
-			body("apiKey", notNullValue()).when().
-    	get(getBaseUserUri(userId) + serialId+ "/api");
+				expect().statusCode(200).log().body().
+				body("apiKey", notNullValue(),
+			        "ipAddress", notNullValue(),
+			        "name", notNullValue(),
+			        "piSerialId", equalTo(serialId)).when().
+		    	get(getBaseUserUri(userId) + serialId);
+		
 		JsonPath body2 = ((RestAssuredResponseImpl)resp2).body().jsonPath();
 		assertFalse(oldApiKey.equals(body2.getString("apiKey")));
 	}
@@ -260,5 +253,6 @@ public class HomePiRestServiceIT {
 	@Test
 	public void testLogRetrieval() {
 		//TODO: code hasn't been designed yet.
+		fail("code hasn't been designed yet.");
 	}
 }

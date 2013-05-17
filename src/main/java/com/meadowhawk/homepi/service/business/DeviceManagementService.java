@@ -146,15 +146,16 @@ public class DeviceManagementService {
 	 * @param userName - userName
 	 * @param authToken - authToken
 	 * @param piSerialId - piSerialId
-	 * @return updated profile
+	 * @throws Exception if failed.
 	 */
 	@AuthRequiredBeforeException
-	public PiProfile updateApiKey(String userName, String authToken, String piSerialId) {
+	public void updateApiKey(String userName, String authToken, String piSerialId) {
 		try{
 			PiProfile profile = piProfileDao.findByPiSerialId(piSerialId);
-			piProfileDao.updateUUID(profile);
-			
-			return piProfileDao.findByPiSerialId(piSerialId);
+			int stat = piProfileDao.updateUUID(profile);
+			if(stat != 1){
+				throw new HomePiAppException(Status.NOT_MODIFIED, "Update failed");
+			}
 		}
 		catch (NoResultException nre) {
 			throw new HomePiAppException(Status.NOT_FOUND, piSerialId + ": is not valid");
