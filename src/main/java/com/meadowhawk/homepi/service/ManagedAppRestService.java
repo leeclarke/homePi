@@ -7,6 +7,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +18,7 @@ import com.meadowhawk.homepi.service.business.ManagedAppsService;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
+import com.meadowhawk.homepi.util.model.TODO;
 
 /**
  * All interaction with ManagedApps will be done through this endPoint.
@@ -39,9 +41,10 @@ public class ManagedAppRestService {
 	@Path("/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="List Apps", description="", sampleLinks={"./homepi/pi/apps/01r735ds720"})
-	public List<ManagedApp> getApps(@PathParam("piSerialId") String piSerialId){ //TODO: Why is this a String?
+	public Response getApps(@PathParam("piSerialId") String piSerialId){ //TODO: Why is this a String?
 		//TODO: Should included user auth/id in this request once defined.
-		return managedAppsService.getManagedAppsForDevice(piSerialId);		
+//		return managedAppsService.getManagedAppsForDevice(piSerialId);		
+		return Response.ok(new TODO()).build();
 	}
 	
 	/* TODO:

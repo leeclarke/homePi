@@ -34,6 +34,7 @@ import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
+import com.meadowhawk.homepi.util.model.TODO;
 
 @Path("/homepi/device")
 @Component
@@ -60,7 +61,7 @@ public class DeviceRestService {
 	@POST
 	@Path("/pi/{piSerialId}/api")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually. Returns 204 if sucessful.", sampleLinks={"/homepi/pi/01r735ds720/reg/api/de4d9e75-d6b3-43d7-9fef-3fb958356ded"})
+	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually. Returns 204 if sucessful.", sampleLinks={"/homepi/device/pi/01r735ds720/api"})
 	public Response updatePiApiKey(@PathParam("piSerialId") String piSerialId, @HeaderParam(API_KEY) String apiKey) {
 		deviceManagementService.updateApiKey(piSerialId,apiKey);
 		return Response.noContent().build();
@@ -70,7 +71,7 @@ public class DeviceRestService {
 	@Path("/pi/{piSerialId}/reg")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Register Pi", description="Registers a new PI with the HomePi. This is called directly from the Pi, the first tiem the Pi runs the local HomePi application. The HomePi serial ID is mandatory and must match the Pi's actual number or things wont work out later on.. ", sampleLinks={"/homepi/pi/01r735ds720/reg"})
+	@PublicRESTDocMethod(endPointName="Register Pi", description="Registers a new PI with the HomePi. This is called directly from the Pi, the first tiem the Pi runs the local HomePi application. The HomePi serial ID is mandatory and must match the Pi's actual number or things wont work out later on.. ", sampleLinks={"/homepi/device/pi/01r735ds720/reg"})
 	public PiProfile registerPi(@PathParam("piSerialId") String piSerialId, @Context HttpServletRequest request) {
 		return deviceManagementService.createPiProfile(piSerialId, request.getRemoteAddr());
 	}
@@ -78,7 +79,7 @@ public class DeviceRestService {
 	@GET
 	@Path("/pi/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Pi Profile", description="Returns registered info related to the given Pi serial id.", sampleLinks={"/homepi/pi/01r735ds720"})
+	@PublicRESTDocMethod(endPointName="Pi Profile", description="Returns registered info related to the given Pi serial id.", sampleLinks={"/homepi/device/pi/8lhdfenm1x"})
 	public PiProfile getPiData(@PathParam("piSerialId") String piSerialId,@HeaderParam(API_KEY) String apiKey) throws HomePiAppException{
 		return deviceManagementService.getPiProfile(piSerialId, apiKey);
 	}	
@@ -87,21 +88,21 @@ public class DeviceRestService {
 	@Path("/pi/{piSerialId}/log")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Logs a message from the Pi. Pi API key is required.", sampleLinks={"/homepi/pi/01r735ds720/log"})
+	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Logs a message from the Pi. Pi API key is required.", sampleLinks={"/homepi/device/pi/8lhdfenm1x/log"})
 	public Response logStatus(@PathParam("piSerialId") String piSerialId){
 		
 		
-		return Response.ok().build();
+		return Response.ok(new TODO()).build();
 	}
 	
 	@GET
 	@Path("/pi/{piSerialId}/log")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/01r735ds720/log"})
-	public List<LogEntries> getLlogs(@PathParam("piSerialId") String piSerialId){
+	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/device/pi/8lhdfenm1x/log"})
+	public Response getLlogs(@PathParam("piSerialId") String piSerialId){
 		
 		//Need to add params and privacy filtering on this.
-		return new ArrayList<LogEntries>();
+		return Response.ok(new TODO()).build();
 	}
 	
 	//TODO: add string replace on py file to update the version number
@@ -110,7 +111,7 @@ public class DeviceRestService {
 	@GET
 	@Path("/pi/update")
 	@Produces("text/x-python")
-	@PublicRESTDocMethod(endPointName="Update Pi", description="EndPoint a Pi will call to request updates. Pi API key is required.", sampleLinks={"/homepi/pi/update"})
+	@PublicRESTDocMethod(endPointName="Update Pi", description="EndPoint a Pi will call to request updates. Pi API key is required.", sampleLinks={"/homepi/device/pi/update"})
 	public Response getScriptUpdate(){
 		//TODO: Add API key verification
 		File file;
