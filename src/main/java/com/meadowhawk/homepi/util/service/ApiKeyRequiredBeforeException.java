@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Fired before a method fires to enforce security and prevent anything from processing until the ApiKey has been validated.
+ * Fired before a method fires to enforce security and prevent anything from processing until the ApiKey has been validated. 
+ * NOTE: Method signature parameter order is mandatory: (serialId, apiKey,...)
  * @author lee
  */
 @Retention(RetentionPolicy.RUNTIME)

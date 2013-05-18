@@ -122,7 +122,7 @@ public class DeviceManagementService {
 	 * @throws Exception if update fails
 	 */
 	@ApiKeyRequiredBeforeException
-	public void updateApiKey(String apiKey, String piSerialId) {
+	public void updateApiKey(String piSerialId, String apiKey) {
 		try{
 			PiProfile profile = piProfileDao.findByPiSerialId(piSerialId);
 			profile.setApiKey(UUID.fromString(apiKey));
