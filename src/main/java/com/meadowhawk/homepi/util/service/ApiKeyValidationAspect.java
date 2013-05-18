@@ -95,8 +95,14 @@ public class ApiKeyValidationAspect {
 		
 		String piSerialId = (String) args[0];
 		String apiKey = (String) args[1];
-		if (!deviceManagementService.validateApiKey(piSerialId, apiKey)) {
-			throw new HomePiAppException(Status.FORBIDDEN);			
+		try{
+			if (!deviceManagementService.validateApiKey(piSerialId, apiKey)) {
+				throw new HomePiAppException(Status.FORBIDDEN);			
+			}
+		} catch(HomePiAppException hpae){
+			throw hpae;
+		} catch(Exception e){
+			log.error("Api VErify Failed: ", e);
 		}
 	}
 }

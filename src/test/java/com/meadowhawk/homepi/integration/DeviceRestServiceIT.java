@@ -7,7 +7,6 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
-import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.internal.RestAssuredResponseImpl;
 import com.jayway.restassured.path.json.JsonPath;
 
@@ -16,6 +15,7 @@ public class DeviceRestServiceIT {
 	
 	static final String BASE_HOMEPI_URI = "/services/homepi/user/";
 	static final String PI_URI = "/pi/";
+	static final String apiKey = "035a0f4c-5dd2-4805-aa0c-9a545a738c51";
 	
 	private static String getBaseUserUri(String userId) {
 		return BASE_HOMEPI_URI + userId + PI_URI;
@@ -25,7 +25,7 @@ public class DeviceRestServiceIT {
 	@Test
 	public void testGetNewApiKey() {
 //TODO: FIX		
-		String serialId = "hls1zeugsi";
+		String serialId = "2e848bg934";
 		String userId = "test_user";
 
 		//Get current apiKey for validation
@@ -43,13 +43,13 @@ public class DeviceRestServiceIT {
 		String oldApiKey = body.getString("apiKey");
 		
 		//Make the call
-		given().port(8088).headers("access_token","XD123-YT53").
+		given().port(8088).headers("api_key",apiKey).
 		expect().statusCode(204).log().body().
 			when().
-    post(BASE_URI + serialId + "/api");
+		post(BASE_URI + serialId + "/api");
 		
 		//Get updated results and compare.
-		Object resp2 = given().port(8088).headers("access_token","XD123-YT53").
+		Object resp2 = given().port(8088).headers("api_key","XD123-YT53").
 				expect().statusCode(200).log().body().
 				body("apiKey", notNullValue(),
 			        "ipAddress", notNullValue(),
@@ -75,7 +75,7 @@ public class DeviceRestServiceIT {
 	@Test
 	public void testPiSoftwareUpdate() {
 		String piSerialId = "2e848bg934";
-		String apiKey = "035a0f4c-5dd2-4805-aa0c-9a545a738c51";
+		
 		
 		given().port(8088).headers("api_key",apiKey ).
 			expect().statusCode(200).log().body().contentType("text/x-python").

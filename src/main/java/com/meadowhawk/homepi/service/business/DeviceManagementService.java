@@ -1,6 +1,7 @@
 package com.meadowhawk.homepi.service.business;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
@@ -124,6 +125,7 @@ public class DeviceManagementService {
 	public void updateApiKey(String apiKey, String piSerialId) {
 		try{
 			PiProfile profile = piProfileDao.findByPiSerialId(piSerialId);
+			profile.setApiKey(UUID.fromString(apiKey));
 			int stat = piProfileDao.updateUUID(profile);
 			if(stat != 1){
 				throw new HomePiAppException(Status.NOT_MODIFIED, "Update failed");
@@ -170,7 +172,12 @@ public class DeviceManagementService {
 	 * @return - true if valid
 	 */
 	public boolean validateApiKey(String piSerialId, String apiKey) {
-		return piProfileDao.validateApiKey(piSerialId,apiKey);
+		try{
+			PiProfile profile = this.getPiProfile(piSerialId, apiKey);
+			return (profile.getApiKey().equals(apiKey));
+		} catch(Exception e){
+			return false;
+		}
 	}
 	
 }

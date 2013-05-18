@@ -33,17 +33,17 @@ public class PiProfileDAO extends AbstractJpaDAO< PiProfile >{
 		return entityManager.createNativeQuery("update PI_PROFILE set api_key = uuid_generate_v4() where pi_id = " +entity.getPiId()).executeUpdate();
 	}
 
-	/**
-	 * Validate ApiKey for a given Pi Serial ID.
-	 * @param piSerialId
-	 * @param apiKey
-	 * @return true if valid
-	 */
-	public boolean validateApiKey(String piSerialId, String apiKey) {
-		if(StringUtil.isNullOrEmpty(piSerialId) || StringUtil.isNullOrEmpty(apiKey)){
-			return false;
-		}
-		PiProfile profile = findByPiSerialId(piSerialId);
-		return (profile.getApiKey().equals(apiKey))?true:false;
-	}
+//	/**
+//	 * Validate ApiKey for a given Pi Serial ID.
+//	 * @param piSerialId
+//	 * @param apiKey
+//	 * @return true if valid
+//	 */
+//	public boolean validateApiKey(String piSerialId, String apiKey) {
+//		if(StringUtil.isNullOrEmpty(piSerialId) || StringUtil.isNullOrEmpty(apiKey)){
+//			return false;
+//		}
+//		PiProfile profile = findByPiSerialId(piSerialId);
+//		return (profile.getApiKey().equals(apiKey))?true:false;
+//	}
 }

@@ -89,7 +89,7 @@ public class HomePiRestService {
 	@GET
 	@Path("/user/{user_id}/pi/{piSerialId}/log")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/01r735ds720/log"})
+	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/8lhdfenm1x/log"})
 	public List<LogEntries> getLlogs(@PathParam("piSerialId") String piSerialId){
 		
 		//Need to add params and privacy filtering on this.
@@ -101,7 +101,7 @@ public class HomePiRestService {
 	@GET
 	@Path("/user/{user_id}/pi/{piSerialId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName = "Get PiProfile", description = "Retrieve pi profile by pi serial id. Include access_token for owner view.", sampleLinks = { "/homepi/user/test_user/pi/tu12345" })
+	@PublicRESTDocMethod(endPointName = "Get PiProfile", description = "Retrieve pi profile by pi serial id. Include access_token for owner view.", sampleLinks = { "/homepi/user/test_user/pi/8lhdfenm1x" })
 	public Response getUserPiProfile(@PathParam("user_id") String userName,@PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken){
 		PiProfile profile = userService.getPiProfile(userName, authToken,piSerialId);
 		return Response.ok(profile).build();
@@ -111,7 +111,7 @@ public class HomePiRestService {
 	@Path("/user/{user_id}/pi/{piSerialId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName = "Update PiProfile", description = "Retrieve users pi profiles. access_token is required or returns NoAccess.", sampleLinks = { "/homepi/user/test_user/pi/tu12345" })
+	@PublicRESTDocMethod(endPointName = "Update PiProfile", description = "Retrieve users pi profiles. access_token is required or returns NoAccess.", sampleLinks = { "/homepi/user/test_user/pi/8lhdfenm1x" })
 	public Response updatePiProfile(@PathParam("user_id") String userName,@PathParam("piSerialId") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken, PiProfile piProfile){
 		userService.updatePiProfile(userName, authToken,piSerialId, piProfile);
 		log.debug("Redirection to:"+getUriRedirect("getUserPiProfile"));

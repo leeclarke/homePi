@@ -62,7 +62,7 @@ public class DeviceRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Update Pi API Key", description="Updated the API key for the Pi. This can only be called by an auth user. Sadly for security reasons the user has to change the API stored on the PI manually. Returns 204 if sucessful.", sampleLinks={"/homepi/pi/01r735ds720/reg/api/de4d9e75-d6b3-43d7-9fef-3fb958356ded"})
 	public Response updatePiApiKey(@PathParam("piSerialId") String piSerialId, @HeaderParam(API_KEY) String apiKey) {
-		deviceManagementService.updateApiKey(apiKey, piSerialId);
+		deviceManagementService.updateApiKey(piSerialId,apiKey);
 		return Response.noContent().build();
 	}
 	
