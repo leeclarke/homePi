@@ -10,9 +10,9 @@
 	<!-- Must call using ssl indicator for local tests. -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${db.driver}" />
-		<property name="url" value="${db.url}/${db.name}?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory" />
-		<property name="username" value="${db.userid}" />
-		<property name="password" value="${db.password}" />
+		<property name="url" value="${db.url.local}" />
+		<property name="username" value="${db.userid.local}" />
+		<property name="password" value="${db.password.local}" />
 	</bean>
 
 	<bean id="jpaEmf"
