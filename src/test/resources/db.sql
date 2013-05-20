@@ -1,4 +1,4 @@
-﻿CREATE TABLE USERS (
+CREATE TABLE USERS (
         USER_ID SERIAL, 
         CREATE_TIME timestamp NOT NULL DEFAULT now(), 
         UPDATE_TIME timestamp,
