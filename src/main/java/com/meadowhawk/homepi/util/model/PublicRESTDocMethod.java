@@ -17,6 +17,12 @@ public @interface PublicRESTDocMethod {
 	public String endPointName();
 	
 	/**
+	 * Group name provides the UI with the ability to group the EndPoints into logical subsets to make the Docs easier to navigate.
+	 * @return - group
+	 */
+	public String group() default "";
+	
+	/**
 	 * Description of the EndPoint.
 	 * @return
 	 */

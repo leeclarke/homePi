@@ -74,6 +74,9 @@ public class HomePiUser extends MaskableDataObject implements Serializable{
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
 	private List<PiProfile> piProfiles = new ArrayList<PiProfile>(0);
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+	private List<ManagedApp> managedApps = new ArrayList<ManagedApp>(0);
 	
 	public Long getUserId() {
 		return userId;
@@ -155,5 +158,11 @@ public class HomePiUser extends MaskableDataObject implements Serializable{
 		for (PiProfile profile : this.piProfiles) {
 			profile.setMaskedView(isMaskedView());	
 		}
+	}
+	public List<ManagedApp> getManagedApps() {
+		return this.managedApps;
+	}
+	public void setManagedApps(List<ManagedApp> managedApps) {
+		this.managedApps = managedApps;
 	}
 }

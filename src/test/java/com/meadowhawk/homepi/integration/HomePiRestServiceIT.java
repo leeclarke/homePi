@@ -75,7 +75,7 @@ public class HomePiRestServiceIT {
 	        "piSerialId", equalTo(serialId)).when().
     	get(getBaseUserUri(userId) + serialId);
 	}
-//	access_token: XD123-YT53
+
 	
 	///services/homepi/user/{user_id}/pi
 	@Test
@@ -253,4 +253,12 @@ public class HomePiRestServiceIT {
 		//TODO: code hasn't been designed yet.
 		fail("code hasn't been designed yet.");
 	}
+	
+//POST /user/{user_id}/app/
+	
+//GET /user/{user_id}/app/
+	
+//GET /user/{user_id}/app/{AppName}
+//POST /user/{user_id}/app/{AppName}
+//DELETE /user/{user_id}/app/{AppName}
 }

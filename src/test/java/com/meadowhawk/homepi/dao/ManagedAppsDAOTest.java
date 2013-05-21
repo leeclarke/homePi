@@ -45,7 +45,7 @@ public class ManagedAppsDAOTest {
 //		assertTrue(response.size() == 0);
 //	}
 	
-	@Test(expected=NoResultException.class)
+	@Test
 	public void testSaveFindDelete() {
 		String appName = "TestApp";
 		String deploymentPath = "/usr/home/pi/test";
@@ -66,7 +66,8 @@ public class ManagedAppsDAOTest {
 		final Long newId = new Long(entity.getAppId());
 		
 		managedAppsDAO.delete(entity);
-		managedAppsDAO.findOne(newId);
+		ManagedApp resp = managedAppsDAO.findOne(newId);
+		assertTrue(resp == null);
 	}
 	
 	@Test

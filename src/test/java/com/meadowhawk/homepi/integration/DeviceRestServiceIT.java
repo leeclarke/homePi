@@ -23,8 +23,7 @@ public class DeviceRestServiceIT {
 	
 	//POST /pi/{piSerialId}/api
 	@Test
-	public void testGetNewApiKey() {
-//TODO: FIX		
+	public void testGetNewApiKey() {	
 		String serialId = "2e848bg934";
 		String userId = "test_user";
 
@@ -43,13 +42,13 @@ public class DeviceRestServiceIT {
 		String oldApiKey = body.getString("apiKey");
 		
 		//Make the call
-		given().port(8088).headers("api_key",apiKey).
+		given().port(8088).headers("api_key",oldApiKey).
 		expect().statusCode(204).log().body().
 			when().
 		post(BASE_URI + serialId + "/api");
 		
 		//Get updated results and compare.
-		Object resp2 = given().port(8088).headers("api_key","XD123-YT53").
+		Object resp2 = given().port(8088).headers("access_token","XD123-YT53").
 				expect().statusCode(200).log().body().
 				body("apiKey", notNullValue(),
 			        "ipAddress", notNullValue(),
@@ -62,20 +61,35 @@ public class DeviceRestServiceIT {
 	}
 	
 	//POST /pi/{piSerialId}/reg
+	//TODO: Really need to be able to delete these after they get created but there isn't a REST delete function.
+	
 	
 	//GET /pi/{piSerialId}
+	@Test
+	public void testGetProfile() {
+		String serialId = "pi456y765";
+
+		//Get current apiKey for validation
+		given().port(8088).headers("api_key","8b72f46d-b470-43d4-8919-6148aeb152e3").
+		expect().statusCode(200).log().body().
+		body("apiKey", notNullValue(),
+	        "ipAddress", notNullValue(),
+	        "name", notNullValue(),
+	        "piSerialId", equalTo(serialId)).when().
+    	get(BASE_URI + serialId);
+	}	
 	
 	
 	//GET  /pi/{piSerialId}/log
-  //POST /pi/{piSerialId}/log
+	//Don't really need this..
 	
-	// /update
+  //POST /pi/{piSerialId}/log
+//serId,App,timestamp,key,value
 	
 	//	GET /pi/update
 	@Test
 	public void testPiSoftwareUpdate() {
 		String piSerialId = "2e848bg934";
-		
 		
 		given().port(8088).headers("api_key",apiKey ).
 			expect().statusCode(200).log().body().contentType("text/x-python").

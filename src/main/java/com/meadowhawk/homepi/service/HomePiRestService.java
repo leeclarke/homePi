@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -33,9 +34,11 @@ import com.meadowhawk.homepi.model.LogEntries;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
+import com.meadowhawk.homepi.service.business.ManagedAppsService;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
+import com.meadowhawk.homepi.util.model.TODO;
 
 @Path("/homepi")
 @Component
@@ -62,6 +65,9 @@ public class HomePiRestService {
 	@Autowired
 	DeviceManagementService deviceManagementService;
 
+	@Autowired
+	ManagedAppsService managedAppsService;
+	
 	@POST
 	@Path("/user/{user_id}/pi/{piSerialId}/api")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -119,6 +125,11 @@ public class HomePiRestService {
 		return Response.noContent().build();
 	}
 	
+	/**
+	 * Generates a URI for redirect to one of the other endpoints in the current Service.
+	 * @param methodName - one of the public methods in this service.
+	 * @return - URI for redirect.
+	 */
 	protected URI getUriRedirect(String methodName){
 		UriBuilder ub = uriInfo.getBaseUriBuilder().path(HomePiRestService.class);
 		URI redirectURI = ub.path(HomePiRestService.class, methodName).build();
@@ -136,8 +147,56 @@ public class HomePiRestService {
 	}
 	
 	
+	@POST
+	@Path("/user/{user_id}/app")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(group="Managed Apps", endPointName="Create New App", description="Allows User to define new managed applications which can then be assigned to a given PI.", sampleLinks="/user/test_user/app")
+	public Response createManagedApp(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
+		
+		//TODO: Add redirect to newly created App.
+		return Response.noContent().build();
+	}
 	
-	//TODO: add string replace on py file to update the version number
+	@GET
+	@Path("/user/{user_id}/app/")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(group="Managed Apps", endPointName="Get Managed Apps", description="Returns all managed apps that a user has created. User access_token required for viewing some data.", sampleLinks="/user/test_user/app/")
+	public Response getAllApps(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
+		HomePiUser hUser = userService.getUserData(userId, authToken);
+		return Response.ok(hUser.getManagedApps()).build();
+	}
+	
+	@GET
+	@Path("/user/{user_id}/app/{app_name}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(group="Managed Apps", endPointName="", description="", sampleLinks="/user/test_user/app/TestApp")
+	public Response getApps(@PathParam("user_id") String userId, @PathParam("app_name") String appName,  @HeaderParam(ACCESS_TOKEN) String authToken){
+	  //TODO:
+		return Response.ok(new TODO()).build();
+	}
+	
+	@POST
+	@Path("/user/{user_id}/app/{AppName}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(group="Managed Apps", endPointName="Update App", description="", sampleLinks="/user/test_user/app/TestApp")
+	public Response updateApp(@PathParam("user_id") String userId, @PathParam("app_name") String appName,  @HeaderParam(ACCESS_TOKEN) String authToken){
+	  //TODO: Add redirect
+		return Response.ok(new TODO()).build();
+	}
+	
+	@DELETE
+	@Path("/user/{user_id}/app/{AppName}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@PublicRESTDocMethod(group="Managed Apps", endPointName="Delete App", description="Permanantly deletes managed app. Users access_token is required for processing.", sampleLinks="/user/test_user/app/TestApp")
+	public Response deleteApp(@PathParam("user_id") String userId, @PathParam("app_name") String appName,  @HeaderParam(ACCESS_TOKEN) String authToken){
+	  //TODO: 
+		return Response.ok(new TODO()).build();
+	}
+	
+	
+	//TODO: REMOVE
 	@GET
 	@Path("/update")
 	@Produces("text/x-python")

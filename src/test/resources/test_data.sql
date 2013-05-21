@@ -16,3 +16,9 @@ INSERT INTO pi_profile ( create_time, update_time, pi_serial_id, name, ip_addres
     
  --Set up managed apps
  INSERT INTO managed_app ( create_time, update_time, version_number, app_name, file_name, deployment_path, user_id ) VALUES ( '2013-04-19 19:27:40', NULL, 1, 'TestApp', 'TestFile.jar', '/usr/home/pi/test', 1 )
+ 
+ 
+ 
+ 
+ --Updates for TEst support
+ UPDATE pi_profile SET update_time = now(), pi_serial_id = 'pi456y765', name = 'Another Test Pi', ip_address = '192.168.1.3', ssh_port_number = 22, user_id = 2, api_key = uuid_generate_v4() WHERE pi_id = 6;

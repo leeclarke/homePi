@@ -9,7 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 
@@ -64,6 +66,11 @@ public class ManagedApp extends MaskableDataObject{
 	
 	@Column(name = "user_id", nullable=false)
 	private Long ownerId;
+	
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="user_id", insertable=false, updatable=false)
+	@JsonIgnore
+	private HomePiUser user;
 	
 	public Long getAppId() {
 		return appId;
