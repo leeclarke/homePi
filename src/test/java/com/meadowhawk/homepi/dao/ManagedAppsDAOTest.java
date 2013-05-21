@@ -92,4 +92,13 @@ public class ManagedAppsDAOTest {
 		System.out.println("newId:" + newId);
 	}
 	
+	@Test
+	public void testFindByName() {
+		String name = "TestApp2";
+		long userId = 1L;
+		
+		ManagedApp resp = managedAppsDAO.findByName(name,userId);
+		assertNotNull(resp);
+		assertEquals(name, resp.getAppName());
+	}
 }

@@ -12,7 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonBackReference;
@@ -28,9 +30,10 @@ import org.joda.time.DateTime;
  */
 @Entity
 @Table(name = "MANAGED_APP")
-@NamedNativeQuery(name="ManagedApp.findByPiSerialId", query="SELECT m.app_id, m.update_time, m.create_time, m.version_number, m.app_name, m.file_name, m.deployment_path, m.user_id" +
-		"  FROM MANAGED_APP m, USER_PI_MANAGED_APP u, PI_PROFILE p " +
-		"WHERE p.PI_SERIAL_ID = :piSerialId  AND p.PI_ID = u.PI_ID AND u.APP_ID = m.APP_ID", resultClass=ManagedApp.class)
+@NamedNativeQueries(value={
+	@NamedNativeQuery(name="ManagedApp.findByAppName", query="SELECT * FROM MANAGED_APP m WHERE m.app_name = :appName and m.user_id = :userId", resultClass=ManagedApp.class)
+})
+//@NamedQuery(name="ManagedApp.findByAppName", query="from ManagedApp m where m.appName := appName")
 @JsonFilter("privateView")
 public class ManagedApp extends MaskableDataObject{
 
@@ -53,10 +56,10 @@ public class ManagedApp extends MaskableDataObject{
 	private DateTime createTime = new DateTime();
 	
 	@Column(name = "version_number", nullable=false)
-	private Long versionNumber;
+	private Long versionNumber = 0L;
 	
 	@Column(name = "app_name", nullable=false)
-	private String AppName;
+	private String appName;
 	
 	@Column(name = "file_name", nullable=false)
 	private String fileName;
@@ -90,12 +93,7 @@ public class ManagedApp extends MaskableDataObject{
 	public void setVersionNumber(Long versionNumber) {
 		this.versionNumber = versionNumber;
 	}
-	public String getAppName() {
-		return AppName;
-	}
-	public void setAppName(String appName) {
-		AppName = appName;
-	}
+
 	public String getFileName() {
 		return fileName;
 	}
@@ -126,6 +124,12 @@ public class ManagedApp extends MaskableDataObject{
 	}
 	public void setPiProfiles(Set<PiProfile> piProfiles) {
 		this.piProfiles = piProfiles;
+	}
+	public String getAppName() {
+		return appName;
+	}
+	public void setAppName(String appName) {
+		this.appName = appName;
 	}
 	
 }

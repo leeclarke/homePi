@@ -19,15 +19,22 @@ import org.junit.Test;
 
 import com.jayway.restassured.internal.RestAssuredResponseImpl;
 import com.jayway.restassured.path.json.JsonPath;
+import com.meadowhawk.homepi.integration.jax.ManagedAppTestFilter;
 import com.meadowhawk.homepi.integration.jax.PiProfileTestFilter;
+import com.meadowhawk.homepi.model.ManagedApp;
 import com.meadowhawk.homepi.model.PiProfile;
 
 public class HomePiRestServiceIT {
 	static final String BASE_URI = "/services/homepi/user/";
 	static final String PI_URI = "/pi/";
+	private static final String APP_URI = "/app";
 	
 	private static String getBaseUserUri(String userId) {
 		return BASE_URI + userId + PI_URI;
+	}
+	
+	private static String getBaseUserAppUri(String userId, String appName) {
+		return BASE_URI + userId + APP_URI + ((appName != null)?"/"+appName:"");
 	}
 	
 	/**
@@ -255,6 +262,54 @@ public class HomePiRestServiceIT {
 	}
 	
 //POST /user/{user_id}/app/
+	@Test
+	public void testCreateNewApp() {
+		String userId = "test_user";
+		String appName = "Shiny Test App";
+		String deploymentPath = "/home/tester/myapp";
+		String fileName = "awsomeApp.py";
+		
+		ManagedApp ma = new ManagedApp();
+		ma.setAppName(appName);
+		ma.setDeploymentPath(deploymentPath);
+		ma.setFileName(fileName);
+		
+		String json = getManagedAppJson(ma);
+		
+		given().log().all().port(8088).headers("access_token","XD123-YT53").
+		contentType(MediaType.APPLICATION_JSON).body(json).
+		expect().
+		    statusCode(200).log().body().
+		when().
+		    post(getBaseUserAppUri(userId,null));
+		//TODO: Prevent dupe appName/userID combos
+		//TODO: provide an encoded Name field for URIs and lookups etc..
+		//TODO: Finsh testing delete and add redirects. also update above post call
+		
+	//Add GET to verify results.
+		given().port(8088).headers("access_token","XD123-YT53").
+				expect().statusCode(200).log().body().
+		    body("appName", equalTo(appName),
+		        "deploymentPath", equalTo(deploymentPath),
+		        "fileName",equalTo(fileName),
+		        "ownerId", notNullValue(),
+		        "appId", notNullValue()).when().
+		    	get(getBaseUserAppUri(userId,appName));
+		
+	}
+
+	private static String getManagedAppJson(ManagedApp ma) {
+		try{
+			ObjectMapper mapper = new ObjectMapper();
+			SimpleFilterProvider filters = new SimpleFilterProvider().addFilter("privateView",new ManagedAppTestFilter());
+			// and then serialize using that filter provider:
+			return mapper.writer(filters).writeValueAsString(ma);
+		} catch(Exception e) {
+			fail("JSON Serialization failed." + e);
+			return null;
+		}
+	}
+	
 	
 //GET /user/{user_id}/app/
 	

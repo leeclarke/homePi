@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.HomePiUser;
 import com.meadowhawk.homepi.model.LogEntries;
+import com.meadowhawk.homepi.model.ManagedApp;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
@@ -152,10 +153,13 @@ public class HomePiRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(group="Managed Apps", endPointName="Create New App", description="Allows User to define new managed applications which can then be assigned to a given PI.", sampleLinks="/user/test_user/app")
-	public Response createManagedApp(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
+	public Response createManagedApp(@PathParam("user_id") String userName, @HeaderParam(ACCESS_TOKEN) String authToken, ManagedApp managedApp){
 		
+		ManagedApp ma =  managedAppsService.createUserApp(userName, authToken, managedApp);
 		//TODO: Add redirect to newly created App.
-		return Response.noContent().build();
+		log.debug("   >> redirect to:  "+getUriRedirect("getApp"));
+//		return Response.seeOther().build();
+		return Response.ok(ma).build();
 	}
 	
 	@GET
@@ -171,9 +175,9 @@ public class HomePiRestService {
 	@Path("/user/{user_id}/app/{app_name}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(group="Managed Apps", endPointName="", description="", sampleLinks="/user/test_user/app/TestApp")
-	public Response getApps(@PathParam("user_id") String userId, @PathParam("app_name") String appName,  @HeaderParam(ACCESS_TOKEN) String authToken){
-	  //TODO:
-		return Response.ok(new TODO()).build();
+	public Response getApp(@PathParam("user_id") String userId, @PathParam("app_name") String appName,  @HeaderParam(ACCESS_TOKEN) String authToken){
+		ManagedApp ma = managedAppsService.getUserApp(userId, authToken, appName);
+		return Response.ok(ma).build();
 	}
 	
 	@POST
@@ -181,8 +185,11 @@ public class HomePiRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(group="Managed Apps", endPointName="Update App", description="", sampleLinks="/user/test_user/app/TestApp")
-	public Response updateApp(@PathParam("user_id") String userId, @PathParam("app_name") String appName,  @HeaderParam(ACCESS_TOKEN) String authToken){
-	  //TODO: Add redirect
+	public Response updateApp(@PathParam("user_id") String userId, @PathParam("app_name") String appName,  @HeaderParam(ACCESS_TOKEN) String authToken, ManagedApp managedApp){
+	  
+		managedAppsService.updateUserApps(userId, authToken, appName, managedApp);
+		//TODO: Add redirect
+		
 		return Response.ok(new TODO()).build();
 	}
 	
