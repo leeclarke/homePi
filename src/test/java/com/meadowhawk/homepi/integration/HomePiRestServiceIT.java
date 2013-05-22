@@ -1,7 +1,7 @@
 package com.meadowhawk.homepi.integration;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -9,6 +9,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
@@ -19,6 +20,7 @@ import org.junit.Test;
 
 import com.jayway.restassured.internal.RestAssuredResponseImpl;
 import com.jayway.restassured.path.json.JsonPath;
+import com.jayway.restassured.response.Response;
 import com.meadowhawk.homepi.integration.jax.ManagedAppTestFilter;
 import com.meadowhawk.homepi.integration.jax.PiProfileTestFilter;
 import com.meadowhawk.homepi.model.ManagedApp;
@@ -262,10 +264,13 @@ public class HomePiRestServiceIT {
 	}
 	
 //POST /user/{user_id}/app/
+//GET /user/{user_id}/app/{AppName}
+//POST /user/{user_id}/app/{AppName}
+//DELETE /user/{user_id}/app/{AppName}
 	@Test
-	public void testCreateNewApp() {
+	public void testCreateGetDeleteNewApp() {
 		String userId = "test_user";
-		String appName = "Shiny Test App";
+		String appName = "Shiny Test App Too";
 		String deploymentPath = "/home/tester/myapp";
 		String fileName = "awsomeApp.py";
 		
@@ -282,19 +287,29 @@ public class HomePiRestServiceIT {
 		    statusCode(200).log().body().
 		when().
 		    post(getBaseUserAppUri(userId,null));
-		//TODO: provide an encoded Name field for URIs and lookups etc..
-		//TODO: Finish testing delete and add redirects. also update above post call
 		
-	//Add GET to verify results.
+		//Add GET to verify results.
 		given().port(8088).headers("access_token","XD123-YT53").
 				expect().statusCode(200).log().body().
 		    body("appName", equalTo(appName),
+		    		"webName", equalTo(appName.replaceAll(" ", "_")),
 		        "deploymentPath", equalTo(deploymentPath),
 		        "fileName",equalTo(fileName),
 		        "ownerId", notNullValue(),
 		        "appId", notNullValue()).when().
 		    	get(getBaseUserAppUri(userId,appName));
 		
+		//call the delete
+		given().port(8088).headers("access_token","XD123-YT53").
+		expect().statusCode(204).log().body().
+			when().
+    	delete(getBaseUserAppUri(userId,appName));
+		
+	//Add GET to verify results.
+		given().port(8088).headers("access_token","XD123-YT53").
+				expect().statusCode(404).log().body().when().
+		    	get(getBaseUserAppUri(userId,appName));
+			
 	}
 
 	private static String getManagedAppJson(ManagedApp ma) {
@@ -311,8 +326,20 @@ public class HomePiRestServiceIT {
 	
 	
 //GET /user/{user_id}/app/
-	
-//GET /user/{user_id}/app/{AppName}
-//POST /user/{user_id}/app/{AppName}
-//DELETE /user/{user_id}/app/{AppName}
+	@Test
+	public void testGetUsersAppsPrivate() {
+		String userId = "test_user";
+
+		
+		//Add GET to verify results.
+		Response resp = given().port(8088).headers("access_token","XD123-YT53").
+				expect().statusCode(200).log().body().when().
+		    get(getBaseUserAppUri(userId,null));
+		
+		JsonPath json = ((RestAssuredResponseImpl)resp).body().jsonPath();
+		//Verify that results were returned.
+		assertTrue(json.getList("$").size() >0);
+		assertTrue("REsults Missing deploymentPath",json.getString("$").contains("deploymentPath"));
+	}
+
 }

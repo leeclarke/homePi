@@ -2,6 +2,8 @@ package com.meadowhawk.homepi.service.business;
 
 import static org.junit.Assert.*;
 
+import javax.ws.rs.core.Response.Status;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,12 +54,12 @@ public class ManagedAppServiceTest {
 		assertFalse("UserId should not be updatable.",ownerId == updatedMA.getOwnerId());
 	}
 	
-	@Test(expected=HomePiAppException.class)
+	@Test
 	public void testCreateDeleteManagedApp() {
 		
 		String userName = "test_user";
 		String authToken = "XD123-YT53";
-		String appName = "TestAppDelete";
+		String appName = "Test App Delete";
 		Long v1 = 1L;
 		Long version = System.currentTimeMillis();
 		String deploymentPath = "/usr/home/pi/test/"+version;
@@ -67,6 +69,7 @@ public class ManagedAppServiceTest {
 		managedApp.setDeploymentPath(deploymentPath);
 		managedApp.setVersionNumber(v1);
 		managedApp.setFileName(fileName);		
+		managedApp.setAppName(appName);
 		
 		ManagedApp updatedMA = managedAppsService.createUserApp(userName, authToken, managedApp);
 		
@@ -82,7 +85,12 @@ public class ManagedAppServiceTest {
 		managedAppsService.deleteManageApp(userName, authToken, appName);
 		
 		//See if still there.
-		ManagedApp resp = managedAppsService.getUserApp(userName, authToken, appName);
-		assertTrue(resp == null);
+		try{
+			ManagedApp resp = managedAppsService.getUserApp(userName, authToken, appName);
+			fail("Shouldn't make it here.");
+		} catch(HomePiAppException e){
+			
+			assertEquals("Not found exception is what we want here..",Status.NOT_FOUND,e.getStatus());
+		}
 	}
 }

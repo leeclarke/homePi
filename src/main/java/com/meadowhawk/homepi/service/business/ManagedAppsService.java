@@ -16,6 +16,7 @@ import com.meadowhawk.homepi.model.HomePiUser;
 import com.meadowhawk.homepi.model.ManagedApp;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.service.AuthRequiredBeforeException;
+import com.meadowhawk.homepi.util.service.MaskData;
 
 /**
  * Business logic specific to the ManagedApps for a given Pi and/or user.
@@ -36,9 +37,9 @@ public class ManagedAppsService {
 		return managedAppDao.getManagedApps(piSerialId);
 	}
 
-	@AuthRequiredBeforeException
+	@MaskData
 	public ManagedApp getUserApp(String userName, String authToken, String appName) {
-		return getManagedApp(userName, appName);
+		return getManagedApp(userName, authToken, appName);
 	}
 
 	/**
@@ -51,7 +52,7 @@ public class ManagedAppsService {
 	 */
 	@AuthRequiredBeforeException
 	public int updateUserApps(String userName, String authToken, String appName,	ManagedApp managedApp) {
-		ManagedApp ma = getManagedApp(userName, appName);
+		ManagedApp ma = getManagedApp(userName, authToken, appName);
 		if(!StringUtil.isNullOrEmpty(managedApp.getAppName())){
 			ma.setAppName(managedApp.getAppName());
 		}
@@ -76,7 +77,7 @@ public class ManagedAppsService {
 	 */
 	@AuthRequiredBeforeException
 	public void deleteManageApp(String userName, String authToken, String appName) {
-		ManagedApp managedApp = getManagedApp(userName, appName);
+		ManagedApp managedApp = getManagedApp(userName, authToken, appName);
 		managedAppDao.delete(managedApp);
 	}
 	
@@ -86,8 +87,8 @@ public class ManagedAppsService {
 	 * @param appName
 	 * @return
 	 */
-	private ManagedApp getManagedApp(String userName, String appName) throws HomePiAppException{
-		HomePiUser user = homePiUserService.getUserData(userName,null);
+	private ManagedApp getManagedApp(String userName, String authToken, String appName) throws HomePiAppException{
+		HomePiUser user = homePiUserService.getUserData(userName,authToken);
 		try{
 			return managedAppDao.findByName(appName, user.getUserId());
 		} catch(Exception e){
@@ -104,7 +105,7 @@ public class ManagedAppsService {
 	@AuthRequiredBeforeException
 	public ManagedApp createUserApp(String userName, String authToken, ManagedApp managedApp) {
 		if(managedApp == null || StringUtil.isNullOrEmpty(managedApp.getAppName())){
-			throw new HomePiAppException(Status.BAD_REQUEST,"Invalid input");
+			throw new HomePiAppException(Status.BAD_REQUEST,"Invalid input, App Name missing.");
 		}
 		
 		try{
@@ -117,6 +118,18 @@ public class ManagedAppsService {
 			throw new HomePiAppException(Status.NOT_FOUND);
 		}
 		
-		return getManagedApp(userName, managedApp.getAppName());
+		return getManagedApp(userName, authToken,  managedApp.getAppName());
+	}
+
+	/**
+	 * Ensures Masking of the ManagedApp data 
+	 * @param userName
+	 * @param authToken
+	 * @return
+	 */
+	@MaskData
+	public List<ManagedApp> getUserApps(String userName, String authToken) {
+		HomePiUser user = homePiUserService.getUserData(userName,authToken);
+		return user.getManagedApps();
 	}
 }

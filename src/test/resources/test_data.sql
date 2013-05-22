@@ -15,9 +15,10 @@ INSERT INTO pi_profile ( create_time, update_time, pi_serial_id, name, ip_addres
 INSERT INTO pi_profile ( create_time, update_time, pi_serial_id, name, ip_address, ssh_port_number, user_id, api_key ) VALUES ( '2013-01-10 03:14:32', '2013-05-17 01:30:50', '2e848bg934', 'New Name', '129.168.1.6', 9090, 1, '7dbd8467-1f3d-4b2f-b7b2-0b66e59a55c6' );
     
  --Set up managed apps
-INSERT INTO managed_app ( create_time, update_time, version_number, app_name, file_name, deployment_path, user_id ) VALUES ( '2013-04-19 19:27:40', NULL, 1, 'TestApp2', 'TestFile.jar', '/usr/home/pi/test', 1 )
+INSERT INTO managed_app ( create_time, update_time, version_number, app_name, file_name, deployment_path, user_id, web_name ) VALUES ( '2013-04-19 19:27:40', NULL, 1, 'TestApp2', 'TestFile.jar', '/usr/home/pi/test', 1 ,'TestApp2');
  
- 
+UPDATE managed_app SET update_time = now(), web_name = 'TestApp2' WHERE app_id = 6;
+UPDATE managed_app SET update_time = now(), web_name = 'Shiny_Test_App' WHERE app_id = 9;
  
  
  --Updates for TEst support

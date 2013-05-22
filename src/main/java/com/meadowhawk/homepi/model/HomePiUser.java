@@ -158,6 +158,9 @@ public class HomePiUser extends MaskableDataObject implements Serializable{
 		for (PiProfile profile : this.piProfiles) {
 			profile.setMaskedView(isMaskedView());	
 		}
+		for (ManagedApp ma : this.managedApps) {
+			ma.setMaskedView(isMaskedView());
+		}
 	}
 	public List<ManagedApp> getManagedApps() {
 		return this.managedApps;

@@ -70,6 +70,9 @@ public class ManagedApp extends MaskableDataObject{
 	@Column(name = "user_id", nullable=false)
 	private Long ownerId;
 	
+	@Column(name = "web_name", nullable=false)
+	private String webName;
+	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="user_id", insertable=false, updatable=false)
 	@JsonIgnore
@@ -130,6 +133,17 @@ public class ManagedApp extends MaskableDataObject{
 	}
 	public void setAppName(String appName) {
 		this.appName = appName;
+		setWebName(appName);
+	}
+	public String getWebName() {
+		return webName;
 	}
 	
+	/**
+	 * This should be the AppName with spaces stripped out.
+	 * @param webName
+	 */
+	protected void setWebName(String webName) {
+		this.webName = webName.replaceAll(" ", "_");
+	}
 }

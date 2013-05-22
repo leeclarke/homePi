@@ -167,8 +167,7 @@ public class HomePiRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(group="Managed Apps", endPointName="Get Managed Apps", description="Returns all managed apps that a user has created. User access_token required for viewing some data.", sampleLinks="/user/test_user/app/")
 	public Response getAllApps(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
-		HomePiUser hUser = userService.getUserData(userId, authToken);
-		return Response.ok(hUser.getManagedApps()).build();
+		return Response.ok(managedAppsService.getUserApps(userId, authToken)).build();
 	}
 	
 	@GET
@@ -181,7 +180,7 @@ public class HomePiRestService {
 	}
 	
 	@POST
-	@Path("/user/{user_id}/app/{AppName}")
+	@Path("/user/{user_id}/app/{app_name}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(group="Managed Apps", endPointName="Update App", description="", sampleLinks="/user/test_user/app/TestApp")
@@ -194,12 +193,13 @@ public class HomePiRestService {
 	}
 	
 	@DELETE
-	@Path("/user/{user_id}/app/{AppName}")
+	@Path("/user/{user_name}/app/{app_name}")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(group="Managed Apps", endPointName="Delete App", description="Permanantly deletes managed app. Users access_token is required for processing.", sampleLinks="/user/test_user/app/TestApp")
-	public Response deleteApp(@PathParam("user_id") String userId, @PathParam("app_name") String appName,  @HeaderParam(ACCESS_TOKEN) String authToken){
-	  //TODO: 
-		return Response.ok(new TODO()).build();
+	public Response deleteApp(@PathParam("user_name") String userName, @PathParam("app_name") String appName,  @HeaderParam(ACCESS_TOKEN) String authToken){
+	  managedAppsService.deleteManageApp(userName, authToken, appName);
+		return Response.noContent().build();
 	}
 	
 	
