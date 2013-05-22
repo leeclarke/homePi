@@ -243,14 +243,14 @@ public class HomePiRestServiceIT {
 		
 		given().port(8088).headers("access_token","XD123-YT53"). 
 		expect().statusCode(200).log().body().
-    body("privateVersion", nullValue(),
+		body("privateVersion", nullValue(),
     		"email", equalToIgnoringCase("tester@homepi.com"),
-        "givenName", equalToIgnoringCase("Test"),
-        "familyName", equalToIgnoringCase("User"),
-        "fullName", equalToIgnoringCase("Test User"),
-        "locale", equalTo("en"),
-        "userName",equalTo(userId),
-        "userId", equalTo(1)).when().
+	        "givenName", equalToIgnoringCase("Test"),
+	        "familyName", equalToIgnoringCase("User"),
+	        "fullName", equalToIgnoringCase("Test User"),
+	        "locale", equalTo("en"),
+	        "userName",equalTo(userId),
+	        "userId", equalTo(1)).when().
     	get(BASE_URI+userId);
 	}
 	
@@ -282,9 +282,8 @@ public class HomePiRestServiceIT {
 		    statusCode(200).log().body().
 		when().
 		    post(getBaseUserAppUri(userId,null));
-		//TODO: Prevent dupe appName/userID combos
 		//TODO: provide an encoded Name field for URIs and lookups etc..
-		//TODO: Finsh testing delete and add redirects. also update above post call
+		//TODO: Finish testing delete and add redirects. also update above post call
 		
 	//Add GET to verify results.
 		given().port(8088).headers("access_token","XD123-YT53").
