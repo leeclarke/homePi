@@ -37,7 +37,7 @@ public class ManagedAppsService {
 	 * @param piSerialId
 	 * @return
 	 */
-	//TODO Impolement
+	//TODO Implement
 	public List<ManagedApp> getManagedAppsForDevice(String piSerialId) {
 		return null;//managedAppDao.getManagedApps(piSerialId);
 	}
@@ -55,7 +55,7 @@ public class ManagedAppsService {
 	}
 
 	/**
-	 * Finds App by the web name, this is prefered as it escapes the spaces and is a bit nicer in the URI generation.
+	 * Finds App by the web name, this is preferred as it escapes the spaces and is a bit nicer in the URI generation.
 	 * @param userName
 	 * @param authToken
 	 * @param webName

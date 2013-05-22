@@ -23,3 +23,6 @@ UPDATE managed_app SET update_time = now(), web_name = 'Shiny_Test_App' WHERE ap
  
  --Updates for TEst support
  UPDATE pi_profile SET update_time = now(), pi_serial_id = 'pi456y765', name = 'Another Test Pi', ip_address = '192.168.1.3', ssh_port_number = 22, user_id = 2, api_key = uuid_generate_v4() WHERE pi_id = 6;
+ 
+ --associate a profile and app
+ INSERT INTO profile_managed_app (app_id, pi_id) VALUES (6, 1);

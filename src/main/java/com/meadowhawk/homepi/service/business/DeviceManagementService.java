@@ -179,5 +179,4 @@ public class DeviceManagementService {
 			return false;
 		}
 	}
-	
 }

@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.dao.HomePiUserDAO;
+import com.meadowhawk.homepi.dao.PiProfileDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.HomePiUser;
+import com.meadowhawk.homepi.model.ManagedApp;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.GoogleInfo;
@@ -27,7 +29,15 @@ public class HomePiUserService {
 	
 	@Autowired
 	DeviceManagementService managementService;
+
+	@Autowired
+	PiProfileDAO piProfileDAO;
 	
+	/**
+	 * Retrieve user by email address.
+	 * @param email
+	 * @return
+	 */
 	public HomePiUser getUser(String email){
 		return homePiUserDao.findByUserName(email);
 	}
@@ -162,5 +172,54 @@ public class HomePiUserService {
 		profile.setSshPortNumber(piProfile.getSshPortNumber());
 		
 		managementService.updatePiProfile(profile);
+	}
+
+
+	/**
+	 * @param userName
+	 * @param authToken
+	 * @param piSerialId
+	 * @param appId
+	 */
+	@AuthRequiredBeforeException
+	public void addAppToProfile(String userName, String authToken, String piSerialId, Long appId) {
+		if(StringUtil.isNullOrEmpty(piSerialId) || appId == null){
+			throw new HomePiAppException(Status.BAD_REQUEST,"Missing key values for request.");
+		}
+		HomePiUser user = this.getUserData(userName, authToken);
+		PiProfile profile = managementService.getPiProfile(piSerialId);
+		ManagedApp ma = null;
+		
+		for (ManagedApp mApp : user.getManagedApps()) {
+			if(mApp.getAppId().equals(appId)){
+				ma = mApp;
+				break;
+			}
+		}
+		
+		if(ma == null){
+			throw new HomePiAppException(Status.BAD_REQUEST,"Invlaid appi id.");
+		}
+		
+		profile.getManagedApps().add(ma);
+		piProfileDAO.update(profile);
+	}
+
+
+	/**
+	 * @param userName
+	 * @param authToken
+	 * @param piSerialId
+	 * @param appId
+	 */
+	@AuthRequiredBeforeException
+	public void deleteAppToProfile(String userName, String authToken, String piSerialId, Long appId) {
+		if(StringUtil.isNullOrEmpty(piSerialId) || appId == null){
+			throw new HomePiAppException(Status.BAD_REQUEST,"Missing key values for request.");
+		}
+		
+		PiProfile profile = managementService.getPiProfile(piSerialId);
+
+		piProfileDAO.removeAppFromProfile(profile, appId);
 	}
 }

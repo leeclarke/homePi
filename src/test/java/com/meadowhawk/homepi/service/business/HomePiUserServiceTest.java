@@ -66,4 +66,16 @@ public class HomePiUserServiceTest {
 		homePiUserService.updateUserData(userName, authBadToken, updateUser );
 		
 	}
+	
+	@Test
+	public void testAddDeleteAppToProfile() {
+		String userName = "test_user";
+		String authToken = "XD123-YT53";
+		Long appId = 6L;
+		String piSerialId = "2e848bg934";
+		
+		homePiUserService.addAppToProfile(userName, authToken, piSerialId , appId );
+		
+		homePiUserService.deleteAppToProfile(userName, authToken, piSerialId , appId );
+	}
 }

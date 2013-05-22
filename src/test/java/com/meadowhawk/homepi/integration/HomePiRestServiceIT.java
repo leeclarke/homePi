@@ -1,7 +1,7 @@
 package com.meadowhawk.homepi.integration;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.*;import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -339,7 +339,49 @@ public class HomePiRestServiceIT {
 		JsonPath json = ((RestAssuredResponseImpl)resp).body().jsonPath();
 		//Verify that results were returned.
 		assertTrue(json.getList("$").size() >0);
-		assertTrue("REsults Missing deploymentPath",json.getString("$").contains("deploymentPath"));
+		assertTrue("Results Missing deploymentPath",json.getString("$").contains("deploymentPath"));
 	}
 
+	//POST /user/{user_name}/pi/{piSerialId}/app
+	//DELETE /user/{user_name}/pi/{piSerialId}/app
+	@Test
+	public void testAddRemoveApp_ProfileAssociation() {
+		String userId = "test_user";
+		String authToken = "XD123-YT53";
+		Long appId = 6L;
+		String piSerialId = "2e848bg934";
+	
+		given().log().all().port(8088).headers("access_token","XD123-YT53","app_id",appId.toString()).
+		contentType(MediaType.APPLICATION_JSON).body("").
+		expect().
+		    statusCode(204).log().body().
+		when().
+		    post(getBaseUserUri(userId) + piSerialId + "/app");
+		
+		//Add GET to verify results.
+		Object resp = given().port(8088).headers("access_token",authToken).
+				expect().statusCode(200).log().body().when().
+		    get(getBaseUserUri(userId) + piSerialId);
+
+		JsonPath body2 = ((RestAssuredResponseImpl)resp).body().jsonPath();
+		assertTrue(body2.getList("managedApps").size()>0);
+		
+		//Call Delete
+		given().log().all().port(8088).headers("access_token","XD123-YT53","app_id",appId.toString()).
+		contentType(MediaType.APPLICATION_JSON).body("").
+		expect().
+		    statusCode(204).log().body().
+		when().
+		    delete(getBaseUserUri(userId) + piSerialId + "/app");
+		
+		//Verify delete
+		given().port(8088).headers("access_token",authToken).
+			expect().statusCode(200).log().body().
+			body("managedApps", notNullValue()).when().
+    	get(getBaseUserUri(userId) + piSerialId);
+		
+		
+	}
+	
+	
 }

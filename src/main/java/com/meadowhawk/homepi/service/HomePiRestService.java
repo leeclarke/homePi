@@ -14,6 +14,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -45,6 +46,7 @@ import com.meadowhawk.homepi.util.model.TODO;
 @Component
 @PublicRESTDoc(serviceName = "HomePiService", description = "Pi focused management services specifically for Pis.")
 public class HomePiRestService {
+	private static final String APP_ID = "app_id";
 	private static Logger log = Logger.getLogger( HomePiRestService.class );
 	private static final String ACCESS_TOKEN = "access_token";
 	
@@ -126,17 +128,22 @@ public class HomePiRestService {
 		return Response.noContent().build();
 	}
 	
-	/**
-	 * Generates a URI for redirect to one of the other endpoints in the current Service.
-	 * @param methodName - one of the public methods in this service.
-	 * @return - URI for redirect.
-	 */
-	protected URI getUriRedirect(String methodName){
-		UriBuilder ub = uriInfo.getBaseUriBuilder().path(HomePiRestService.class);
-		URI redirectURI = ub.path(HomePiRestService.class, methodName).build();
-		
-		return redirectURI;
+	@POST
+	@Path("/user/{user_name}/pi/{pi_serial_id}/app")
+	@PublicRESTDocMethod(endPointName = "Assign App to PiProfile", description = "Assignes the specified Managed App to the Pi Profile by passing the app_id header param. 'access_token' is also required.", sampleLinks = { "/homepi/user/test_user/pi/8lhdfenm1x" })
+	public Response assignAppToPiProfile(@PathParam("user_name") String userName,@PathParam("pi_serial_id") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken, @HeaderParam(APP_ID) Long appId){
+		userService.addAppToProfile(userName, authToken,piSerialId, appId);
+		return Response.noContent().build();
 	}
+	
+	@DELETE
+	@Path("/user/{user_name}/pi/{pi_serial_id}/app")
+	@PublicRESTDocMethod(endPointName = "Remove Assignment App to PiProfile", description = "Assignes the specified Managed App to the Pi Profile by passing the app_id header param. 'access_token' is also required.", sampleLinks = { "/homepi/user/test_user/pi/8lhdfenm1x" })
+	public Response deleteAppToPiProfile(@PathParam("user_name") String userName,@PathParam("pi_serial_id") String piSerialId, @HeaderParam(ACCESS_TOKEN) String authToken, @HeaderParam(APP_ID) Long appId){
+		userService.deleteAppToProfile(userName, authToken,piSerialId, appId);
+		return Response.noContent().build();
+	}
+	
 	
 	@GET
 	@Path("/user/{user_id}/pi")
@@ -202,7 +209,6 @@ public class HomePiRestService {
 		return Response.noContent().build();
 	}
 	
-	
 	//TODO: REMOVE
 	@GET
 	@Path("/update")
@@ -224,5 +230,17 @@ public class HomePiRestService {
 		}
 		 
 		return Response.noContent().build();
+	}
+	
+	/**
+	 * Generates a URI for redirect to one of the other endpoints in the current Service.
+	 * @param methodName - one of the public methods in this service.
+	 * @return - URI for redirect.
+	 */
+	protected URI getUriRedirect(String methodName){
+		UriBuilder ub = uriInfo.getBaseUriBuilder().path(HomePiRestService.class);
+		URI redirectURI = ub.path(HomePiRestService.class, methodName).build();
+		
+		return redirectURI;
 	}
 }
