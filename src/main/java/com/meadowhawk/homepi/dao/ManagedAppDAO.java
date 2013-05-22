@@ -37,6 +37,14 @@ public class ManagedAppDAO extends AbstractJpaDAO< ManagedApp >{
 	}
 	
 	/**
+	 * @param webName
+	 * @return
+	 */
+	public ManagedApp findByWebName(String webName, Long userId) {
+		return entityManager.createNamedQuery("ManagedApp.findByAppWebName", this.clazz).setParameter("webName", webName).setParameter("userId", userId).getSingleResult();
+	}
+	
+	/**
 	 * Override to ensure that mapping table gets updated to create piSerialId association.
 	 * @see com.meadowhawk.homepi.dao.AbstractJpaDAO#save(java.lang.Object)
 	 */

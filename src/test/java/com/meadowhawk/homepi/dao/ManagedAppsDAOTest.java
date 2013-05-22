@@ -101,4 +101,14 @@ public class ManagedAppsDAOTest {
 		assertNotNull(resp);
 		assertEquals(name, resp.getAppName());
 	}
+	
+	@Test
+	public void testFindByWebName() {
+		String name = "Shiny Test App";
+		long userId = 1L;
+		
+		ManagedApp resp = managedAppsDAO.findByWebName(name.replaceAll(" ", "_"),userId);
+		assertNotNull(resp);
+		assertEquals(name, resp.getAppName());
+	}
 }

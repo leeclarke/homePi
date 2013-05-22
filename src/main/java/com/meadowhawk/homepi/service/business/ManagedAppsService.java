@@ -32,16 +32,46 @@ public class ManagedAppsService {
 	@Autowired
 	HomePiUserService homePiUserService;
 	
+	/**
+	 * 
+	 * @param piSerialId
+	 * @return
+	 */
+	//TODO Impolement
 	public List<ManagedApp> getManagedAppsForDevice(String piSerialId) {
-		//TODO: verify user access
-		return managedAppDao.getManagedApps(piSerialId);
+		return null;//managedAppDao.getManagedApps(piSerialId);
 	}
 
+	/**
+	 * Finds App by the app name.
+	 * @param userName
+	 * @param authToken
+	 * @param appName
+	 * @return
+	 */
 	@MaskData
 	public ManagedApp getUserApp(String userName, String authToken, String appName) {
 		return getManagedApp(userName, authToken, appName);
 	}
 
+	/**
+	 * Finds App by the web name, this is prefered as it escapes the spaces and is a bit nicer in the URI generation.
+	 * @param userName
+	 * @param authToken
+	 * @param webName
+	 * @return
+	 */
+	@MaskData
+	public ManagedApp getUserAppByWebName(String userName, String authToken, String webName) {
+		HomePiUser user = homePiUserService.getUserData(userName,authToken);
+		try{
+			return managedAppDao.findByWebName(webName, user.getUserId());
+		} catch(Exception e){
+			log.debug(e);
+			throw new HomePiAppException(Status.NOT_FOUND);
+		}
+	}
+	
 	/**
 	 * Updates existing app info.
 	 * @param userName

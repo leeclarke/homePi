@@ -31,7 +31,8 @@ import org.joda.time.DateTime;
 @Entity
 @Table(name = "MANAGED_APP")
 @NamedNativeQueries(value={
-	@NamedNativeQuery(name="ManagedApp.findByAppName", query="SELECT * FROM MANAGED_APP m WHERE m.app_name = :appName and m.user_id = :userId", resultClass=ManagedApp.class)
+	@NamedNativeQuery(name="ManagedApp.findByAppName", query="SELECT * FROM MANAGED_APP m WHERE m.app_name = :appName and m.user_id = :userId", resultClass=ManagedApp.class),
+	@NamedNativeQuery(name="ManagedApp.findByAppWebName", query="SELECT * FROM MANAGED_APP m WHERE m.web_name = :webName and m.user_id = :userId", resultClass=ManagedApp.class),
 })
 //@NamedQuery(name="ManagedApp.findByAppName", query="from ManagedApp m where m.appName := appName")
 @JsonFilter("privateView")
