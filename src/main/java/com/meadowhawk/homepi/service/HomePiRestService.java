@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.HomePiUser;
-import com.meadowhawk.homepi.model.LogEntries;
+import com.meadowhawk.homepi.model.LogData;
 import com.meadowhawk.homepi.model.ManagedApp;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
@@ -99,10 +99,10 @@ public class HomePiRestService {
 	@Path("/user/{user_id}/pi/{piSerialId}/log")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/8lhdfenm1x/log"})
-	public List<LogEntries> getLlogs(@PathParam("piSerialId") String piSerialId){
+	public List<LogData> getLlogs(@PathParam("piSerialId") String piSerialId){
 		
 		//Need to add params and privacy filtering on this.
-		return new ArrayList<LogEntries>();
+		return new ArrayList<LogData>();
 	}
 	
 	

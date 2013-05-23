@@ -28,7 +28,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.exception.HomePiAppException;
-import com.meadowhawk.homepi.model.LogEntries;
+import com.meadowhawk.homepi.model.LogData;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
