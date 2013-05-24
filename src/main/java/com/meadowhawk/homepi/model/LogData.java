@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -12,6 +14,13 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "log_data")
+@NamedNativeQueries(value={
+		@NamedNativeQuery(name="LogData.findByLogKey", query="SELECT log_id, pi_id, user_id, app_id, log_type_id, create_time, log_key, log_value FROM log_data WHERE log_key LIKE :logKey", resultClass=LogData.class),
+		@NamedNativeQuery(name="LogData.findByPiSerialId", query="SELECT l.log_id, l.pi_id, l.user_id, l.app_id, l.log_type_id, l.create_time, l.log_key, l.log_value FROM log_data l, pi_profile p WHERE l.pi_id = p.pi_id AND p.pi_serial_id = :piSerialId", resultClass=LogData.class),
+		@NamedNativeQuery(name="LogData.findByLogType", query="SELECT l.log_id, l.pi_id, l.user_id, l.app_id, l.log_type_id, l.create_time, l.log_key, l.log_value FROM log_data l, log_type t WHERE t.log_type_id = l.log_type_id AND t.log_type_name = :logTypeName", resultClass=LogData.class)
+		
+}
+		)
 public class LogData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,12 +39,9 @@ public class LogData {
 	@Column(name = "log_type_id")
 	private Long logTypeId = 1L;
 	
-	@Column(name = "pi_serial_id", nullable=false)
-	private String piSierialId;
-	
 	@Column(name = "create_time")
 	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	private DateTime createTime;
+	private DateTime createTime = new DateTime();;
 	
 	@Column(name = "log_key", nullable=false)
 	private String logKey;
@@ -73,14 +79,6 @@ public class LogData {
 
 	public void setLogTypeId(Long logType) {
 		this.logTypeId = logType;
-	}
-
-	public String getPiSierialId() {
-		return piSierialId;
-	}
-
-	public void setPiSierialId(String piSierialId) {
-		this.piSierialId = piSierialId;
 	}
 
 	public DateTime getCreateTime() {

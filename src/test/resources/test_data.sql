@@ -26,3 +26,16 @@ UPDATE managed_app SET update_time = now(), web_name = 'Shiny_Test_App' WHERE ap
  
  --associate a profile and app
  INSERT INTO profile_managed_app (app_id, pi_id) VALUES (6, 1);
+ 
+ --create some log data
+ INSERT INTO log_type (log_type_name) VALUES ('SYSTEM');
+ INSERT INTO log_type (log_type_name) VALUES ('APP_DATA_POINT');
+ INSERT INTO log_type (log_type_name) VALUES ('SYSTEM_DEBUG');
+ INSERT INTO log_type (log_type_name) VALUES ('APP_DEBUG');
+ 
+ INSERT INTO log_data (pi_id, user_id, app_id, log_type_id, log_key, log_value) VALUES (1,1, 6, 2, 'Device Temp', '69.8');
+ INSERT INTO log_data (pi_id, user_id, app_id, log_type_id, log_key, log_value) VALUES (1,1, 6, 2, 'Device Temp', '69.5');
+ INSERT INTO log_data (pi_id, user_id, app_id, log_type_id, log_key, log_value) VALUES (1,1, 6, 2, 'Device Temp', '67.5');
+ INSERT INTO log_data (pi_id, user_id, app_id, log_type_id, log_key, log_value) VALUES (1,1, 6, 4, 'APP_ERROR', 'Sensor not responding');
+ INSERT INTO log_data (pi_id, user_id, log_type_id, log_key, log_value) VALUES (1,1, 1, 'ERROR', 'Could Not Download Updates');
+ 
