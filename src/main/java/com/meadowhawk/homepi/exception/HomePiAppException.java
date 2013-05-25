@@ -45,7 +45,6 @@ public class HomePiAppException extends RuntimeException {
 		this.reason = reason;
 		this.model = model;
 	}
-
 	
 	
 	public HomePiAppException(Throwable msg) {

@@ -1,5 +1,7 @@
 package com.meadowhawk.homepi.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +14,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "log_data")
 @NamedNativeQueries(value={
@@ -21,7 +24,8 @@ import org.joda.time.DateTime;
 		
 }
 		)
-public class LogData {
+public class LogData extends MaskableDataObject implements Serializable {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "log_id")
