@@ -40,13 +40,13 @@ public class LogDataService {
 		List<LogData> result = new ArrayList<LogData>();
 		switch (type) {
 			case LOG_KEY:
-				logDataDAO.findByLogKey(param);
+				result = logDataDAO.findByLogKey(param);
 				break;
 			case LOG_TYPE:
-				logDataDAO.findByLogType(param);
+				result = logDataDAO.findByLogType(param);
 				break;
 			case PI_SERIAL:
-				logDataDAO.findBySerialId(param);
+				result = logDataDAO.findBySerialId(param);
 				break;
 		}
 		

@@ -1,7 +1,7 @@
 package com.meadowhawk.homepi.integration;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -9,7 +9,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 import javax.ws.rs.core.MediaType;
@@ -256,11 +255,33 @@ public class HomePiRestServiceIT {
     	get(BASE_URI+userId);
 	}
 	
-	//GET /user/{user_id}/pi/{piSerialId}/log
+	//GET /user/{user_id}/pi/{piSerialId}/log?log_type=
 	@Test
 	public void testLogRetrieval() {
+		String userId = "test_user";
+		String piSerial = "12345";
+		
+		Response resp = given().port(8088).headers("access_token","XD123-YT53").
+		expect().statusCode(200).log().body().
+//    body("appName", equalTo(appName),
+//    		"webName", equalTo(appName.replaceAll(" ", "_")),
+//        "deploymentPath", equalTo(deploymentPath),
+//        "fileName",equalTo(fileName),
+//        "ownerId", notNullValue(),
+//        "appId", notNullValue()).when().
+    	get(getBaseUserUri(userId)+piSerial+"/log");
+
+		
+		//TODO Add test on type filter.
+	}
+	
+//GET /user/{user_id}/pi/{pi_serial_id}/log/{app_name}?log_type=
+	@Test
+	public void testLogRetrievalForApp() {
 		//TODO: code hasn't been designed yet.
 		fail("code hasn't been designed yet.");
+		
+		
 	}
 	
 //POST /user/{user_id}/app/

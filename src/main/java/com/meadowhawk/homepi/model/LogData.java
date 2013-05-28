@@ -11,8 +11,11 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+
+import com.meadowhawk.homepi.rs.JodaDateTimeSerializer;
 
 @SuppressWarnings("serial")
 @Entity
@@ -85,6 +88,7 @@ public class LogData extends MaskableDataObject implements Serializable {
 		this.logTypeId = logType;
 	}
 
+	@JsonSerialize(using=JodaDateTimeSerializer.class)
 	public DateTime getCreateTime() {
 		return createTime;
 	}

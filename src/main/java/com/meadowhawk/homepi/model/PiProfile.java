@@ -21,10 +21,13 @@ import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonFilter;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+
+import com.meadowhawk.homepi.rs.JodaDateTimeSerializer;
 
 /**
  * Pi device data used for identifying the remote PI and how to connect to it if possible.
@@ -112,12 +115,14 @@ public class PiProfile extends MaskableDataObject{
 	public void setSshPortNumber(Integer sshPortNumber) {
 		this.sshPortNumber = sshPortNumber;
 	}
+	@JsonSerialize(using=JodaDateTimeSerializer.class)
 	public DateTime getCreateTime() {
 		return createTime;
 	}
 	public void setCreateTime(DateTime createTime) {
 		this.createTime = createTime;
 	}
+	@JsonSerialize(using=JodaDateTimeSerializer.class)
 	public DateTime getUpdateTime() {
 		return updateTime;
 	}

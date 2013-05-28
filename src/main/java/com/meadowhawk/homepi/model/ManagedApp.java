@@ -14,14 +14,15 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import org.codehaus.jackson.annotate.JsonBackReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonFilter;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+
+import com.meadowhawk.homepi.rs.JodaDateTimeSerializer;
 
 /**
  * ManagedApp is a deployed app on a PI which is managed by HomePi. The information here is used in managing and updating 
@@ -85,6 +86,7 @@ public class ManagedApp extends MaskableDataObject{
 	public void setAppId(Long appId) {
 		this.appId = appId;
 	}
+	@JsonSerialize(using=JodaDateTimeSerializer.class)
 	public DateTime getUpdateTime() {
 		return updateTime;
 	}
@@ -116,6 +118,7 @@ public class ManagedApp extends MaskableDataObject{
 	public void setOwnerId(Long ownerId) {
 		this.ownerId = ownerId;
 	}
+	@JsonSerialize(using=JodaDateTimeSerializer.class)
 	public DateTime getCreateTime() {
 		return createTime;
 	}

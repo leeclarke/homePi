@@ -14,12 +14,13 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonFilter;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
+
+import com.meadowhawk.homepi.rs.JodaDateTimeSerializer;
 
 /**
  * HomePi user.
@@ -84,12 +85,14 @@ public class HomePiUser extends MaskableDataObject implements Serializable{
 	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
+	@JsonSerialize(using=JodaDateTimeSerializer.class)
 	public DateTime getCreateTime() {
 		return createTime;
 	}
 	public void setCreateTime(DateTime createTime) {
 		this.createTime = createTime;
 	}
+	@JsonSerialize(using=JodaDateTimeSerializer.class)
 	public DateTime getUpdateTime() {
 		return updateTime;
 	}

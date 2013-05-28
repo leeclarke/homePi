@@ -18,6 +18,7 @@ public class JacksonConfigurator  implements ContextResolver<ObjectMapper>{
   public JacksonConfigurator() {
       SerializationConfig serConfig = mapper.getSerializationConfig();
       
+      
       SimpleFilterProvider fp = new SimpleFilterProvider();
       
       //Add filters here!  TODO: Extract to properties and inject
