@@ -3,7 +3,6 @@ package com.meadowhawk.homepi.service;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -102,7 +101,7 @@ public class HomePiRestService {
 	@Path("/user/{user_id}/pi/{pi_serial_id}/log/{app_name}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Log Pi Message", group="Logs", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/8lhdfenm1x/log"})
-	public List<LogData> getLogsForApp(@PathParam("pi_serial_id") String piSerialId, @PathParam("app_name") String appName, @QueryParam("") String type){
+	public List<LogData> getLogsForApp(@PathParam("pi_serial_id") String piSerialId, @PathParam("app_name") String appName, @QueryParam("log_type") String logType){
 		return logDataService.getLogDataByKey(LogDataService.SEARCH_TYPE.PI_SERIAL, piSerialId);
 	}
 	

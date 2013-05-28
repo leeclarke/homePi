@@ -19,7 +19,7 @@ INSERT INTO managed_app ( create_time, update_time, version_number, app_name, fi
  
 UPDATE managed_app SET update_time = now(), web_name = 'TestApp2' WHERE app_id = 6;
 UPDATE managed_app SET update_time = now(), web_name = 'Shiny_Test_App' WHERE app_id = 9;
- UPDATE managed_app SET version_number = 1, web_name = 'Shiny_Test_App' WHERE app_id = 7;
+UPDATE managed_app SET version_number = 1, web_name = 'Shiny_Test_App' WHERE app_id = 7;
  
  --Updates for TEst support
  UPDATE pi_profile SET update_time = now(), pi_serial_id = 'pi456y765', name = 'Another Test Pi', ip_address = '192.168.1.3', ssh_port_number = 22, user_id = 2, api_key = uuid_generate_v4() WHERE pi_id = 6;
@@ -28,7 +28,7 @@ UPDATE managed_app SET update_time = now(), web_name = 'Shiny_Test_App' WHERE ap
  INSERT INTO profile_managed_app (app_id, pi_id) VALUES (6, 1);
  
  --create some log data
- INSERT INTO log_type (log_type_name) VALUES ('SYSTEM');
+ --INSERT INTO log_type (log_type_name) VALUES ('SYSTEM');
  INSERT INTO log_type (log_type_name) VALUES ('APP_DATA_POINT');
  INSERT INTO log_type (log_type_name) VALUES ('SYSTEM_DEBUG');
  INSERT INTO log_type (log_type_name) VALUES ('APP_DEBUG');
