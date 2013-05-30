@@ -23,8 +23,8 @@ import com.meadowhawk.homepi.rs.JodaDateTimeSerializer;
 @NamedNativeQueries(value={
 		@NamedNativeQuery(name="LogData.findByLogKey", query="SELECT log_id, pi_id, user_id, app_id, log_type_id, create_time, log_key, log_value FROM log_data WHERE log_key LIKE :logKey", resultClass=LogData.class),
 		@NamedNativeQuery(name="LogData.findByPiSerialId", query="SELECT l.log_id, l.pi_id, l.user_id, l.app_id, l.log_type_id, l.create_time, l.log_key, l.log_value FROM log_data l, pi_profile p WHERE l.pi_id = p.pi_id AND p.pi_serial_id = :piSerialId", resultClass=LogData.class),
-		@NamedNativeQuery(name="LogData.findByLogType", query="SELECT l.log_id, l.pi_id, l.user_id, l.app_id, l.log_type_id, l.create_time, l.log_key, l.log_value FROM log_data l, log_type t WHERE t.log_type_id = l.log_type_id AND t.log_type_name = :logTypeName", resultClass=LogData.class)
-		
+		@NamedNativeQuery(name="LogData.findByLogType", query="SELECT l.log_id, l.pi_id, l.user_id, l.app_id, l.log_type_id, l.create_time, l.log_key, l.log_value FROM log_data l, log_type t, pi_profile p WHERE l.pi_id = p.pi_id AND t.log_type_id = l.log_type_id AND t.log_type_name = :logTypeName AND p.pi_serial_id = :piSerialId", resultClass=LogData.class),
+		@NamedNativeQuery(name="LogData.findBySerialAppId", query="SELECT l.log_id, l.pi_id, l.user_id, l.app_id, l.log_type_id, l.create_time, l.log_key, l.log_value FROM log_data l, pi_profile p WHERE l.pi_id = p.pi_id AND p.pi_serial_id = :piSerialId AND l.app_id = :appId order by create_time DESC", resultClass=LogData.class)
 }
 		)
 public class LogData extends MaskableDataObject implements Serializable {
@@ -48,7 +48,7 @@ public class LogData extends MaskableDataObject implements Serializable {
 	
 	@Column(name = "create_time")
 	@Type(type="org.jadira.usertype.dateandtime.joda.PersistentDateTime")
-	private DateTime createTime = new DateTime();;
+	private DateTime createTime = new DateTime();
 	
 	@Column(name = "log_key", nullable=false)
 	private String logKey;

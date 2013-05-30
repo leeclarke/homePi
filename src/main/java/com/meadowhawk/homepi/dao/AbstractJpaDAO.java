@@ -8,6 +8,10 @@ import javax.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AbstractJpaDAO<T> {
+	public enum DBSortOrder{
+		DESC, ASC
+	}
+	
 	protected Class<T> clazz;
 	@PersistenceContext
 	EntityManager entityManager;

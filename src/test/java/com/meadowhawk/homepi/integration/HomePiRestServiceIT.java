@@ -4,7 +4,7 @@ import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -212,11 +212,9 @@ public class HomePiRestServiceIT {
 		String json = getProfileJson(profile);
 		
 		given().log().all().port(8088).headers("access_token","XYZ-123").
-		contentType(MediaType.APPLICATION_JSON).body(json).
-		expect().
-    statusCode(403).log().body().
-    when().
-    post(getBaseUserUri(userId) + serialId);
+			contentType(MediaType.APPLICATION_JSON).body(json).
+		expect().statusCode(403).log().body().when().
+    	post(getBaseUserUri(userId) + serialId);
 	}
 	
 	
@@ -263,24 +261,46 @@ public class HomePiRestServiceIT {
 		
 		Response resp = given().port(8088).headers("access_token","XD123-YT53").
 		expect().statusCode(200).log().body().
-//    body("appName", equalTo(appName),
-//    		"webName", equalTo(appName.replaceAll(" ", "_")),
-//        "deploymentPath", equalTo(deploymentPath),
-//        "fileName",equalTo(fileName),
-//        "ownerId", notNullValue(),
-//        "appId", notNullValue()).when().
     	get(getBaseUserUri(userId)+piSerial+"/log");
 
+		//Verify that resp contains log objects.
+		JsonPath jsonResp = ((RestAssuredResponseImpl)resp).body().jsonPath();
+		assertTrue(jsonResp.getList("$").size() >0);
 		
-		//TODO Add test on type filter.
+		
+		//test with type filter.
+		String logType = "SYSTEM";
+		Response resp2 = given().port(8088).headers("access_token","XD123-YT53").
+				expect().statusCode(200).log().body().
+		    	get(getBaseUserUri(userId)+piSerial+"/log?log_type="+logType);
+		
+		JsonPath jsonResp2 = ((RestAssuredResponseImpl)resp2).body().jsonPath();
+		assertTrue(jsonResp2.getList("$").size() >0);
 	}
 	
 //GET /user/{user_id}/pi/{pi_serial_id}/log/{app_name}?log_type=
 	@Test
 	public void testLogRetrievalForApp() {
-		//TODO: code hasn't been designed yet.
-		fail("code hasn't been designed yet.");
+		String userId = "test_user";
+		String piSerial = "12345";
+		String app_name = "TestApp2";
+		String log_key = "Temp";
+		String log_type = "SYSTEM";
+		Integer log_type_id = 1;
 		
+		Response resp = given().port(8088).headers("access_token","XD123-YT53").
+				expect().statusCode(200).log().body().
+		    	get(getBaseUserUri(userId)+piSerial+"/log/" + app_name + "?log_key=%"+ log_key + "&log_type=" + log_type);
+		
+		JsonPath jsonResp2 = ((RestAssuredResponseImpl)resp).body().jsonPath();
+		assertTrue(jsonResp2.getList("$").size() >0);
+		for (Object logKey : jsonResp2.getList("logKey")) {
+			assertTrue(((String)logKey).contains(log_key));
+		}
+		
+		for (Object logKey : jsonResp2.getList("logTypeId")) {
+			assertTrue(log_type_id.equals(((Integer)logKey)));
+		}
 		
 	}
 	

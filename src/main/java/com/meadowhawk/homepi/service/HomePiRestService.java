@@ -3,7 +3,9 @@ package com.meadowhawk.homepi.service;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -36,6 +38,7 @@ import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.LogDataService;
+import com.meadowhawk.homepi.service.business.LogDataService.WEB_PARAMS;
 import com.meadowhawk.homepi.service.business.ManagedAppsService;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
@@ -101,16 +104,30 @@ public class HomePiRestService {
 	@Path("/user/{user_id}/pi/{pi_serial_id}/log/{app_name}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Log Pi Message", group="Logs", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/8lhdfenm1x/log"})
-	public List<LogData> getLogsForApp(@PathParam("pi_serial_id") String piSerialId, @PathParam("app_name") String appName, @QueryParam("log_type") String logType){
-		return logDataService.getLogDataByKey(LogDataService.SEARCH_TYPE.PI_SERIAL, piSerialId);
+	public List<LogData> getLogsForApp(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken, @PathParam("pi_serial_id") String piSerialId, @PathParam("app_name") String appName, @QueryParam("log_type") String logType, @QueryParam("log_key") String logkey){
+		
+		Map<WEB_PARAMS, Object> params = new HashMap<WEB_PARAMS, Object>();
+		params.put(WEB_PARAMS.APP_NAME, appName);
+		params.put(WEB_PARAMS.LOG_TYPE, logType);
+		params.put(WEB_PARAMS.LOG_KEY, logkey);
+		
+		
+		return logDataService.getLogDataBySearchType(userId, authToken,piSerialId, LogDataService.SEARCH_TYPE.DYNAMIC, params );
+
 	}
 	
 	@GET
 	@Path("/user/{user_id}/pi/{pi_serial_id}/log")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Log Pi Message", group="Logs", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/8lhdfenm1x/log"})
-	public List<LogData> getLogsForPi(@PathParam("pi_serial_id") String piSerialId){
-		return logDataService.getLogDataByKey(LogDataService.SEARCH_TYPE.PI_SERIAL, piSerialId);
+	public List<LogData> getLogsForPi(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken,@PathParam("pi_serial_id") String piSerialId, @QueryParam("log_type") String logType, @QueryParam("log_key") String logkey){
+		
+		Map<WEB_PARAMS, Object> params = new HashMap<WEB_PARAMS, Object>();
+		params.put(WEB_PARAMS.LOG_TYPE, logType);
+		params.put(WEB_PARAMS.LOG_KEY, logkey);
+		
+		
+		return logDataService.getLogDataBySearchType(userId, authToken, piSerialId, LogDataService.SEARCH_TYPE.DYNAMIC, params );
 	}
 	
 	
