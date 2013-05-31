@@ -37,7 +37,7 @@ public class ManagedAppsService {
 	 * @param piSerialId
 	 * @return
 	 */
-	//TODO Implement
+	//TODO Implement if needed
 	public List<ManagedApp> getManagedAppsForDevice(String piSerialId) {
 		return null;//managedAppDao.getManagedApps(piSerialId);
 	}

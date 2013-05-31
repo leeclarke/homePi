@@ -28,6 +28,7 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import com.meadowhawk.homepi.rs.JodaDateTimeSerializer;
+import com.meadowhawk.homepi.util.StringUtil;
 
 /**
  * Pi device data used for identifying the remote PI and how to connect to it if possible.
@@ -166,5 +167,22 @@ public class PiProfile extends MaskableDataObject{
 		for (ManagedApp ma : this.managedApps) {
 			ma.setMaskedView(isMaskedView());
 		}
+	}
+	
+	/**
+	 * Helper for getting an app by name when the profile already has the info populated.
+	 * @param appName
+	 * @return - null if no match
+	 */
+	@JsonIgnore
+	public ManagedApp getManagedAppByName(String appName) {
+		if(!StringUtil.isNullOrEmpty(appName)){
+			for (ManagedApp ma : this.managedApps) {
+				if(appName.equals(ma.getAppName())){
+					return ma;
+				}
+			}
+		}
+		return null;
 	}
 }

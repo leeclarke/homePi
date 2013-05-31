@@ -3,7 +3,9 @@ package com.meadowhawk.homepi.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -13,6 +15,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,11 +30,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.meadowhawk.homepi.dao.LogDataDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.LogData;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
+import com.meadowhawk.homepi.service.business.WEB_PARAMS_LOG_DATA;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 import com.meadowhawk.homepi.util.model.TODO;
@@ -47,6 +52,9 @@ public class DeviceRestService {
 	
 	@Autowired
 	ClassPathResource updateFile;
+	
+	@Autowired
+	LogDataDAO logDataDAO;
 	
 	@Value("${update.mainFile}")
 	String mainUpdateFileName;
@@ -88,21 +96,22 @@ public class DeviceRestService {
 	@Path("/pi/{piSerialId}/log")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Logs a message from the Pi. Pi API key is required.", sampleLinks={"/homepi/device/pi/8lhdfenm1x/log"})
-	public Response logStatus(@PathParam("piSerialId") String piSerialId){
-		
-		
-		return Response.ok(new TODO()).build();
+	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Logs a message from the Pi. Pi API key is required. Simply returns ACK or error.", sampleLinks={"/homepi/device/pi/8lhdfenm1x/log"})
+	public Response logStatus(@PathParam("piSerialId") String piSerialId, @HeaderParam(API_KEY) String apiKey, LogData logData){
+		deviceManagementService.createLogData(piSerialId, apiKey, logData);
+		return Response.noContent().build();
 	}
 	
 	@GET
 	@Path("/pi/{piSerialId}/log")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Log Pi Message", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/device/pi/8lhdfenm1x/log"})
-	public Response getLlogs(@PathParam("piSerialId") String piSerialId){
+	public Response getLlogs(@PathParam("piSerialId") String piSerialId, @HeaderParam(API_KEY) String apiKey, @QueryParam("log_type") String logType, @QueryParam("log_key") String logkey){
+		Map<WEB_PARAMS_LOG_DATA, Object> params = new HashMap<WEB_PARAMS_LOG_DATA, Object>();
+		params.put(WEB_PARAMS_LOG_DATA.LOG_TYPE, logType);
+		params.put(WEB_PARAMS_LOG_DATA.LOG_KEY, logkey);
 		
-		//Need to add params and privacy filtering on this.
-		return Response.ok(new TODO()).build();
+		return Response.ok(deviceManagementService.getLogData(piSerialId, apiKey, params)).build();
 	}
 	
 	//TODO: add string replace on py file to update the version number

@@ -21,21 +21,6 @@ import com.meadowhawk.homepi.util.service.MaskData;
 @Component
 public class LogDataService {
 
-	public enum WEB_PARAMS{
-		APP_NAME("app_name"),LOG_KEY("log_key"),LOG_TYPE("log_Type");
-		
-		private String queryPram;
-		
-		WEB_PARAMS(String value){
-			this.queryPram = value;
-		}
-		
-		public String webParam(){
-			return this.queryPram;
-		}
-		
-	}
-	
 	@Autowired
 	LogDataDAO logDataDAO;
 	
@@ -61,19 +46,19 @@ public class LogDataService {
 	 * @return list of LogData
 	 */
 	@MaskData
-	public List<LogData> getLogDataBySearchType(String userName, String authToken, String piSerialId, SEARCH_TYPE type, Map<WEB_PARAMS, Object> params) {
+	public List<LogData> getLogDataBySearchType(String userName, String authToken, String piSerialId, SEARCH_TYPE type, Map<WEB_PARAMS_LOG_DATA, Object> params) {
 		List<LogData> result = new ArrayList<LogData>();
 		switch (type) {
 			case LOG_TYPE:
-				result = logDataDAO.findByLogType(piSerialId, (String) params.get(WEB_PARAMS.LOG_TYPE));
+				result = logDataDAO.findByLogType(piSerialId, (String) params.get(WEB_PARAMS_LOG_DATA.LOG_TYPE));
 				break;
 			case PI_SERIAL:
 				result = logDataDAO.findBySerialId(piSerialId);
 				break;
 			case DYNAMIC:
-				Long appId = getAppId(userName, authToken, (String) params.get(WEB_PARAMS.APP_NAME));
-				String logKey = (params.containsKey(WEB_PARAMS.LOG_KEY) && params.get(WEB_PARAMS.LOG_KEY) != null) ? (String) params.get(WEB_PARAMS.LOG_KEY) : null;
-				String logType = (params.containsKey(WEB_PARAMS.LOG_TYPE) && params.get(WEB_PARAMS.LOG_TYPE) != null) ? (String) params.get(WEB_PARAMS.LOG_TYPE) : null;
+				Long appId = getAppId(userName, authToken, (String) params.get(WEB_PARAMS_LOG_DATA.APP_NAME));
+				String logKey = (params.containsKey(WEB_PARAMS_LOG_DATA.LOG_KEY) && params.get(WEB_PARAMS_LOG_DATA.LOG_KEY) != null) ? (String) params.get(WEB_PARAMS_LOG_DATA.LOG_KEY) : null;
+				String logType = (params.containsKey(WEB_PARAMS_LOG_DATA.LOG_TYPE) && params.get(WEB_PARAMS_LOG_DATA.LOG_TYPE) != null) ? (String) params.get(WEB_PARAMS_LOG_DATA.LOG_TYPE) : null;
 				result = logDataDAO.findByDynamicParams(piSerialId, appId, logKey, logType, null);
 				break;
 		}

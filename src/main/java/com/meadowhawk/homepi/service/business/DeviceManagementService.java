@@ -1,6 +1,7 @@
 package com.meadowhawk.homepi.service.business;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.EntityExistsException;
@@ -11,8 +12,12 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.meadowhawk.homepi.dao.AbstractJpaDAO.DBSortOrder;
+import com.meadowhawk.homepi.dao.LogDataDAO;
 import com.meadowhawk.homepi.dao.PiProfileDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
+import com.meadowhawk.homepi.model.LogData;
+import com.meadowhawk.homepi.model.ManagedApp;
 import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.service.ApiKeyRequired;
@@ -29,6 +34,9 @@ public class DeviceManagementService {
 
 	@Autowired
 	PiProfileDAO piProfileDao;
+	
+	@Autowired
+	LogDataDAO logDataDAO;
 	
 	/**
 	 * @param serialId
@@ -178,5 +186,51 @@ public class DeviceManagementService {
 		} catch(Exception e){
 			return false;
 		}
+	}
+
+	/**
+	 * Creates LogData from the Pi.
+	 * @param piSerialId
+	 * @param apiKey
+	 * @param logData 
+	 */
+	@ApiKeyRequiredBeforeException
+	public void createLogData(String piSerialId, String apiKey, LogData logData) {
+		if(logData == null){
+			throw new HomePiAppException(Status.BAD_REQUEST, "Invalid data, nothing to save.");
+		}
+		//Validate
+		if(StringUtil.isNullOrEmpty(logData.getLogKey()) || StringUtil.isNullOrEmpty(logData.getLogMessage())){
+			throw new HomePiAppException(Status.BAD_REQUEST,"logKey and logData are required fields and can not be null or empty values.");
+		}
+		PiProfile profile = getPiProfile(piSerialId);
+		logData.setPiId(profile.getPiId());
+		logData.setUserId(profile.getUserId());
+		if(logData.getLogTypeId() == null){
+			logData.setLogTypeId(1L); //Defaults to SYSTEM
+		}
+		if(logData.getCreateTime() == null){
+			logData.setCreateTime(new DateTime());
+		}
+		
+		try{
+			logDataDAO.save(logData);
+		} catch(Exception e){
+			throw new HomePiAppException(Status.NOT_MODIFIED, "Can't create: " + e.getLocalizedMessage());
+		}
+	}
+
+	@ApiKeyRequiredBeforeException
+	public List<LogData> getLogData(String piSerialId, String apiKey, Map<WEB_PARAMS_LOG_DATA, Object> params) {
+		PiProfile profile = getPiProfile(piSerialId);
+		Long appId = null;
+		if(params.containsKey(WEB_PARAMS_LOG_DATA.APP_NAME)){
+			ManagedApp ma = profile.getManagedAppByName((String)params.get(WEB_PARAMS_LOG_DATA.APP_NAME));
+			appId = ma.getAppId();
+		}
+		
+		String logKey = (params.containsKey(WEB_PARAMS_LOG_DATA.LOG_KEY))? (String)params.get(WEB_PARAMS_LOG_DATA.LOG_KEY):null;
+		String logType= (params.containsKey(WEB_PARAMS_LOG_DATA.LOG_TYPE))? (String)params.get(WEB_PARAMS_LOG_DATA.LOG_TYPE):null;
+		return logDataDAO.findByDynamicParams(piSerialId, appId, logKey, logType, DBSortOrder.DESC);
 	}
 }

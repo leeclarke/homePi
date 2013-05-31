@@ -38,8 +38,8 @@ import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.LogDataService;
-import com.meadowhawk.homepi.service.business.LogDataService.WEB_PARAMS;
 import com.meadowhawk.homepi.service.business.ManagedAppsService;
+import com.meadowhawk.homepi.service.business.WEB_PARAMS_LOG_DATA;
 import com.meadowhawk.homepi.util.StringUtil;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
@@ -106,10 +106,10 @@ public class HomePiRestService {
 	@PublicRESTDocMethod(endPointName="Log Pi Message", group="Logs", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/8lhdfenm1x/log"})
 	public List<LogData> getLogsForApp(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken, @PathParam("pi_serial_id") String piSerialId, @PathParam("app_name") String appName, @QueryParam("log_type") String logType, @QueryParam("log_key") String logkey){
 		
-		Map<WEB_PARAMS, Object> params = new HashMap<WEB_PARAMS, Object>();
-		params.put(WEB_PARAMS.APP_NAME, appName);
-		params.put(WEB_PARAMS.LOG_TYPE, logType);
-		params.put(WEB_PARAMS.LOG_KEY, logkey);
+		Map<WEB_PARAMS_LOG_DATA, Object> params = new HashMap<WEB_PARAMS_LOG_DATA, Object>();
+		params.put(WEB_PARAMS_LOG_DATA.APP_NAME, appName);
+		params.put(WEB_PARAMS_LOG_DATA.LOG_TYPE, logType);
+		params.put(WEB_PARAMS_LOG_DATA.LOG_KEY, logkey);
 		
 		
 		return logDataService.getLogDataBySearchType(userId, authToken,piSerialId, LogDataService.SEARCH_TYPE.DYNAMIC, params );
@@ -122,9 +122,9 @@ public class HomePiRestService {
 	@PublicRESTDocMethod(endPointName="Log Pi Message", group="Logs", description="Retrieves logs entries for given Pi. Pi API key or user auth may be required.", sampleLinks={"/homepi/pi/8lhdfenm1x/log"})
 	public List<LogData> getLogsForPi(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken,@PathParam("pi_serial_id") String piSerialId, @QueryParam("log_type") String logType, @QueryParam("log_key") String logkey){
 		
-		Map<WEB_PARAMS, Object> params = new HashMap<WEB_PARAMS, Object>();
-		params.put(WEB_PARAMS.LOG_TYPE, logType);
-		params.put(WEB_PARAMS.LOG_KEY, logkey);
+		Map<WEB_PARAMS_LOG_DATA, Object> params = new HashMap<WEB_PARAMS_LOG_DATA, Object>();
+		params.put(WEB_PARAMS_LOG_DATA.LOG_TYPE, logType);
+		params.put(WEB_PARAMS_LOG_DATA.LOG_KEY, logkey);
 		
 		
 		return logDataService.getLogDataBySearchType(userId, authToken, piSerialId, LogDataService.SEARCH_TYPE.DYNAMIC, params );
