@@ -285,6 +285,18 @@
 				</executions>
 			</plugin>
 		</plugins>
+<!-- includes the download-able .py file in the path so its available to the WebServices. -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>/src/main/python</directory>
+				<includes>
+					<include>homePi.py</include>
+				</includes>
+			</resource>
+		</resources> 
 
 		<pluginManagement>
 			<plugins>
