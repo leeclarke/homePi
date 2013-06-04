@@ -30,6 +30,7 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.ResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.exception.HomePiAppException;
@@ -66,6 +67,12 @@ public class UserRESTService {
 	
 	@Context UriInfo ui;
 	
+	//The following is set from the System Properties you know  -Dgoogle_auth_client_id
+	@Value("#{systemProperties['google_auth_client_id']}")
+	String google_auth_client_id;
+	
+	@Value("#{systemProperties['google_auth_client_secret']}")
+	String google_auth_client_secret;
 	
 	@GET
 	@Path("/profile/{user_id}")
@@ -175,8 +182,8 @@ public class UserRESTService {
 		
 			Form form = new Form();
 			form.set("code", code);
-			form.set("client_id", getClientId());
-			form.set("client_secret", getClientSecret());
+			form.set("client_id", google_auth_client_id);
+			form.set("client_secret", google_auth_client_secret);
 			form.set("redirect_uri", getGoogleRedirectURL(ui));
 			form.set("grant_type", GRANT_TYPE_AUTH);
 
@@ -203,14 +210,6 @@ public class UserRESTService {
 	}
 
 
-	private String getClientId() {
-		return appConfigService.getAppConfig().getByKey("google_auth_client_id").getValue();
-	}
-
-	private String getClientSecret() {
-		return appConfigService.getAppConfig().getByKey("google_auth_client_secret").getValue();
-	}
-
 	private String getGoogleRedirectURL(UriInfo ui){
 		UriBuilder ub = ui.getBaseUriBuilder().path(UserRESTService.class);
 		URI gauthCallbackURI = ub.path(UserRESTService.class, "googleAuthCallback").build();
@@ -226,7 +225,7 @@ public class UserRESTService {
 	
 	private String getFirstAuthReqURIui() {
 		if(this.firstAuthUri == null){ 
-				this.firstAuthUri = "https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=%2Fprofile&redirect_uri="+getGoogleRedirectURLEncoded(ui) +"&response_type=code&client_id="+getClientId();
+				this.firstAuthUri = "https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=%2Fprofile&redirect_uri="+getGoogleRedirectURLEncoded(ui) +"&response_type=code&client_id="+google_auth_client_id;
 		}
 		return this.firstAuthUri;
 	}

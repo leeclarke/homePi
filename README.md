@@ -1,6 +1,6 @@
-# JAX-RS Template Application
+# HomePi Application
 
-This is a template for a lightweight RESTful API using JAX-RS. The sample code is a call for getting the current time.
+This is a RESTful API for remote management of applications on distributed RaspberyPis .
     
 ## Running the application locally
 
@@ -10,7 +10,15 @@ First build with:
 
 Then run it with:
 
-    $ java -cp target/classes:target/dependency/* com.meadowhawk.homepi.Main
+    $ java -cp target/classes:target/dependency/* com.meadowhawk.homepi.LocalMain
+
+Note! This requires some System Properties being set to run.
+
+
+-Denv.db.userid=postgres -Denv.db.password=Password1 
+-Dgoogle_auth_client_id=gogole_client_id 
+-Dgoogle_auth_client_secret=google_client_secret
+
 
 ## TODO:
 
