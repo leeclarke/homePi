@@ -41,10 +41,9 @@ public class GeneralExceptionMapper implements ExceptionMapper<Exception>{
 			Status status = Status.fromStatusCode(wae.getResponse().getStatus());
 			String cause = (wae.getCause()!= null)?wae.getCause().toString():"";
 			if(status == null && wae.getResponse().getStatus() == 405){
-				status = Status.BAD_REQUEST;
-				msg += (" [Unmapped Status:" + wae.getResponse().getStatus()+"]");
+				msg += (" [Unmapped Status:" + wae.getResponse().getStatus()+"] " + wae.getResponse().getMetadata());
 				if(cause == null) cause = "Method Not Allowed";
-			}
+			}	
 			return Response
 				.status(status)
                 .entity(new HomePiAppException(status, msg, cause,0).toResponse())
