@@ -16,7 +16,7 @@ import com.meadowhawk.homepi.model.LogData;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:localbeans.xml"})
+@ContextConfiguration(locations={"classpath:beans.xml"})
 public class LogDataDAOTest {
 
 	private static final String LOG_KEY = "Device Temp";

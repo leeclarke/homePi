@@ -11,8 +11,8 @@
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${db.driver}" />
 		<property name="url" value="${db.url.local}" />
-		<property name="username" value="#{systemProperties['env.db.userid']}" />
-		<property name="password" value="#{systemProperties['env.db.password']}" />
+		<property name="username" value="${db.userid.local}" />
+		<property name="password" value="${db.password.local}" />
 	</bean>
 
 	<bean id="jpaEmf"
