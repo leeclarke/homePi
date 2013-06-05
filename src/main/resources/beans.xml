@@ -33,7 +33,7 @@
 	<beans profile="prod">
 		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 			<property name="driverClassName" value="${db.driver}" />
-			<property name="url" value="#{systemProperties['DATABASE_URL']}" />
+			<property name="url" value="${DATABASE_URL}" />
 			</bean>
 		
 	</beans>
