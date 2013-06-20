@@ -5,3 +5,5 @@ build
 .project
 .settings
 .env
+homepi.sublime-project
+homepi.sublime-workspace

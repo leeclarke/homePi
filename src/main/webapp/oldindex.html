@@ -1,0 +1,246 @@
+<!doctype html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>JAX-RS Template</title>
+
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!--
+    IMPORTANT:
+    This is Heroku specific styling. Remove to customize.
+    -->
+    <link href="http://heroku.github.com/template-app-bootstrap/heroku.css" rel="stylesheet">
+    <style type="text/css">
+        .instructions {
+            display: none;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+        }
+
+        .instructions h2 {
+            margin: 18px 0;
+        }
+
+        .instructions blockquote {
+            margin-top: 10px;
+        }
+
+        .screenshot {
+            margin-top: 10px;
+            display: block;
+        }
+
+        .screenshot a {
+            padding: 0;
+            line-height: 1;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .screenshot img, .tool-choice img {
+            border: 1px solid #ddd;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+            -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+        }
+    </style>
+    <!-- /// -->
+    <script type="text/javascript">
+        <!--
+        function appname() {
+            return location.hostname.substring(0, location.hostname.indexOf("."));
+        }
+
+        function openRestClient(startUrl) {
+            $('#rest-url').val(startUrl);
+            $('#rest-result-container').hide();
+            $('#rest-client-tab').click();
+        }
+
+        function sendGetRequest() {
+            $.ajax({
+                url:$('#rest-url').val(),
+                dataType:'json',
+                context:document.body,
+                success:function (data, textStatus, jqXHR) {
+                    showRestResults('Success', 'alert-success', JSON.stringify(data, undefined, 2));
+                },
+                error:function (qXHR, textStatus, errorThrown) {
+                    if (errorThrown instanceof SyntaxError) {
+                        errorThrown = errorThrown.message;
+                    }
+
+                    showRestResults(textStatus, 'alert-error', errorThrown);
+                }
+            });
+        }
+
+        function showRestResults(headerText, headerClass, bodyText) {
+            $('#rest-result-header-text').text(headerText);
+            $('#rest-result-header').removeClass('alert-error').removeClass('alert-success');
+            $('#rest-result-header').addClass(headerClass);
+
+            $('#rest-result-body').text(bodyText);
+            prettyPrint();
+
+            $('#rest-result-container').show();
+        }
+
+        function prettyPrintOnce() {
+            prettyPrint();
+            $('.prettyprint.once').removeClass('prettyprint');
+        }
+        
+        function signinCallback(authResult) {
+			  if (authResult['access_token']) {
+			    // Successfully authorized
+			    // Hide the sign-in button now that the user is authorized, for example:
+			    document.getElementById('signinButton').setAttribute('style', 'display: none');
+			  } else if (authResult['error']) {
+			    // There was an error.
+			    // Possible error codes:
+			    //   "access_denied" - User denied access to your app
+			    //   "immediate_failed" - Could not automatically log in the user
+			    // console.log('There was an error: ' + authResult['error']);
+			    alert('There was an error: ' + authResult['error']);
+			  }
+			}
+        // -->
+    </script>
+</head>
+
+ <!-- Place this asynchronous JavaScript just before your </body> tag -->
+    <script type="text/javascript">
+      (function() {
+       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+       po.src = 'https://apis.google.com/js/client:plusone.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+     })();
+    </script>
+
+<body onload="prettyPrintOnce();">
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a href="/" class="brand">HomePi</a>
+            <!--
+            IMPORTANT:
+            This is Heroku specific markup. Remove to customize.	
+            -->
+            <a href="/" class="brand" id="heroku">by <strong>Meadowhawk</strong></a>
+            <!-- /// -->
+        </div>
+    </div>
+</div>
+
+<div class="container" id="getting-started">
+<div class="row">
+<div class="span8 offset2">
+<h1 class="alert alert-success">Welcome to HomePi!</h1>
+
+<div class="page-header">
+    <h1>Get started with HomePi</h1>
+</div>
+
+<div style="margin-bottom: 20px">
+    This API provides access to all of the info you need to manage you Raspberry Pi as well as see some of the information belonging to other peoples Pis. Imagine a world where all the Pis talk, share and just get along! 
+    The sample code is a call for getting information about a single configured Pi.
+    To try it out use the example REST client below to send a <code>GET</code> request to <code>/services/homepi/pi/2e848bg934</code>.
+    <p>To get started managing your Raspberry Pis sign-in with G+</p>
+ 		<span id="signinButton">
+		  <span
+		    class="g-signin"
+		    data-callback="signinCallback"
+		    data-clientid="4255733398.apps.googleusercontent.com"
+		    data-cookiepolicy="single_host_origin"
+		    data-requestvisibleactions="http://schemas.google.com/AddActivity"
+		    data-scope="https://www.googleapis.com/auth/plus.login">
+		  </span>
+		</span>
+</div>
+
+<ul id="tab" class="nav nav-tabs">
+    <li><a id="about-tab" href="#about" data-toggle="tab">About</a></li>
+    <li><a id="rest-doc-tab" href="#rest-doc" data-toggle="tab">Rest Documentation</a></li>
+    <li><a id="rest-client-tab" href="#rest-client" data-toggle="tab">Example REST Client</a></li>
+</ul>
+
+<div class="tab-content">
+
+<div id="about" class="tab-pane">
+	Manage all of your online Raspberry Pis from one location! View logged data, push new software and receive alerts from your Pi no matter where it's located, if it has access to the internet it can call home.
+</div>
+<!-- End About -->
+	
+<div id="rest-doc" class="instructions tab-pane">
+    <a name="using-api"></a>
+
+    <p>HomePI generates its own online <a href="./services/docs">API Documentation</a>, take a look and see what you can do with the API!</p>
+
+</div>
+<!-- End Docs tab -->
+
+<div id="rest-client" class="tab-pane">
+    <h1>REST Client</h1>
+
+    <div id="rest-client-widget" style="margin: 10px">
+        <form class="form-horizontal" class="row-fluid">
+            <fieldset>
+                <label class="control-label search-query" for="rest-url"><strong>URL</strong></label>
+                <input id="rest-url" type="text" value="/services/homepi/pi/2e848bg934">
+                <button type="submit" class="btn btn-primary" onclick="sendGetRequest(); return false;">GET</button>
+            </fieldset>
+        </form>
+
+        <div id="rest-result-container" class="row hide">
+            <div class="row">
+                <div id="rest-result-header" class="offset2 span1 alert">
+                    <a id="rest-result-close-btn" class="close" data-dismiss="alert"
+                       onclick="$('#rest-result-container').hide();">×</a>
+                    <span id="rest-result-header-text"></span>
+                </div>
+            </div>
+            <div class="row">
+                <pre id="rest-result-body" class="offset2 span4 prettyprint language-json"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Rest Client tab -->
+
+</div>
+<!-- end tab content -->
+</div>
+
+
+</div>
+
+
+</div>
+
+</div>
+</div>
+</div>
+
+<script src="http://twitter.github.com/bootstrap/assets/js/jquery.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tab.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
+
+ </body>
+</html>
+</body>
+</html>

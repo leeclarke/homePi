@@ -45,7 +45,7 @@ public class DocumentationRESTService {
 	private static final String INDEX = "<HTML><head>" + NO_CACHE + STYLE_LINK +"</head><body><h2>"+ DOC_APP_NAME +" Service Endpoint Index.</h2><table>"+CONTENT+"</table></body></HTML>";
 	
 	private static final String END_POINT = "<HTML><head>" + NO_CACHE + STYLE_LINK + "</head><body><h2 class=\"breadcrumb\"><a href=\"../index\">Endpoint Index</a> >> "+ DOC_APP_NAME +" Service Endpoint Details.</h2><table>"+CONTENT+"</table></body></HTML>";
-	private static final String DEFAUT_STYLE = "a:link {text-decoration:none; color:#000} a:visited {text-decoration:none; color:#000} a:hover {text-decoration:underline;} TH a:link {color:#FFFFFF;} TH a:visited{text- decoration:none; color:#FFFFFF} TH a:hover {text-decoration:underline;} table.end-point{border-width: 1px; border-spacing: 0px; width: 100%} table.end-point th{vertical-align: top; text-align:left; width:120px} table.end-point td{text-align:left}";
+	private static final String DEFAUT_STYLE = "a:link {text-decoration:none; color:#000} a:visited {text-decoration:none; color:#000} a:hover {text-decoration:underline;} TH {background-color: #CC0000} TH a:link {color:#FFFFFF;} TH a:visited{text- decoration:none; color:#FFFFFF} TH a:hover {text-decoration:underline;} table.end-point{border-width: 1px; border-spacing: 0px; width: 100%} table.end-point th{vertical-align: top; text-align:left; width:120px} table.end-point td{text-align:left}";
 	
 	@Context UriInfo uriInfo;
 	
@@ -67,7 +67,7 @@ public class DocumentationRESTService {
 		StringBuilder indexString = new StringBuilder();
 		for (ServiceDocTO serviceDoc : serviceDocs) {
 			
-			indexString.append("<TR><TH colspan=2 align=\"left\" bgcolor='red'><a href=\"")
+			indexString.append("<TR><TH colspan=2 align=\"left\" ><a href=\"")
 				.append(getLocalMethodPath(DocumentationRESTService.class,"getRestServiceEndPointDocs",serviceDoc.getServiceName())).append("\">")
 				.append(serviceDoc.getServiceName())   
 				.append("</a>")
@@ -111,7 +111,7 @@ public class DocumentationRESTService {
 		indexString.append("<TR><TH align=\"left\">&nbsp;</TH><TD>");
 
 		for (ServiceDocMethodTO method : serviceDoc.getMethodDocs()) {
-			indexString.append("<table class=\"end-point\"><TR><TH colspan=2 align=\"left\" bgcolor='red'><a href=\"#").append(method.getEndPointName()).append("\">")
+			indexString.append("<table class=\"end-point\"><TR><TH colspan=2 align=\"left\" ><a href=\"#").append(method.getEndPointName()).append("\">")
 				.append(method.getEndPointName()).append("</TH></TR>")
 				.append("<TR><th>HTTP Method</th><td>").append(method.getEndPointRequestType()).append("</td></TR>")
 				.append("<TR><th>Path</th><td>").append(getLocalMethodPattern(serviceDoc.getServiceClass(), method.getEndPointMethodName())).append("</td></TR>")
