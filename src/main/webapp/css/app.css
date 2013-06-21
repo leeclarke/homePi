@@ -24,6 +24,38 @@ h1 { margin: 0 0 10px 0; padding: 0; text-align: center }
 
 .footer{background-color: #f5f5f5; padding-top: 20px; text-align: center; border-top: 1px solid #ddd;}
 
+.login { text-align: center; width: 100% ;}
+.gplus-btn {margin: 0 auto; background-color: #CC0000;  color: #fff; border: 2px solid #fff; border-radius: 3px; width: 180px; max-height: 32px; overflow: hidden;}
+.gplus{
+	background: no-repeat url(//ssl.gstatic.com/s2/oz/images/sprites/signinbutton-33609e7d7a37de895f076250a526944d.png) -44px 0;
+	background-image: url(https://ssl.gstatic.com/s2/oz/images/sprites/signinbutton-33609e7d7a37de895f076250a526944d.png);
+	background-position-x: -44px;
+	background-position-y: 0px;
+	background-size: initial;
+	background-repeat-x: no-repeat;
+	background-repeat-y: no-repeat;
+	background-attachment: initial;
+	background-origin: initial;
+	background-clip: initial;
+	background-color: initial;
+	height: 32px;
+	width: 32px;
+	margin-top: -1px;
+}
+
+.right {
+    float: right;
+    width: 80%;
+    height: 34px;
+    font-size: 24px;
+    padding-top: 5px;
+}
+.left {
+    overflow: hidden;
+    height: 32px;
+    border-right: 1px solid #ddd;
+}
+
 /* This parent can be any width and height */
 .block {
   text-align: center;

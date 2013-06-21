@@ -99,7 +99,7 @@ CONSTRAINT log_data_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users (
 CONSTRAINT log_data_APP_id_fkey FOREIGN KEY (app_id) REFERENCES public.managed_app (app_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
 CONSTRAINT log_data_log_type_fkey FOREIGN KEY (log_type_id) REFERENCES public.log_type (log_type_id) ON UPDATE NO ACTION ON DELETE NO ACTION
 );
-CREATE UNIQUE INDEX LOG_SEARCH_LOG_KEY ON LOG_DATA (LOG_KEY);
+CREATE INDEX LOG_SEARCH_LOG_KEY ON LOG_DATA (LOG_KEY);
 
 INSERT INTO log_type (log_type_name) VALUES ('SYSTEM');
 

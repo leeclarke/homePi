@@ -44,7 +44,7 @@ public class DocumentationRESTService {
 	private static final String NO_CACHE = "<META HTTP-EQUIV=\"Pragma\" CONTENT=\"no-cache\"><META HTTP-EQUIV=\"Expires\" CONTENT=\"-0\">";
 	private static final String INDEX = "<HTML><head>" + NO_CACHE + STYLE_LINK +"</head><body><h2>"+ DOC_APP_NAME +" Service Endpoint Index.</h2><table>"+CONTENT+"</table></body></HTML>";
 	
-	private static final String END_POINT = "<HTML><head>" + NO_CACHE + STYLE_LINK + "</head><body><h2 class=\"breadcrumb\"><a href=\"../index\">Endpoint Index</a> >> "+ DOC_APP_NAME +" Service Endpoint Details.</h2><table>"+CONTENT+"</table></body></HTML>";
+	private static final String END_POINT = "<HTML><head>" + NO_CACHE + STYLE_LINK + "</head><body><h2 class=\"breadcrumb\"><a href=\"../index\">Endpoint Index</a> >> "+ DOC_APP_NAME +" Service Endpoint Details.</h2><table class=\"doc-content\">"+CONTENT+"</table></body></HTML>";
 	private static final String DEFAUT_STYLE = "a:link {text-decoration:none; color:#000} a:visited {text-decoration:none; color:#000} a:hover {text-decoration:underline;} TH {background-color: #CC0000} TH a:link {color:#FFFFFF;} TH a:visited{text- decoration:none; color:#FFFFFF} TH a:hover {text-decoration:underline;} table.end-point{border-width: 1px; border-spacing: 0px; width: 100%} table.end-point th{vertical-align: top; text-align:left; width:120px} table.end-point td{text-align:left}";
 	
 	@Context UriInfo uriInfo;
@@ -67,7 +67,7 @@ public class DocumentationRESTService {
 		StringBuilder indexString = new StringBuilder();
 		for (ServiceDocTO serviceDoc : serviceDocs) {
 			
-			indexString.append("<TR><TH colspan=2 align=\"left\" ><a href=\"")
+			indexString.append("<TR><TH class=\"hoz-head\" colspan=2 align=\"left\" ><a href=\"")
 				.append(getLocalMethodPath(DocumentationRESTService.class,"getRestServiceEndPointDocs",serviceDoc.getServiceName())).append("\">")
 				.append(serviceDoc.getServiceName())   
 				.append("</a>")
@@ -94,7 +94,7 @@ public class DocumentationRESTService {
 		StringBuilder indexString = new StringBuilder();
 		ServiceDocTO serviceDoc = docService.getEndpointDocsByName(endPointName);
 			
-		indexString.append("<TR><TH colspan=2 align=\"left\" bgcolor='red'><a href=\"")
+		indexString.append("<TR><TH colspan=2 align=\"left\" class=\"hoz-head\"><a href=\"")
 			.append(getLocalMethodPath(DocumentationRESTService.class,"getRestServiceEndPointDocs",serviceDoc.getServiceName())).append("\">")
 			.append(serviceDoc.getServiceName())
 			.append("</a>")
@@ -103,7 +103,7 @@ public class DocumentationRESTService {
 		indexString.append("<TR><TH align=\"left\">Description</TH><TD>")
 			.append(serviceDoc.getServiceDescription())
 			.append("</TD></TR>");
-		indexString.append("<TR><TH a20lign=\"left\">Root Path</TH><TD>")
+		indexString.append("<TR><TH align=\"left\">Root Path</TH><TD>")
 			.append(serviceDoc.getServicePath())
 			.append("</TD></TR>").append("<TR><TD colspan=2>&nbsp;</TD></TR>");
 		
@@ -111,15 +111,15 @@ public class DocumentationRESTService {
 		indexString.append("<TR><TH align=\"left\">&nbsp;</TH><TD>");
 
 		for (ServiceDocMethodTO method : serviceDoc.getMethodDocs()) {
-			indexString.append("<table class=\"end-point\"><TR><TH colspan=2 align=\"left\" ><a href=\"#").append(method.getEndPointName()).append("\">")
+			indexString.append("<table class=\"end-point\"><TR><TH colspan=2 class=\"epName\" ><a href=\"#").append(method.getEndPointName()).append("\">")
 				.append(method.getEndPointName()).append("</TH></TR>")
-				.append("<TR><th>HTTP Method</th><td>").append(method.getEndPointRequestType()).append("</td></TR>")
-				.append("<TR><th>Path</th><td>").append(getLocalMethodPattern(serviceDoc.getServiceClass(), method.getEndPointMethodName())).append("</td></TR>")
-				.append("<TR><th>Consumes</th><td>").append(convertToStringList(method.getConsumes())).append("</td></TR>")
-				.append("<TR><th>Provides</th><td>").append(convertToStringList(method.getEndPointProvides())).append("</td></TR>")
-				.append("<TR><th>Sample Links</th><td>").append(convertToLinks(method.getSampleLinks())).append("</td></TR>") //TODO: Finish prepending correct URI
-				.append("<TR><th align=\"top\">Description</th><td>").append(method.getEndPointDescription()).append("</td></TR>")
-				.append("<TR><th align=\"top\">Error Codes</th><td>").append(convertToBulletedList(method.getErrors())).append("</td></TR>")
+				.append("<TR><th class=\"detail-head\" >HTTP Method</th><td class=\"detail-content\">").append(method.getEndPointRequestType()).append("</td></TR>")
+				.append("<TR><th class=\"detail-head\" >Path</th><td class=\"detail-content\">").append(getLocalMethodPattern(serviceDoc.getServiceClass(), method.getEndPointMethodName())).append("</td></TR>")
+				.append("<TR><th class=\"detail-head\" >Consumes</th><td class=\"detail-content\">").append(convertToStringList(method.getConsumes())).append("</td></TR>")
+				.append("<TR><th class=\"detail-head\" >Provides</th><td class=\"detail-content\">").append(convertToStringList(method.getEndPointProvides())).append("</td></TR>")
+				.append("<TR><th class=\"detail-head\" >Sample Links</th><td class=\"detail-content\">").append(convertToLinks(method.getSampleLinks())).append("</td></TR>") 
+				.append("<TR><th class=\"detail-head\" >Description</th><td class=\"detail-content\">").append(method.getEndPointDescription()).append("</td></TR>")
+				.append("<TR><th class=\"detail-head\" >Error Codes</th><td class=\"detail-content\">").append(convertToBulletedList(method.getErrors())).append("</td></TR>")
 				.append("<TR><TD colspan=2>&nbsp;</TD></TR></table>");
 		}
 		
@@ -129,7 +129,7 @@ public class DocumentationRESTService {
 	@GET
 	@Path("/restDoc.css")
 	@Produces("text/css")
-	@PublicRESTDocMethod(endPointName="StyleSheet override", description="Delivers the stylesheet used by the API docs. This can be overridden by including a new .css file in the WebApp folder and then setting the optional value in restDocs.properties,  pidocs.css.path=/{fileName}.css", sampleLinks={"./docs/restDoc.css"}, errorCodes="")
+	@PublicRESTDocMethod(endPointName="StyleSheet override", description="Delivers the stylesheet used by the API docs. This can be overridden by including a new .css file in the WebApp folder and then setting the optional value in restDocs.properties,  pidocs.css.path=/{fileName}.css", sampleLinks={"./css/restDoc.css"}, errorCodes="")
 	public Response getDefaultStyleSheet(){
 		if(!StringUtil.isNullOrEmpty(this.altCssLocation)){
 			try {
