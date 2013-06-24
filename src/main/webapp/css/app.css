@@ -1,13 +1,13 @@
 #main { padding-left: 0; height: 100% }
 #sign-in-container, #signed-in-container { display: none }
 h1 { margin: 0 0 10px 0; padding: 0; text-align: center }
-.navbar {top:0; right:0; left:0; z-index:1030; position: fixed; background-color: #1b1b1b; color: #fff; padding:4px; font-size: 18px;}
+.navbar {top:0; right:0; left:0; z-index:1030; position: fixed; background-color: #1b1b1b; color: #fff; padding:4px; font-size: 18px; height:22px ;}
 .navbar-content {background-color: #1b1b1b;}
 .navbar-content ul{list-style-type: none;}
 .navbar-content li{display: inline; padding: 10px;}
 .navbar-content li a {   color: #cccccc; padding: 10px; width: 100% }
 .navbar-content li.active a { bç; color: #ffffff; text-shadow: none; font-weight: bold }
-.navbar-content li a:hover { text-decoration: none; color: #ffffff; text-shadow: none; font-weight: bold }
+.navbar-content li a:hover { text-decoration: none; color: #CC0000; text-shadow: none; }
 
 .masthead{padding: 70px 0 80px; margin-bottom: 0;}
 
@@ -27,8 +27,8 @@ h1 { margin: 0 0 10px 0; padding: 0; text-align: center }
 .login { text-align: center; width: 100% ;}
 .gplus-btn {margin: 0 auto; background-color: #CC0000;  color: #fff; border: 2px solid #fff; border-radius: 3px; width: 180px; max-height: 32px; overflow: hidden; cursor: hand; cursor: pointer;}
 .gplus{
-	background: no-repeat url(//ssl.gstatic.com/s2/oz/images/sprites/signinbutton-33609e7d7a37de895f076250a526944d.png) -44px 0;
-	background-image: url(https://ssl.gstatic.com/s2/oz/images/sprites/signinbutton-33609e7d7a37de895f076250a526944d.png);
+	background: no-repeat url(../img/g_signinbutton.png) -44px 0;
+	background-image: url(../img/g_signinbutton.png);
 	background-position-x: -44px;
 	background-position-y: 0px;
 	background-size: initial;
