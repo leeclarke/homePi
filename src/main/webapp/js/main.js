@@ -24,5 +24,6 @@ require([
 ],
 
 function(App) {
-  window.bTask = new App();
+  window.homepi = new App();
+  console.log('app loaded');
 });
