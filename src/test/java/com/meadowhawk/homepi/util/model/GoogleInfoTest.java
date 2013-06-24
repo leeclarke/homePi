@@ -10,16 +10,16 @@ public class GoogleInfoTest {
 	public void testBuildGoogleInfo() {
 		
 		String jsonString = "{" +
-				 "\"sub\": \"109829574817987307394\"," +
+				 "\"sub\": \"1234567890\"," +
 				 "\"name\": \"Lee Clarke\"," +
 				 "\"given_name\": \"Lee\"," +
-				 "\"family_name\": \"Clarke\"," +
+				 "\"family_name\": \"test\"," +
 				 "\"profile\": \"https://plus.google.com/109829574817987307394\"," +
-				 "\"picture\": \"https://lh4.googleusercontent.com/-5KIKQF7_2og/AAAAAAAAAAI/AAAAAAAACR8/5SSgJOcVEWA/photo.jpg\"," +
-				 "\"email\": \"lee.k.clarke@gmail.com\"," +
+				 "\"picture\": \"/AAAAAAAAAAI/AAAAAAAACR8/5SSgJOcVEWA/photo.jpg\"," +
+				 "\"email\": \"lee.tester@homepi.org\"," +
 				 "\"email_verified\": true," +
 				 "\"gender\": \"male\"," +
-//				 "\"birthdate\": \"0000-01-26\"," +
+//				 "\"birthdate\": \"0000-06-24\"," +
 				 "\"locale\": \"en\"" +
 				"}";
 		
