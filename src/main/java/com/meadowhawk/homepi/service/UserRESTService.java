@@ -1,3 +1,28 @@
+/**
+ *
+ *
+ * Copyright (c) 2012-2013 Lee Clarke
+ *
+ * LICENSE:
+ *
+ * This file is part of HomePi (http://homepi.org).
+ *
+ * HomePi is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any
+ * later version.
+ *
+ * HomePi is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with HomePi.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ *
+ *
+ * @author Lee Clarke <lees2bytes[at]gmail[dot]com>
+ * @license http://www.gnu.org/licenses/gpl.html
+ * @copyright 2012-2013 Lee Clarke
+ */
 package com.meadowhawk.homepi.service;
 
 import java.io.IOException;

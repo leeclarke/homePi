@@ -1,7 +1,5 @@
 package com.meadowhawk.homepi.service;
 
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -13,9 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.meadowhawk.homepi.model.ManagedApp;
-import com.meadowhawk.homepi.service.business.ManagedAppsService;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
+import com.meadowhawk.homepi.service.business.ManagedAppsService;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 import com.meadowhawk.homepi.util.model.TODO;

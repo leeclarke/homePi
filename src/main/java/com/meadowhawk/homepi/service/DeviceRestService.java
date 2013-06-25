@@ -2,9 +2,7 @@ package com.meadowhawk.homepi.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,12 +18,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -34,12 +29,10 @@ import com.meadowhawk.homepi.dao.LogDataDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.LogData;
 import com.meadowhawk.homepi.model.PiProfile;
-import com.meadowhawk.homepi.service.business.HomePiUserService;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
 import com.meadowhawk.homepi.service.business.WEB_PARAMS_LOG_DATA;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
-import com.meadowhawk.homepi.util.model.TODO;
 
 @Path("/homepi/device")
 @Component
@@ -48,7 +41,6 @@ public class DeviceRestService {
 	private static Logger log = Logger.getLogger( DeviceRestService.class );
 	private static final String API_KEY = "api_key";
 	
-	@Context UriInfo uriInfo;
 	
 	@Autowired
 	ClassPathResource updateFile;
