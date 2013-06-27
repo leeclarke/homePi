@@ -1,6 +1,6 @@
 # HomePi Application
 
-This is a Paas managment tool for dispersed RaspberyPi devices and includes a full RESTful API for remote management of applications on distributed RaspberyPis .
+This is a Paas managment tool for dispersed RaspberyPi devices and includes a full RESTful API for remote management of applications on distributed RaspberyPis . The site is up and running [HomePi.org](http://homepi.org), To be honest though, its another couple weeks away from being usable. The REST API is done and tested with basic functions enabled but the UI is where I am working now.  
     
 ## Running the application locally
 
