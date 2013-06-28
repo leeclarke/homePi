@@ -43,9 +43,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriBuilderException;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
@@ -67,12 +69,16 @@ import com.meadowhawk.homepi.util.model.GoogleInfo;
 import com.meadowhawk.homepi.util.model.PublicRESTDoc;
 import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 import com.meadowhawk.homepi.util.service.AppConfigService;
+import com.meadowhawk.homepi.util.service.ServiceUtils;
+import com.sun.jersey.api.view.Viewable;
 
 @Path("/user")
 @Component
 @PublicRESTDoc(serviceName = "UserRESTService", description = "User focused management services.")
 public class UserRESTService {
 	private static Logger log = Logger.getLogger( UserRESTService.class );
+	
+	@Context UriInfo uriInfo;
 	
 	@Autowired
 	AppConfigService appConfigService;
@@ -159,11 +165,27 @@ public class UserRESTService {
 		} else {
 			throw new HomePiAppException(Status.UNAUTHORIZED,"Auth was unauthorized or incomplete.");
 		}
-//TODO: Consider generating a new token for use on HomePi to protect G+ access.		
-//		return Response.ok(hUser).header("www-", ).build();
-		return Response.ok(hUser).build();
+		
+		try {
+			Map<String,String> params = new HashMap<String, String>();
+			params.put("auth_token", hUser.getGoogleAuthToken());
+			params.put("user_id", ""+hUser.getUserId());
+			URI dashboard = ServiceUtils.getUIResource(uriInfo, "dashboard.html", params);
+
+			return Response.seeOther(dashboard).build();
+		} catch (UriBuilderException e) {
+			log.error("Failed to create URI to html page! " , e);
+			throw new HomePiAppException(Status.BAD_REQUEST, "Unable to authenticate.", e);
+			//TODO Add redirect to 404 page
+			
+		} catch (URISyntaxException e) {
+			log.error("Can't build URI to web resource.",e);
+			throw new HomePiAppException(Status.INTERNAL_SERVER_ERROR, "Unable to create redirect.", e);
+		}
+		
 	}
 
+	
 	/**
 	 * Retrieves G+ userInfo so we can figure out how they are. 
 	 * @param auth - initial auth response.
@@ -250,6 +272,7 @@ public class UserRESTService {
 	
 	private String getFirstAuthReqURIui() {
 		if(this.firstAuthUri == null){ 
+			//TODO:  Break this out so scope can be set depending on if user enables drive usage, calender scheduling etc..
 				this.firstAuthUri = "https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&state=%2Fprofile&redirect_uri="+getGoogleRedirectURLEncoded(ui) +"&response_type=code&client_id="+google_auth_client_id;
 		}
 		return this.firstAuthUri;

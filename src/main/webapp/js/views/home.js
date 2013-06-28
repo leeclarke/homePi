@@ -12,12 +12,12 @@ function(template) { //, NavbarView, FooterView) {
     template: _.template(template),
 
     events: {
-    	//TODO: add click event to gplus-btn
     	"click .gplus-btn" : "doGplusAuth"
     },
 
     doGplusAuth: function() {
-    	alert('Sorry, haven\'t coded this just yet.');
+    	//window.open('./services/user/googleauth');
+    	window.location.href = './services/user/googleauth';
     },
 
     initialize: function() {
@@ -26,7 +26,7 @@ function(template) { //, NavbarView, FooterView) {
     render: function() {
       this.$el.html(this.template());
       return this;
-    }
+    },
   });
 
   return HomeView;
