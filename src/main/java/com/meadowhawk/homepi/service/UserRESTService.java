@@ -106,10 +106,10 @@ public class UserRESTService {
 	String google_auth_client_secret;
 	
 	@GET
-	@Path("/profile/{user_id}")
+	@Path("/profile/{user_name}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName = "User Profile", description = "Retrieve user profile. Include access_token in head to gain owner view.", sampleLinks = { "/user/profile/test_user" })
-	public Response getUser(@PathParam("user_id") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
+	public Response getUser(@PathParam("user_name") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
 		if(!StringUtil.isNullOrEmpty(userId)){
 			//get authfrom request or set to null
 			HomePiUser hUser = userService.getUserData(userId, authToken);
@@ -121,11 +121,11 @@ public class UserRESTService {
 	}
 	
 	@POST
-	@Path("/profile/{user_id}")
+	@Path("/profile/{user_name}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName = "Update User Profile", description = "Update profile. Include access_token in head or will return error.", sampleLinks = { "/user/profile/test_user" })
-	public Response updateUserInfo(HomePiUser updateUser, @PathParam("user_id") String userName, @HeaderParam(ACCESS_TOKEN) String authToken){
+	public Response updateUserInfo(HomePiUser updateUser, @PathParam("user_name") String userName, @HeaderParam(ACCESS_TOKEN) String authToken){
 		HomePiUser hUser = userService.updateUserData(userName, authToken, updateUser);
 		return Response.ok(hUser).build();
 	}
@@ -169,8 +169,8 @@ public class UserRESTService {
 		try {
 			Map<String,String> params = new HashMap<String, String>();
 			params.put("auth_token", hUser.getGoogleAuthToken());
-			params.put("user_id", ""+hUser.getUserId());
-			URI dashboard = ServiceUtils.getUIResource(uriInfo, "dashboard.html", params);
+			params.put("user_name", ""+hUser.getUserName());
+			URI dashboard = ServiceUtils.getUIResource(uriInfo, "home.html", params);
 
 			return Response.seeOther(dashboard).build();
 		} catch (UriBuilderException e) {
