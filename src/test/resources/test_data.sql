@@ -39,3 +39,6 @@ UPDATE pi_profile SET update_time = now(), pi_serial_id = 'pi456y765', name = 'A
  INSERT INTO log_data (pi_id, user_id, app_id, log_type_id, log_key, log_value) VALUES (1,1, 6, 4, 'APP_ERROR', 'Sensor not responding');
  INSERT INTO log_data (pi_id, user_id, log_type_id, log_key, log_value) VALUES (1,1, 1, 'ERROR', 'Could Not Download Updates');
  
+ INSERT INTO managed_app (version_number, app_name, file_name, deployment_path, user_id, web_name) VALUES (1, 'Testing App', 'weather.py', '/usr/home/pi/weather', 6, 'TestingApp');
+ INSERT INTO pi_profile (pi_serial_id, name, ip_address, ssh_port_number, user_id) VALUES ('TEST498245', 'FakePi', '192.168.1.40', 80, 6);
+ INSERT INTO profile_managed_app (app_id, pi_id) VALUES (7, 10);
