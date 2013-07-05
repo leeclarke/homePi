@@ -3,10 +3,16 @@ angular.module('dashboard', ['ngCookies','userServices']).
   config(function($routeProvider) {
     $routeProvider.
       when('/', {controller:DashCtrl, templateUrl:'partials/dash.html'}).
-     // when('/edit/:projectId', {controller:EditCtrl, templateUrl:'detail.html'}).
-     // when('/new', {controller:CreateCtrl, templateUrl:'detail.html'}).
+      when('/social', {controller:SearchCtrl, templateUrl:'partials/search.html'}).
+      when('/news', {controller:NewsCtrl, templateUrl:'partials/news.html'}).
+	  when('/profile', {controller:ProfileCtrl, templateUrl:'partials/profile.html'}).
+      when('/profile/:user_name', {controller:ProfileCtrl, templateUrl:'partials/profile.html'}).
       otherwise({redirectTo:'/'});
   });
+
+function HomeCtrl($scope) {
+
+}
 
 function DashCtrl($scope, $http, $location, $cookies, User) {
 	init($scope, $location)
@@ -24,7 +30,7 @@ function DashCtrl($scope, $http, $location, $cookies, User) {
 	
 	//TODO: Save this as a cookie.
 	$cookies.access_token = $scope.access_token;
-	
+
 	//Check for fail and redirect to login/index
 
 	function init($scope, $location){
@@ -46,3 +52,14 @@ function DashCtrl($scope, $http, $location, $cookies, User) {
 
 }
 
+function SearchCtrl($scope, $http, $location, $cookies, User) {
+
+}
+
+function NewsCtrl($scope, $http, $location, $cookies, User) {
+
+}
+
+function ProfileCtrl($scope, $http, $location, $cookies, User) {
+
+}
