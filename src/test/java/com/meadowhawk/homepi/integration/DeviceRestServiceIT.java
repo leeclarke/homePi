@@ -80,7 +80,7 @@ public class DeviceRestServiceIT {
 		String serialId = "pi456y765";
 
 		//Get current apiKey for validation
-		given().port(8088).headers("api_key","8b72f46d-b470-43d4-8919-6148aeb152e3").
+		given().port(8088).headers("api_key","1d6aef13-b395-414c-844e-2a61478db888").
 		expect().statusCode(200).log().body().
 		body("apiKey", notNullValue(),
 	        "ipAddress", notNullValue(),
@@ -107,7 +107,7 @@ public class DeviceRestServiceIT {
 	@Test
 	public void testCreateLogEntry() {
 		String piSerialId = "12345";  
-		String thisApiKey = "cb9c270c-9c5c-49a4-af93-9bc286071140";
+		String thisApiKey = "842afc39-ebaf-4bbc-ad15-ffa3b5155906";
 		String logKey = "AutoTest";		
 		String logMessage = "AutoTestValue";
 		LogData logData = new LogData();

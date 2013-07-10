@@ -61,8 +61,10 @@ public class HomePiUserDAOTest {
 	
 	@Test
 	public void testAuthorizeToken(){
-		String userName = "test-user2";
-		String authToken = "XYZ-123";
+		String userName = "test_user";
+		HomePiUser usr = homePiUserDAO.findByUserName(userName);
+		
+		String authToken = usr.getGoogleAuthToken();
 		boolean resp = homePiUserDAO.authorizeToken(userName, authToken);
 		assertTrue(resp);
 	}

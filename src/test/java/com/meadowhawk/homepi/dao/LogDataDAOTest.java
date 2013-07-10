@@ -55,7 +55,7 @@ public class LogDataDAOTest {
 	
 	@Test
 	public void testFindByLogKey() {
-		List<LogData> resp = logDataDAO.findByLogKey(SYSTEM_LOG_TYPE);
+		List<LogData> resp = logDataDAO.findByLogKey("ERROR");
 		assertNotNull(resp);
 		assertTrue(resp.size()>0);
 	}

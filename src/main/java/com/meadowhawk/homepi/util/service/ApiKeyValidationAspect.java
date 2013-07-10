@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.exception.HomePiAppException;
 import com.meadowhawk.homepi.model.MaskableDataObject;
+import com.meadowhawk.homepi.model.PiProfile;
 import com.meadowhawk.homepi.service.business.DeviceManagementService;
 
 /**
@@ -92,9 +93,17 @@ public class ApiKeyValidationAspect {
 		if (args != null && log.isDebugEnabled()) {
 			log.debug(">>>>>   BEFORE Arguments : " + Arrays.toString(pjp.getArgs()));
 		}
+		String piSerialId = "";
+		String apiKey = "";
 		
-		String piSerialId = (String) args[0];
-		String apiKey = (String) args[1];
+		if(args.length == 1 && args[0] instanceof PiProfile){
+			PiProfile p = (PiProfile)args[0];
+			piSerialId = p.getPiSerialId();
+			apiKey = p.getApiKey();
+		}else {
+			piSerialId = (String) args[0];
+			apiKey = (String) args[1];
+		}
 		try{
 			if (!deviceManagementService.validateApiKey(piSerialId, apiKey)) {
 				throw new HomePiAppException(Status.FORBIDDEN);			
@@ -106,3 +115,4 @@ public class ApiKeyValidationAspect {
 		}
 	}
 }
+
