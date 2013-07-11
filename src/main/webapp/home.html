@@ -4,18 +4,23 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-cookies.min.js"></script> 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-resource.js"></script>
+     <script src="js/Util.js"></script>
     <script src="js/controller/services.js"></script>
     <script src="js/controller/homeapp.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/app.css">
   </head>
-  <body>
-  	<div class="navbar-content">
-		<ul><li class="active"><a href="#">Dashboard</a></li>|<li><a href="#/social">Browse Projects</a></li>|<li><a href="#/profile">Profile</a></li>|<li><a href="#/news">What's New</a></li>|<li><a href="./services/docs/index">HomePi API</a></li></ul>
-	</div>
-
-    <h2>Content Goes here</h2>
-    <div ng-view></div>
+  <body >
+    <div class="navbar">
+    	<div class="navbar-content">
+    		<ul><li class="active"><a href="#">Dashboard</a></li>|<li><a href="#/social">Browse Projects</a></li>|<li><a href="#/profile">Profile</a></li>|<li><a href="#/news">What's New</a></li>|<li><a href="./services/docs/index">HomePi API</a></li></ul>
+    	</div>
+    </div>
+    <div class="home-title">
+      <div class="centered">HomePi</div>
+    </div>
+    <div class="bumper"></div>
+    <div ng-view class="home-view" ng-controller="HomeCtrl"></div>
     <div ng-include="" src=" 'partials/footer.html' "></div>	
   </body>
 </html>

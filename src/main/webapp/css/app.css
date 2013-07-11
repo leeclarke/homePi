@@ -78,3 +78,14 @@ h1 { margin: 0 0 10px 0; padding: 0; text-align: center }
   width: 300px;
 }
 
+.home-view {
+  min-height: 600px;
+}
+
+.home-title{
+     top:30px; right:0; left:0; z-index:1030; position: fixed;margin: 0 0 0 0; padding-bottom: 0;  font-size: 31.5px; font-weight: bold; height:32px; padding:4px; background-color: #CC0000;  color: #fff; 
+}
+
+.bumper{
+  margin-top: 70px;
+}

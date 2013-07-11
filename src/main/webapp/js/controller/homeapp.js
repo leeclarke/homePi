@@ -10,45 +10,37 @@ angular.module('dashboard', ['ngCookies','userServices']).
       otherwise({redirectTo:'/'});
   });
 
-function HomeCtrl($scope) {
+function HomeCtrl($scope, $http, $window, $location, $cookies, User) {
+	console.log('In Home controller');
 
-}
+	params  = Util.parseQueryString($scope, $location)
+	if(params.length >0){
+		//clear query params
+		$location.path('/');
+		wondow.location.href = '/home.html';
+	}
 
-function DashCtrl($scope, $http, $location, $cookies, User) {
-	init($scope, $location)
-	//TODO: Retrieve the User Profile.
-	console.log('uid'+ $scope.user_name);
-	console.log('token'+ $scope.access_token);
+	console.log('uid:'+ params['user_name']);
+	console.log('token:'+ params['auth_token']);
 	
 	//Add token to the header
 	if(!($http.defaults.headers.get)){
 		$http.defaults.headers.get = {};	
 	}
-	$http.defaults.headers.get.access_token = $scope.access_token;
+	$http.defaults.headers.get.access_token = params['auth_token'];
 
-	$scope.user = User.get({user_name: $scope.user_name});
+	$scope.user = User.get({user_name: params['user_name']});
 	
-	//TODO: Save this as a cookie.
-	$cookies.access_token = $scope.access_token;
+	//Save access token as a cookie.
+	$cookies.access_token = params['auth_token'];
 
-	//Check for fail and redirect to login/index
+	//TODO: Check for fail and redirect to login/index
 
-	function init($scope, $location){
-		//tried using $location.search() for this but it was always empty... ran out of time messing with it so just wrote my owe, it will get fixed one day...
-		var queryString = $location.absUrl().match(/^[^?]+\??([^#]*).*$/)[1];
-		console.log('queryString='+queryString);
-		pairs = queryString.split("&")
-		params = [];
-		angular.forEach(pairs , function(kvp){
-			pair = kvp.split('=');
-			params[pair[0]] = pair[1];
-		}); 
+}
 
-		$scope.user_name = params['user_name'];
-		$scope.access_token = params['auth_token'];
-		
-	}
-  	
+function DashCtrl($scope, $http, $location, $cookies, User) {
+	
+  	console.log('cookie='+$cookies.access_token);
 
 }
 
