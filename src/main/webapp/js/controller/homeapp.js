@@ -15,28 +15,30 @@ function HomeCtrl($scope, $http, $window, $location, $cookies, User) {
 	console.log('In Home controller');
 
 	params  = Util.parseQueryString($scope, $location)
-	if(params.length >0){
-		//clear query params (Doesnt do anything)
-		$location.path('/');
-		wondow.location.href = '/home.html';
+	if(params['auth_token']){
+		console.log('uid:'+ params['user_id']);
+		console.log('token:'+ params['auth_token']);
+		
+		//Add token to the header
+		if(!($http.defaults.headers.get)){
+			$http.defaults.headers.get = {};	
+		} 
+		$http.defaults.headers.get.access_token = params['auth_token'];
+		
+		//Save access token as a cookie.
+		$cookies.access_token = params['auth_token'];
+		$cookies.user_id = params['user_id'];
+		$window.location.replace('/home.html');
+	} else {
+		if(!($http.defaults.headers.get)){
+			$http.defaults.headers.get = {};	
+		} 
+		$http.defaults.headers.get.access_token = $cookies.access_token;
+		$scope.user = User.get({user_name: $cookies.user_id});
 	}
 
-	console.log('uid:'+ params['user_id']);
-	console.log('token:'+ params['auth_token']);
-	
-	//Add token to the header
-	if(!($http.defaults.headers.get)){
-		$http.defaults.headers.get = {};	
-	} 
-	$http.defaults.headers.get.access_token = params['auth_token'];
-
-	$scope.user = User.get({user_name: params['user_id']});
-	
-	//Save access token as a cookie.
-	$cookies.access_token = params['auth_token'];
-
 	//TODO: Check for fail and redirect to login/index
-
+	//TODO: Also test for direct deep links.
 }
 
 function DashCtrl($scope, $http, $location, $cookies, User) {
