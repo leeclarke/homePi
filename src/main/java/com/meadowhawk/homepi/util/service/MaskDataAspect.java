@@ -73,9 +73,8 @@ public class MaskDataAspect{
     if (args != null && args.length >= 2)  
     {  
     	if(obj instanceof MaskableDataObject){
-    		String userName = (String) args[0];
 				String authToken = (String) args[1];
-				if(userService.verifyUserToken(userName, authToken)){
+				if(userService.verifyUserToken(args[0], authToken)){
 	  			((MaskableDataObject)obj).setMaskedView(false);
 	  		}
     	}
@@ -94,10 +93,8 @@ public class MaskDataAspect{
 		if (args != null && log.isDebugEnabled()) {
 			log.debug(">>>>>   BEFORE Arguments : " + Arrays.toString(pjp.getArgs()));
 		}
-		
-		String userName = (String) args[0];
 		String authToken = (String) args[1];
-		if(!userService.verifyUserToken(userName, authToken)){
+		if(!userService.verifyUserToken(args[0], authToken)){
 			throw new HomePiAppException(Status.FORBIDDEN);			
 		}
 	}

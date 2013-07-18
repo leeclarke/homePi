@@ -52,7 +52,7 @@ public class UserSerivceIT {
 		user.setFamilyName("SuperUser");
 		user.setGivenName("Testaz");
 		user.setPicLink("http://homepi.org/mypic.jpg");
-		
+//TODO: Fix this. it uses id to do update now.		
 		String json = getUserJson(user);
 
 		given().log().all().port(8088).headers("access_token","XYZ-123").

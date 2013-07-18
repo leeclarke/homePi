@@ -31,6 +31,14 @@ public class HomePiUserDAO  extends AbstractJpaDAO< HomePiUser >{
 		return entityManager.createNamedQuery("HomePiUser.findByEmail",this.clazz).setParameter("email", email).getSingleResult();
 	}
 
+	/**
+	 * @param userId
+	 * @return
+	 * @throws NoResultException
+	 */
+	public HomePiUser findByUserId(Long userId) {
+		return entityManager.createNamedQuery("HomePiUser.findByUserId",this.clazz).setParameter("uid", userId).getSingleResult();
+	}
 
 	/**
 	 * Verifies user by checking user name and auth token.
@@ -42,5 +50,24 @@ public class HomePiUserDAO  extends AbstractJpaDAO< HomePiUser >{
 		Long ct = entityManager.createNamedQuery("HomePiUser.authToken",Long.class).setParameter("userName", userName).setParameter("authToken", authToken).getSingleResult();
 		return (ct==1)?true:false;
 	}
-	
+
+
+	/**
+	 * Verifies user by checking userId and auth token.
+	 * @param userId
+	 * @param authToken
+	 * @return
+	 */
+	public boolean authorizeToken(Long userId, String authToken) {
+		try{
+			HomePiUser user = this.findByUserId(userId);
+			return this.authorizeToken(user.getUserName(), authToken);
+		}
+		catch(Exception e ){
+			return false;
+		}
+	}
+
 }
+
+	

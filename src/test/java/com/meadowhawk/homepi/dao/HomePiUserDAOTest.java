@@ -52,6 +52,14 @@ public class HomePiUserDAOTest {
 	}
 	
 	@Test
+	public void testFindByUserId(){
+		Long userId = new Long(1);
+		HomePiUser resp = homePiUserDAO.findByUserId(userId);
+		assertNotNull(resp);
+		assertEquals(userId, resp.getUserId());
+	}
+	
+	@Test
 	public void testFindByEmail(){
 		String userEmail = "tester@homepi.com";
 		HomePiUser resp = homePiUserDAO.findByEmail(userEmail);

@@ -31,6 +31,7 @@ import com.meadowhawk.homepi.rs.JodaDateTimeSerializer;
 
 @NamedQueries(value={@NamedQuery(name="HomePiUser.findByEmail", query = "select u from HomePiUser u where u.email = :email"),
 		@NamedQuery(name="HomePiUser.findByUserName", query = "select u from HomePiUser u where u.userName = :name"),
+		@NamedQuery(name="HomePiUser.findByUserId", query = "select u from HomePiUser u where u.userId = :uid"),
 		@NamedQuery(name="HomePiUser.authToken", query="select count(*) from HomePiUser u where u.userName = :userName and u.googleAuthToken = :authToken")})
 @JsonFilter("privateView")
 public class HomePiUser extends MaskableDataObject implements Serializable{

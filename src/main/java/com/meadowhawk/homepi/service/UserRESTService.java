@@ -108,11 +108,19 @@ public class UserRESTService {
 	@GET
 	@Path("/profile/{user_name}")
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName = "User Profile", description = "Retrieve user profile. Include access_token in head to gain owner view.", sampleLinks = { "/user/profile/test_user" })
-	public Response getUser(@PathParam("user_name") String userId, @HeaderParam(ACCESS_TOKEN) String authToken){
-		if(!StringUtil.isNullOrEmpty(userId)){
+	@PublicRESTDocMethod(endPointName = "User Profile", description = "Retrieve user profile. Include access_token in head to gain owner view. Default key is user_name but if specified in queryparam then id search is supported.", sampleLinks = { "/user/profile/test_user", "/user/profile/1?key=id"  })
+	public Response getUser(@PathParam("user_name") String userKey, @HeaderParam(ACCESS_TOKEN) String authToken, @QueryParam("key") String queryKey){
+		
+		if(!StringUtil.isNullOrEmpty(userKey)){
 			//get authfrom request or set to null
-			HomePiUser hUser = userService.getUserData(userId, authToken);
+			
+			HomePiUser hUser = null;
+			if(StringUtil.isNullOrEmpty(queryKey)){
+				hUser = userService.getUserData(userKey, authToken);
+			} else{ //assume its id since no other option.
+				Long userId = StringUtil.safeParseToLong(userKey);
+				hUser = userService.getUserData(userId, authToken); 
+			}
 			return Response.ok(hUser).build(); 
 		} else {
 			throw new HomePiAppException(Status.NOT_FOUND,"Invalid user ID");
@@ -121,14 +129,18 @@ public class UserRESTService {
 	}
 	
 	@POST
-	@Path("/profile/{user_name}")
+	@Path("/profile/{user_id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@PublicRESTDocMethod(endPointName = "Update User Profile", description = "Update profile. Include access_token in head or will return error.", sampleLinks = { "/user/profile/test_user" })
-	public Response updateUserInfo(HomePiUser updateUser, @PathParam("user_name") String userName, @HeaderParam(ACCESS_TOKEN) String authToken){
-		HomePiUser hUser = userService.updateUserData(userName, authToken, updateUser);
+	@PublicRESTDocMethod(endPointName = "Update User Profile", description = "Update profile. Include access_token in head or will return error.", sampleLinks = { "/user/profile/1" })
+	public Response updateUserInfo(HomePiUser updateUser, @PathParam("user_id") Long userId, @HeaderParam(ACCESS_TOKEN) String authToken){
+		if(StringUtil.isNullOrEmpty(authToken)){
+			authToken = updateUser.getGoogleAuthToken(); //See if token was passed in body
+		}
+		HomePiUser hUser = userService.updateUserData(userId, authToken, updateUser);
 		return Response.ok(hUser).build();
 	}
+	
 	
 	@GET
 	@Path("/googleauth")
@@ -169,7 +181,7 @@ public class UserRESTService {
 		try {
 			Map<String,String> params = new HashMap<String, String>();
 			params.put("auth_token", hUser.getGoogleAuthToken());
-			params.put("user_name", ""+hUser.getUserName());
+			params.put("user_id", ""+hUser.getUserId());
 			URI dashboard = ServiceUtils.getUIResource(uriInfo, "home.html", params);
 
 			return Response.seeOther(dashboard).build();

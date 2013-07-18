@@ -94,6 +94,28 @@ public class HomePiUserService {
 		
 		return hUser;
 	}
+	
+	/**
+	 * Retrieves User profile, only public data is displayed unless auth tokens match.
+	 * @param userId
+	 * @param authToken
+	 * @return
+	 */
+	@MaskData
+	public HomePiUser getUserData(Long userId, String authToken) {
+		if(userId == null){
+			throw new HomePiAppException(Status.BAD_REQUEST,"Invalid key value for request.");
+		}
+		HomePiUser hUser;
+		try{
+			hUser = homePiUserDao.findByUserId(userId);
+
+		} catch(NoResultException nre){
+			throw new HomePiAppException(Status.NOT_FOUND,"Invalid user");
+		}
+		
+		return hUser;
+	}
 
 
 	/**
@@ -102,6 +124,7 @@ public class HomePiUserService {
 	 * @param authToken - auth token
 	 * @param updateUser - user
 	 * @return updated user if successful
+	 * @deprecated
 	 */
 	@AuthRequiredBeforeException
 	@MaskData
@@ -124,18 +147,51 @@ public class HomePiUserService {
 		return hUser;
 	}
 	
+	/**
+	 * Updates are done based on uid because the user can change their userName.
+	 * @param userId
+	 * @param authToken
+	 * @param updateUser
+	 * @return
+	 */
+	@AuthRequiredBeforeException
+	@MaskData
+	public HomePiUser updateUserData(Long userId, String authToken, HomePiUser updateUser) {
+		HomePiUser hUser = null;
+		try {
+			hUser = homePiUserDao.findByUserId(userId);
+			hUser.setFamilyName(updateUser.getFamilyName());
+			hUser.setGivenName(updateUser.getGivenName());
+			hUser.setFullName(updateUser.getFullName());
+			hUser.setPicLink(updateUser.getPicLink());
+			hUser.setUserName(updateUser.getUserName());
+			hUser.setUpdateTime(new DateTime());
+			homePiUserDao.update(hUser);
+			hUser = homePiUserDao.findByUserId(userId);
+		} catch (NoResultException nre) {
+			throw new HomePiAppException(Status.NOT_FOUND, "Invalid user");
+		}
+
+	return hUser;
+	}
 	
 	/**
-	 * Validates user token and user name.
-	 * @param userName
+	 * Validates user token and user key (userId|userName).
+	 * @param userKey
 	 * @param authToken
 	 * @return - true if authorized.
 	 */
-	public boolean verifyUserToken(String userName, String authToken){
-		if(StringUtil.isNullOrEmpty(userName) || StringUtil.isNullOrEmpty(authToken) ){
+	public boolean verifyUserToken(Object userKey, String authToken){
+		if(userKey == null || StringUtil.isNullOrEmpty(authToken) ){
 			return false;
 		}
-		return homePiUserDao.authorizeToken(userName, authToken);
+		if(userKey instanceof Long){
+			return homePiUserDao.authorizeToken((Long)userKey, authToken);			
+		}else if(userKey instanceof String){
+			return homePiUserDao.authorizeToken((String)userKey, authToken);
+		}
+		
+		return false;
 	}
 
 
@@ -222,4 +278,5 @@ public class HomePiUserService {
 
 		piProfileDAO.removeAppFromProfile(profile, appId);
 	}
+
 }

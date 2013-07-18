@@ -101,7 +101,13 @@ CONSTRAINT log_data_log_type_fkey FOREIGN KEY (log_type_id) REFERENCES public.lo
 );
 CREATE INDEX LOG_SEARCH_LOG_KEY ON LOG_DATA (LOG_KEY);
 
-INSERT INTO log_type (log_type_name) VALUES ('SYSTEM');
+INSERT INTO log_type (log_type_id, log_type_name) VALUES (1, 'SYSTEM');
+INSERT INTO log_type (log_type_id, log_type_name) VALUES (2, 'APP_DATA_POINT');
+INSERT INTO log_type (log_type_id, log_type_name) VALUES (3, 'SYSTEM_DEBUG');
+INSERT INTO log_type (log_type_id, log_type_name) VALUES (4, 'APP_DEBUG');
+
+
+
 
 --for Ubuntu:  sudo apt-get install postgresql-contrib-9.1   
 --select * from pg_available_extensions where name like 'uuid%' order by name desc;
