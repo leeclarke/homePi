@@ -6,7 +6,7 @@ angular.module('dashboard', ['ngCookies','userServices']).
       when('/social', {controller:SearchCtrl, templateUrl:'partials/search.html'}).
       when('/news', {controller:NewsCtrl, templateUrl:'partials/news.html'}).
 	  when('/profile', {controller:ProfileCtrl, templateUrl:'partials/profile.html'}).
-      when('/profile/:user_name', {controller:ProfileCtrl, templateUrl:'partials/profile.html'}).
+      when('/profile/:user_name', {controller:ProfileViewCtrl, templateUrl:'partials/viewprofile.html'}).
       when('/piprofile/:piId', {controller:ProfileCtrl, templateUrl:'partials/piprofile.html'}).
       when('/noprofile', {controller:ProfileCtrl, templateUrl:'partials/no-profile.html'}).
       otherwise({redirectTo:'/'});
@@ -59,18 +59,23 @@ function NewsCtrl($scope, $http, $location, $cookies, User) {
 
 }
 
-function ProfileCtrl($scope, $http, $location, $routeParams, $cookies, User) {
+function ProfileViewCtrl($scope, $http, $location, $routeParams, $cookies, User) {
 
-	//if and is passed then we should be in read mode.
 	if($routeParams.user_name || $routeParams.piId){
 		console.log('user_name=' + $routeParams.user_name);
-		$scope.user = User.get({user_name: $routeParams.user_name});
-		if($scope.user){
-			$scope.user.readonly=true;
+		$scope.viewuser = User.getByName({user_name: $routeParams.user_name});
+		if($scope.viewuser){
+			
 		}
 	}
+}
 
-	console.log('readonly:'+$scope.user.readonly);
+
+function ProfileCtrl($scope, $http, $location, $cookies, User) {
+
+	if(!$scope.user){
+		$location.path('/noprofile');
+	}
 
 	$scope.saveuser = function() {
       console.log('cookie_token='+$cookies.access_token);

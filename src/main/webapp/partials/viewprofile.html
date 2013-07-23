@@ -1,0 +1,32 @@
+<div class="row-fluid">
+	<div class="span12">
+		<div class="span6 checkspace">
+			<div class='formContainer'>
+				<form name="profileForm">
+
+
+				  <div class="control-group" ng-class="{error: profileForm.site.$invalid}">
+				    <div><img class="avatar-img" ng-src="{{viewuser.picLink}}"></div>
+				    <div><h3>{{viewuser.userName}}</h3></div>
+				    <div>
+						<label>Date Joined</label><span>{{viewuser.createTime}}</span>
+					</div>
+				  </div>
+				</form>
+
+			</div>
+		</div>
+		<div class="span6 checkspace">
+			<h3>Pi Profile Summary</h3>
+			<table class="pi-sum-table">
+				<tr>
+					<th>Convert to LIST</th><th></th>
+				</tr>
+				<tr ng-repeat="profile in viewuser.piProfiles">
+					<td></td>
+					<td><a href="#/piprofile/{{profile.$piId}}">{{profile.name}} <i class="icon-pencil"></i></a></td>
+				</tr>
+			</table>
+		</div>	
+	</div>
+</div>
