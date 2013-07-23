@@ -15,12 +15,14 @@
 				  </div>
 
 				  <div class="control-group" ng-class="{error: profileForm.site.$invalid}">
+				    <div><img class="avatar-img" ng-src="{{user.picLink}}"></div>
 				    <label>Profile Image</label>
 				    <input type="url" name="site" ng-model="user.picLink" required>
 				    <span ng-show="profileForm.site.$error.required" class="help-inline">
 				        Required</span>
 				    <span ng-show="profileForm.site.$error.url" class="help-inline">
 				        Not a URL</span>
+
 				  </div>
 
 				  <div class="control-group" ng-class="{error: profileForm.givenName.$invalid}">
@@ -32,7 +34,7 @@
 				        Not a URL</span>
 				  </div>
 
-				  <div class="control-group" ng-class="{error: profileForm.familyName.$invalid}">
+				  <div ng-hide="{{user.readonly}}" class="control-group" ng-class="{error: profileForm.familyName.$invalid}" >
 				    <label>Family Name</label>
 				    <input type="text" name="familyName" ng-model="user.familyName" required>
 				    <span ng-show="profileForm.familyName.$error.required" class="help-inline">
@@ -45,7 +47,9 @@
 				  <a href="#/" class="btn">Cancel</a>
 				  <button ng-click="saveuser()" ng-disabled="isClean() || profileForm.$invalid"
 				          class="btn btn-primary">Save</button>
+				  <div>readonly:{{$scope.user.readonly}}</div>
 				</form>
+
 			</div>
 		</div>
 		<div class="span6 checkspace">

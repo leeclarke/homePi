@@ -8,11 +8,11 @@ angular.module('dashboard', ['ngCookies','userServices']).
 	  when('/profile', {controller:ProfileCtrl, templateUrl:'partials/profile.html'}).
       when('/profile/:user_name', {controller:ProfileCtrl, templateUrl:'partials/profile.html'}).
       when('/piprofile/:piId', {controller:ProfileCtrl, templateUrl:'partials/piprofile.html'}).
+      when('/noprofile', {controller:ProfileCtrl, templateUrl:'partials/no-profile.html'}).
       otherwise({redirectTo:'/'});
   });
 
 function HomeCtrl($scope, $http, $window, $location, $cookies, User) {
-	console.log('In Home controller');
 
 	params  = Util.parseQueryString($scope, $location)
 	if(params['auth_token']){
@@ -30,21 +30,25 @@ function HomeCtrl($scope, $http, $window, $location, $cookies, User) {
 		$cookies.user_id = params['user_id'];
 		$window.location.replace('/home.html');
 	} else {
-		if(!($http.defaults.headers.get)){
-			$http.defaults.headers.get = {};	
+		if($cookies.access_token) {
+			if(!($http.defaults.headers.get)){
+				$http.defaults.headers.get = {};	
+			} 
+			$http.defaults.headers.get.access_token = $cookies.access_token;
+			$scope.user = User.get({user_name: $cookies.user_id});
 		} 
-		$http.defaults.headers.get.access_token = $cookies.access_token;
-		$scope.user = User.get({user_name: $cookies.user_id});
 	}
 
-	//TODO: Check for fail and redirect to login/index
 	//TODO: Also test for direct deep links.
 }
 
 function DashCtrl($scope, $http, $location, $cookies, User) {
 	
   	console.log('cookie='+$cookies.access_token);
-
+	if(!$scope.user) {
+		//no user auth, show options.
+		$location.path('/noprofile');
+	}
 }
 
 function SearchCtrl($scope, $http, $location, $cookies, User) {
@@ -55,7 +59,18 @@ function NewsCtrl($scope, $http, $location, $cookies, User) {
 
 }
 
-function ProfileCtrl($scope, $http, $location, $cookies, User) {
+function ProfileCtrl($scope, $http, $location, $routeParams, $cookies, User) {
+
+	//if and is passed then we should be in read mode.
+	if($routeParams.user_name || $routeParams.piId){
+		console.log('user_name=' + $routeParams.user_name);
+		$scope.user = User.get({user_name: $routeParams.user_name});
+		if($scope.user){
+			$scope.user.readonly=true;
+		}
+	}
+
+	console.log('readonly:'+$scope.user.readonly);
 
 	$scope.saveuser = function() {
       console.log('cookie_token='+$cookies.access_token);
