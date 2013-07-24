@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="homepage">
+	<head>
+		<meta charset="utf-8">
+		<title>HomePI</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-cookies.min.js"></script> 
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular-resource.js"></script>
+		<script src="js/controller/homepage.js"></script>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/app.css">
+	</head>
+	<body>
+		<div class="navbar-content">
+			<ul><li class="active"><a href="#/">Home</a></li>|<li><a href="#/getstarted">Get Started</a></li>|<li><a href="#/about">About</a></li>|<li><a href="#/news">What's New</a></li>|<li><a href="./services/docs/index">HomePi API</a></li></ul>
+		</div>
+		<div ng-view class="home-view" ng-controller="HomePageCtrl"></div>
+		<div ng-include="" src=" 'partials/footer.html' "></div>	
+	</body> 
+</html>
