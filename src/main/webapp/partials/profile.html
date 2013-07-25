@@ -63,6 +63,19 @@
 					<td><a href="#/piprofile/{{profile.$piId}}"> edit<i class="icon-pencil"></i></a></td>
 				</tr>
 			</table>
+			<h3>Your Apps <a href="#/apps/new"><i class="icon-plus"></a></i></h3>
+			<table class="pi-app-table">
+				<tr>
+					<th>App Name</th><th>Version</th><th>File Name</th><th>Decs.</th><th></th>
+				</tr>
+				<tr ng-repeat="app in user.managedApps">
+					<td>{{app.appName}}</td>
+					<td>{{app.versionNumber}}</td> 
+					<td>{{app.fileName}}</td>
+					<td>{{app.shortDesc}}</td>
+					<td><a href="#/apps/{{app.$appId}}"> edit<i class="icon-pencil"></i></a></td>
+				</tr>
+			</table>
 		</div>	
 	</div>
 </div>

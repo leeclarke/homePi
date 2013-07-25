@@ -8,6 +8,7 @@ angular.module('dashboard', ['ngCookies','userServices']).
 	  when('/profile', {controller:ProfileCtrl, templateUrl:'partials/profile.html'}).
       when('/profile/:user_name', {controller:ProfileViewCtrl, templateUrl:'partials/viewprofile.html'}).
       when('/piprofile/:piId', {controller:ProfileCtrl, templateUrl:'partials/piprofile.html'}).
+      when('/apps/:appId', {controller:ProfileCtrl, templateUrl:'partials/apps.html'}).
       when('/noprofile', {controller:ProfileCtrl, templateUrl:'partials/no-profile.html'}).
       otherwise({redirectTo:'/'});
   });

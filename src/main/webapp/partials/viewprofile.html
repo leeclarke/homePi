@@ -24,6 +24,14 @@
 					<a href="#/piprofile/{{profile.$piId}}">{{profile.name}}</a>
 				</li>
 			</ul>
+
+			<h3>Pi Apps</h3>
+			<div>Apps Managed by Homepi: {{viewuser.managedApps.length}}</div>
+			<ul class="app-sum-view">
+				<li ng-repeat="apps in viewuser.managedApps">
+					<a href="#/piprofile/{{apps.$appId}}">{{apps.appName}}</a>
+				</li>
+			</ul>
 		</div>	
 	</div>
 </div>
