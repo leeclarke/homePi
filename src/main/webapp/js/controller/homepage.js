@@ -12,4 +12,7 @@ angular.module('homepage', ['ngCookies']).
 
 function HomePageCtrl($scope, $http, $window, $location, $cookies) {
 
+	$scope.doGplusAuth = function() {
+    	$window.location.href = './services/user/googleauth';
+    }
 }
