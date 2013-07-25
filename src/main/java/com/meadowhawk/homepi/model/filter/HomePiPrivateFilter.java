@@ -29,7 +29,6 @@ public class HomePiPrivateFilter extends SimpleBeanPropertyFilter {
 			      filterFields.add("email");
 			      filterFields.add("givenName");
 			      filterFields.add("familyName");
-			      filterFields.add("piProfiles");
 			}
 			
 			SimpleBeanPropertyFilter.serializeAllExcept(filterFields).serializeAsField(bean, jGen, provider, writer);

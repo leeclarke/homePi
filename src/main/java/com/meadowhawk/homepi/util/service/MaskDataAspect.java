@@ -35,31 +35,6 @@ public class MaskDataAspect{
 
 	@Pointcut("execution(* com.meadowhawk.homepi.service.business.*.*(..))")
   public void getAuthToken() { }
-	
-//	@Before("getAuthToken()")
-//	public void logJoinPoint(JoinPoint joinPoint){
-//		System.err.println(">>>>>   BEFORE Arguments : " + Arrays.toString(joinPoint.getArgs()));
-//		System.err.println(">>>>>   Method Name:" + joinPoint.getSignature().getName());
-//	}
-//	
-	
-//	@After("getAuthToken() && @annotation(MaskData)")
-//	public void checkRequestForPrivateData(JoinPoint joinPoint){
-////		Object[] args = joinPoint.getArgs();
-//		System.err.println(">>>>>   AFTER Arguments : " + Arrays.toString(joinPoint.getArgs()));
-//		System.err.println(">>>>>   Method Name:" + joinPoint.getSignature().getName());
-//		
-////		joinPoint.
-//		
-////		if(!userService.verifyUserToken(userName, authToken)){
-////			profile.setMaskedView(true);
-////		}
-//		
-////TODO Test with this.
-//			//get auth token if logged in.
-//		//get userInfo if logged in.
-//		
-//	}
 
 	@Around("@annotation(MaskData)")
 	public Object checkForPrivateData(ProceedingJoinPoint pjp) throws Throwable{
