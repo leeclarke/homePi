@@ -6,7 +6,7 @@
 
 
 				  <div class="control-group" ng-class="{error: profileForm.site.$invalid}">
-				    <div><img class="avatar-img" ng-src="{{viewuser.picLink}}"></div>
+				    <div><img class="avatar-img" ng-src="{{viewuser.picLink || 'img/robot.jpg'}}"></div>
 				    <div><h3>{{viewuser.userName}}</h3></div>
 				    <div>
 						<label>Date Joined</label><span>{{viewuser.createTime}}</span>
@@ -18,15 +18,12 @@
 		</div>
 		<div class="span6 checkspace">
 			<h3>Pi Profile Summary</h3>
-			<table class="pi-sum-table">
-				<tr>
-					<th>Convert to LIST</th><th></th>
-				</tr>
-				<tr ng-repeat="profile in viewuser.piProfiles">
-					<td></td>
-					<td><a href="#/piprofile/{{profile.$piId}}">{{profile.name}} <i class="icon-pencil"></i></a></td>
-				</tr>
-			</table>
+			<div>Registered R-Pi:{{viewuser.piProfiles.length}}</div>
+			<ul class="pi-sum-view">
+				<li ng-repeat="profile in viewuser.piProfiles">
+					<a href="#/piprofile/{{profile.$piId}}">{{profile.name}}</a>
+				</li>
+			</ul>
 		</div>	
 	</div>
 </div>

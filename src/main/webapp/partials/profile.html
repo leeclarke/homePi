@@ -15,7 +15,7 @@
 				  </div>
 
 				  <div class="control-group" ng-class="{error: profileForm.site.$invalid}">
-				    <div><img class="avatar-img" ng-src="{{user.picLink}}"></div>
+				    <div><img class="avatar-img" ng-src="{{user.picLink || 'img/robot.jpg'}}"></div>
 				    <label>Profile Image</label>
 				    <input type="url" name="site" ng-model="user.picLink" required>
 				    <span ng-show="profileForm.site.$error.required" class="help-inline">
