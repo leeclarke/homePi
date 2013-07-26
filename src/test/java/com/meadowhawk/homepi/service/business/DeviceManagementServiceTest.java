@@ -82,10 +82,12 @@ public class DeviceManagementServiceTest {
 	public void testCreateProfile() {
 		String piSerialId = new RandomString(50).nextString();
 		String ipAddress = "192.168.1.20";
-		PiProfile resp = deviceManagedService.createPiProfile(piSerialId, ipAddress );
+		PiProfile resp = deviceManagedService.createPiProfile(piSerialId, ipAddress, null );
 		assertNotNull(resp);
 		assertNotNull(resp.getPiId());
 		assertNotNull(resp.getApiKey());
+		assertNotNull(resp.getName());
+		assertNotNull(resp.getUserId());
 		assertEquals(piSerialId,resp.getPiSerialId());
 		assertEquals(ipAddress,resp.getIpAddress());
 		
@@ -95,21 +97,21 @@ public class DeviceManagementServiceTest {
 	
 	@Test(expected=HomePiAppException.class)
 	public void testCreatePiProfileNullCheck() {
-		deviceManagedService.createPiProfile(null, null);
+		deviceManagedService.createPiProfile(null, null,null);
 	}
 	
 	@Test(expected=HomePiAppException.class)
 	public void testCreatePiProfileBlanksCheck() {
 		String piSerialId = "";
 		String ipAddress = "";
-		deviceManagedService.createPiProfile(piSerialId, ipAddress);
+		deviceManagedService.createPiProfile(piSerialId, ipAddress,null);
 		
 	}
 
 	@Test(expected=HomePiAppException.class)
 	public void testCreatePiProfileDupeId() {
 		String ipAddress = "123.123.123.123";
-		deviceManagedService.createPiProfile(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, ipAddress);
+		deviceManagedService.createPiProfile(PiProfileDAOTest.DEFAULT_EXISTING_PI_SERIAL, ipAddress, null);
 	}
 	
 	@Test

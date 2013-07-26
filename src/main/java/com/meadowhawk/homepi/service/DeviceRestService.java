@@ -40,6 +40,7 @@ import com.meadowhawk.homepi.util.model.PublicRESTDocMethod;
 public class DeviceRestService {
 	private static Logger log = Logger.getLogger( DeviceRestService.class );
 	private static final String API_KEY = "api_key";
+	private static final String USER_NAME = "user_name";
 	
 	
 	@Autowired
@@ -72,8 +73,8 @@ public class DeviceRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PublicRESTDocMethod(endPointName="Register Pi", description="Registers a new PI with the HomePi. This is called directly from the Pi, the first time the Pi runs the local HomePi application. The HomePi serial ID is mandatory and must match the Pi's actual number or things wont work out later on.. ", sampleLinks={"/homepi/device/pi/01r735ds720/reg"})
-	public PiProfile registerPi(@PathParam("piSerialId") String piSerialId, @Context HttpServletRequest request) {
-		return deviceManagementService.createPiProfile(piSerialId, request.getRemoteAddr());
+	public PiProfile registerPi(@PathParam("piSerialId") String piSerialId, @HeaderParam(USER_NAME) String userName,   @Context HttpServletRequest request) {
+		return deviceManagementService.createPiProfile(piSerialId, request.getRemoteAddr(),userName);
 	}
 	
 	@GET

@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
+import java.util.UUID;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
@@ -18,7 +20,9 @@ import com.jayway.restassured.internal.RestAssuredResponseImpl;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Response;
 import com.meadowhawk.homepi.integration.jax.ManagedAppTestFilter;
+import com.meadowhawk.homepi.integration.jax.PiProfileTestFilter;
 import com.meadowhawk.homepi.model.LogData;
+import com.meadowhawk.homepi.model.PiProfile;
 
 public class DeviceRestServiceIT {
 	static final String BASE_URI = "/services/homepi/device/pi/";
@@ -74,12 +78,20 @@ public class DeviceRestServiceIT {
 	@Test
 	public void testRegPiProfile(){
 		String piSerialId = "TEST"+System.currentTimeMillis();
-		String userId = "test_user";
-		//TOD: Write test and add mandatory params to body of POST
+		String userName = "test-user42";
+		
+		given().port(8088).headers("user_name",userName).
+		expect().statusCode(200).log().body().
+		body(	"userId", notNullValue(),	
+				"name", notNullValue(),
+		        "piSerialId", equalTo(piSerialId)).
+			when().
+		post(BASE_URI + piSerialId + "/reg");
+		
 	}
 	
 	//TODO: Really need to be able to delete these after they get created but there isn't a REST delete function.
-	
+
 	
 	//GET /pi/{piSerialId}
 	@Test

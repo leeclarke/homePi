@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.meadowhawk.homepi.dao.AbstractJpaDAO.DBSortOrder;
+import com.meadowhawk.homepi.dao.HomePiUserDAO;
 import com.meadowhawk.homepi.dao.LogDataDAO;
 import com.meadowhawk.homepi.dao.PiProfileDAO;
 import com.meadowhawk.homepi.exception.HomePiAppException;
+import com.meadowhawk.homepi.model.HomePiUser;
 import com.meadowhawk.homepi.model.LogData;
 import com.meadowhawk.homepi.model.ManagedApp;
 import com.meadowhawk.homepi.model.PiProfile;
@@ -37,6 +39,9 @@ public class DeviceManagementService {
 	
 	@Autowired
 	LogDataDAO logDataDAO;
+
+	@Autowired
+	HomePiUserDAO userDAO;
 	
 	/**
 	 * @param serialId
@@ -82,7 +87,7 @@ public class DeviceManagementService {
 	 * @return
 	 * @throws HomePiAppException
 	 */
-	public PiProfile createPiProfile(String piSerialId, String ipAddress) throws HomePiAppException {
+	public PiProfile createPiProfile(String piSerialId, String ipAddress, String userName) throws HomePiAppException {
 		if(StringUtil.isNullOrEmpty(piSerialId)){
 			throw new HomePiAppException(Status.BAD_REQUEST, "Invalid Pi Serial ID.");
 		}
@@ -91,8 +96,8 @@ public class DeviceManagementService {
 			piProfile.setPiSerialId(piSerialId);
 			piProfile.setCreateTime(new DateTime());
 			piProfile.setIpAddress(ipAddress);
-			//TODO: Fix once User Auth complete!!!
-			piProfile.setUserId(1L);
+			piProfile.setName("PI-"+piSerialId); //sets default name
+			piProfile.setUserId(getUid(userName));
 			
 			piProfileDao.save(piProfile);
 			
@@ -105,6 +110,24 @@ public class DeviceManagementService {
 		} catch(Exception e){
 			throw new HomePiAppException(Status.BAD_REQUEST, e);
 		}
+	}
+
+	/**
+	 * Using the user name, look up the id so that it can be set properly. if null or invalid then just insert default.
+	 * @param userName
+	 * @return  - user id or 0 i invalid name.
+	 */
+	private Long getUid(String userName) {
+		Long uid = 0L;
+		try{
+			if(!StringUtil.isNullOrEmpty(userName)){
+				HomePiUser user = userDAO.findByUserName(userName);
+				uid = user.getUserId();
+			}
+		} catch(Exception e){
+			//any failure results in uid == 0
+		}
+		return uid;
 	}
 
 	/**
