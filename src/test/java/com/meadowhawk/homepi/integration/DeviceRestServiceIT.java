@@ -71,6 +71,13 @@ public class DeviceRestServiceIT {
 	}
 	
 	//POST /pi/{piSerialId}/reg
+	@Test
+	public void testRegPiProfile(){
+		String piSerialId = "TEST"+System.currentTimeMillis();
+		String userId = "test_user";
+		//TOD: Write test and add mandatory params to body of POST
+	}
+	
 	//TODO: Really need to be able to delete these after they get created but there isn't a REST delete function.
 	
 	
@@ -103,6 +110,8 @@ public class DeviceRestServiceIT {
 	}
 	
 	//POST /pi/{piSerialId}/log
+	//TODO:
+	
   //GET /pi/{piSerialId}/log
 	@Test
 	public void testCreateLogEntry() {
