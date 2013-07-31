@@ -41,15 +41,18 @@
 					
 					<div class="control-group" ng-class="{error: appForm.fileUrl.$invalid}">
 						    <label>File Location</label>
-						    <input type="url" name="fileUrl" ng-model="userApp.fileUrl" required>
+						    <input type="url" name="fileUrl" ng-model="userApp.fileUrl" >
 						    <span ng-show="appForm.fileUrl.$error.required" class="help-inline">Required</span>
 					</div>
 
 					<div class="control-group" ng-class="{error: appForm.details.$invalid}">
 						    <label>App Details</label>
-						    <textarea  name="details" ng-model="userApp.details" required></textarea>
+						    <textarea  name="details" ng-model="userApp.details" ></textarea>
 						    <span ng-show="appForm.details.$error.required" class="help-inline">Required</span>
 					</div>
+					<br>
+					<a href="#/profile" class="btn">Cancel</a>
+				  	<button ng-click="saveapp()" ng-disabled="isClean() || appForm.$invalid" class="btn btn-primary">Save</button>
 				</form>
 			</div>
 		</div>	
