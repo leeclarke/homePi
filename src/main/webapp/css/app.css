@@ -99,6 +99,12 @@ h1 { margin: 0 0 10px 0; padding: 0; text-align: center }
   font-weight: bold;
 }
 
+.form-display-txt {
+  padding-top: 4px;
+  padding-bottom: 6px;
+  padding-left: 10px;
+}
+
 .checkspace{
   background-color: #f5f5f5;
 }

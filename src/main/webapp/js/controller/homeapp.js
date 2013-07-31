@@ -8,7 +8,7 @@ angular.module('dashboard', ['ngCookies','userServices']).
 	  when('/profile', {controller:ProfileCtrl, templateUrl:'partials/profile.html'}).
       when('/profile/:user_name', {controller:ProfileViewCtrl, templateUrl:'partials/viewprofile.html'}).
       when('/piprofile/:piId', {controller:ProfileCtrl, templateUrl:'partials/piprofile.html'}).
-      when('/apps/:appId', {controller:ProfileCtrl, templateUrl:'partials/apps.html'}).
+      when('/apps/:appId', {controller:AppCtrl, templateUrl:'partials/apps.html'}).
       when('/noprofile', {controller:ProfileCtrl, templateUrl:'partials/no-profile.html'}).
       otherwise({redirectTo:'/'});
   });
@@ -88,4 +88,29 @@ function ProfileCtrl($scope, $http, $location, $cookies, User) {
 	$scope.isClean = function() {
       return angular.equals($scope.remote, $scope.user);
     }
+}
+
+function AppCtrl($scope, $http, $location, $routeParams, $cookies, User) {
+
+	if($routeParams.appId){
+		if($routeParams.appId == 'new'){
+			$scope.userApp = {edit: 'true', updateTime: 'Right Now!', createTime: 'Right Now!'};
+			$scope.viewuser = $scope.user;
+		} else{
+			//seach User for the app and add edit true/ insert into scope.
+			for( i in $scope.user.managedApps){
+				if($scope.user.managedApps[i].appId == $routeParams.appId){
+					$scope.userApp = $scope.user.managedApps[i];
+					$scope.viewuser = $scope.user;
+					return;
+				}
+			}
+			//if get to here then this is a readonly, make call to backend
+
+
+		}
+	} else{
+		console.log('Error, missing appId');
+	}
+
 }

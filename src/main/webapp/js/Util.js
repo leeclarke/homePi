@@ -6,7 +6,7 @@ Util.parseQueryString = function($scope, $location){
 	if(console){
 		console.log('parse url params');
 	}
-	//tried using $location.search() for this but it was always empty... ran out of time messing with it so just wrote my owe, it will get fixed one day...
+	//tried using $location.search() for this but it was always empty... ran out of time messing with it so just wrote my own, it will get fixed one day...
 	var queryString = $location.absUrl().match(/^[^?]+\??([^#]*).*$/)[1];
 	console.log('queryString='+queryString);
 	pairs = queryString.split("&")

@@ -2,17 +2,14 @@
 	<div class="span12">
 		<div class="span6 checkspace">
 			<div class='formContainer'>
-				<form name="profileForm">
-
 
 				  <div class="control-group" ng-class="{error: profileForm.site.$invalid}">
 				    <div><img class="avatar-img" ng-src="{{viewuser.picLink || 'img/robot.jpg'}}"></div>
 				    <div><h3>{{viewuser.userName}}</h3></div>
 				    <div>
-						<label>Date Joined</label><span>{{viewuser.createTime}}</span>
+						<label>Date Joined</label><span class="form-display-txt">{{viewuser.createTime}}</span>
 					</div>
 				  </div>
-				</form>
 
 			</div>
 		</div>
@@ -25,11 +22,11 @@
 				</li>
 			</ul>
 
-			<h3>Pi Apps</h3>
+			<h3>Apps</h3>
 			<div>Apps Managed by Homepi: {{viewuser.managedApps.length}}</div>
 			<ul class="app-sum-view">
 				<li ng-repeat="apps in viewuser.managedApps">
-					<a href="#/piprofile/{{apps.$appId}}">{{apps.appName}}</a>
+					<a href="#/apps/{{apps.$appId}}">{{apps.appName}}</a>
 				</li>
 			</ul>
 		</div>	

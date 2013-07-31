@@ -11,7 +11,7 @@
 				  </div>
 				 
 				  <div>
-				  	<label>Date Joined</label><span>{{user.createTime}}</span>
+				  	<label>Date Joined</label><span class="form-display-txt">{{user.createTime}}</span>
 				  </div>
 
 				  <div class="control-group" ng-class="{error: profileForm.site.$invalid}">
@@ -73,7 +73,7 @@
 					<td>{{app.versionNumber}}</td> 
 					<td>{{app.fileName}}</td>
 					<td>{{app.shortDesc}}</td>
-					<td><a href="#/apps/{{app.$appId}}"> edit<i class="icon-pencil"></i></a></td>
+					<td><a href="#/apps/{{app.appId}}"> edit<i class="icon-pencil"></i></a></td>
 				</tr>
 			</table>
 		</div>	

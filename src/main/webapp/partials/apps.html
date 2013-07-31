@@ -1,3 +1,57 @@
-<div>
-apps.html
+<div class="row-fluid">
+	<div class="span12">
+		<div class="span3 checkspace">
+			<div class='formContainer'>
+			    <div><img class="avatar-img" ng-src="{{viewuser.picLink || 'img/robot.jpg'}}"></div>
+			    <div><h3>{{viewuser.userName}}</h3></div>
+			    <div>
+					<label>Date Joined</label><span class="form-display-txt">{{viewuser.createTime}}</span>
+				</div>
+			</div>
+		</div>
+		<div class="span9 checkspace">
+			<div class='formContainer'>
+				<h3>HomePi Application</h3>
+				<form name="appForm">
+					<div class="control-group" ng-class="{error: appForm.appName.$invalid}">
+						    <label>App Name</label>
+						    <input type="text" name="appName" ng-model="userApp.appName" required>
+						    <span ng-show="appForm.appName.$error.required" class="help-inline">Required</span>
+					</div>
+
+					<div>
+					  	<label>Created on</label><div class="form-display-txt">{{userApp.createTime}}</div>
+					</div>
+
+					<div>
+					  	<label>Updated on</label><div class="form-display-txt">{{userApp.updateTime}}</div>
+					</div>
+
+					<div class="control-group" ng-class="{error: appForm.versionNumber.$invalid}">
+						    <label>App Version Number</label>
+						    <input type="text" name="versionNumber" ng-model="userApp.versionNumber" required>
+						    <span ng-show="appForm.versionNumber.$error.required" class="help-inline">Required</span>
+					</div>
+					
+					<div class="control-group" ng-class="{error: appForm.fileName.$invalid}">
+						    <label>File Name</label>
+						    <input type="text" name="fileName" ng-model="userApp.fileName" required>
+						    <span ng-show="appForm.fileName.$error.required" class="help-inline">Required</span>
+					</div>
+					
+					<div class="control-group" ng-class="{error: appForm.fileUrl.$invalid}">
+						    <label>File Location</label>
+						    <input type="url" name="fileUrl" ng-model="userApp.fileUrl" required>
+						    <span ng-show="appForm.fileUrl.$error.required" class="help-inline">Required</span>
+					</div>
+
+					<div class="control-group" ng-class="{error: appForm.details.$invalid}">
+						    <label>App Details</label>
+						    <textarea  name="details" ng-model="userApp.details" required></textarea>
+						    <span ng-show="appForm.details.$error.required" class="help-inline">Required</span>
+					</div>
+				</form>
+			</div>
+		</div>	
+	</div>
 </div>
